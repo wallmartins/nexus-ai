@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import pino from 'pino';
 import { CorrelationService } from './correlation.service';
+import { LogPersistenceService } from './log-persistence.service';
 
 export interface LogContext {
   [key: string]: unknown;
@@ -14,6 +15,7 @@ export class LoggerService {
   constructor(
     private readonly config: ConfigService,
     private readonly correlationService: CorrelationService,
+    private readonly logPersistence: LogPersistenceService,
   ) {
     const isDev = config.get<string>('NODE_ENV') === 'development';
 
@@ -58,5 +60,17 @@ export class LoggerService {
   private log(level: pino.Level, message: string, context?: LogContext): void {
     const correlationId = this.correlationService.getCorrelationId();
     this.logger[level]({ correlationId, ...context }, message);
+
+    void this.logPersistence
+      .writeLog({
+        correlationId: correlationId ?? 'unknown',
+        level: level as 'info' | 'warn' | 'error' | 'debug',
+        service: (context?.service as string) ?? 'app',
+        eventType: (context?.eventType as string) ?? 'log',
+        payload: { message, ...(context ?? {}) },
+      })
+      .catch(() => {
+        // Silently fail to avoid infinite loops and not disrupt the main flow
+      });
   }
 }

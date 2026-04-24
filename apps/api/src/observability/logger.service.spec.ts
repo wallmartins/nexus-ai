@@ -24,8 +24,15 @@ import { ConfigService } from '@nestjs/config';
 import pino from 'pino';
 import { LoggerService } from './logger.service';
 import { CorrelationService } from './correlation.service';
+import { LogPersistenceService } from './log-persistence.service';
 
 const mockedPino = jest.mocked(pino);
+
+const mockWriteLog = jest.fn();
+
+const mockLogPersistenceService = {
+  writeLog: mockWriteLog,
+};
 
 describe('LoggerService', () => {
   let logger: LoggerService;
@@ -33,6 +40,8 @@ describe('LoggerService', () => {
 
   beforeEach(async () => {
     mockedPino.mockClear();
+    mockWriteLog.mockClear();
+    mockWriteLog.mockResolvedValue(undefined);
 
     const module: TestingModule = await Test.createTestingModule({
       providers: [
@@ -46,6 +55,10 @@ describe('LoggerService', () => {
               return undefined;
             },
           },
+        },
+        {
+          provide: LogPersistenceService,
+          useValue: mockLogPersistenceService,
         },
       ],
     }).compile();
@@ -132,6 +145,38 @@ describe('LoggerService', () => {
       const [context, message] = pinoInstance.info.mock.calls[0];
       expect(message).toBe('No context message');
       expect(context.correlationId).toBeUndefined();
+    });
+  });
+
+  describe('persistence', () => {
+    it('persists log entry to database', async () => {
+      mockWriteLog.mockResolvedValueOnce(undefined);
+
+      correlationService.runWithCorrelationId(() => {
+        logger.info('Persisted message', { service: 'test-svc', eventType: 'test.event' });
+      });
+
+      // Allow microtask queue to flush the async persistence
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      expect(mockWriteLog).toHaveBeenCalledTimes(1);
+      const [entry] = mockWriteLog.mock.calls[0];
+      expect(entry.level).toBe('info');
+      expect(entry.service).toBe('test-svc');
+      expect(entry.eventType).toBe('test.event');
+      expect(entry.payload.message).toBe('Persisted message');
+      expect(entry.correlationId).toBeDefined();
+    });
+
+    it('does not throw when persistence fails', async () => {
+      mockWriteLog.mockRejectedValueOnce(new Error('DB down'));
+
+      expect(() => {
+        logger.info('Safe message');
+      }).not.toThrow();
+
+      await new Promise((resolve) => setTimeout(resolve, 10));
+      expect(mockWriteLog).toHaveBeenCalledTimes(1);
     });
   });
 });
