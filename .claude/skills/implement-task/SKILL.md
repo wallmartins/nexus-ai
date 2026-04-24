@@ -19,7 +19,7 @@ Select the next task with status `todo` and no pending dependencies.
    - frontend-senior
    - architect-specialist, if the task is structural
 5. Always use the software-engineering (.claude/skills/software-engineering) skill for code principle, adapting for language culture and structure
-6. For frontend tasks, use typescript (.claude/skills/typescript) skill and, if the project use react/next, use react (.claude/skills/react) skill
+6. For frontend tasks, use typescript (.claude/skills/typescript) skill and, if the project use react/next, use react (.claude/skills/react) skill, for all UI always consult DESYGN-SYSTEM.md to understand all concepts of design system.
 7. Implement only what is needed for the task
 8. Update:
    - .braddock/board/kanban.json
