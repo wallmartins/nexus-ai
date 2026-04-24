@@ -1,7 +1,7 @@
 # Status
 
 ## Current state
-TASK-001 (Monorepo scaffolding and shared types) implemented and in review. PR opened at https://github.com/wallmartins/nexus-ai/pull/1.
+TASK-002 (NestJS bootstrap with environment config) implemented and in review. PR opened at https://github.com/wallmartins/nexus-ai/pull/2.
 
 ## Last update
 - Vision document read and validated.
@@ -12,6 +12,7 @@ TASK-001 (Monorepo scaffolding and shared types) implemented and in review. PR o
 - Tasks broken down into `.braddock/memory/tasks.json` (40 tasks, 9 epics, 16 stories).
 - Kanban board initialized in `.braddock/board/kanban.json`.
 - **TASK-001 completed**: Monorepo scaffolded with pnpm workspaces, shared types package compiles, CI placeholder added, README updated.
+- **TASK-002 in review**: NestJS app bootstrapped with Zod-based env validation, global exception filter, CORS, and Settings API (GET/PATCH `/api/v1/settings`).
 
 ## Suggested next step
-Review/merge PR #1, then run `/implement-task` for the next eligible task.
+Review/merge PR #2, then run `/implement-task` for the next eligible task.

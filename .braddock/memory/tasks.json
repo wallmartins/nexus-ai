@@ -161,7 +161,7 @@
       "epic": "EPIC-001",
       "story": "STORY-001",
       "owner": "backend-senior",
-      "status": "doing",
+      "status": "review",
       "dependencies": [],
       "definition_of_done": "NestJS app boots on `npm run start:dev`. Global validation pipe (Zod), exception filter, and CORS middleware configured. `ConfigModule` validates required env vars via Zod schema and fails fast with descriptive messages. `.env.example` documents all variables. Settings API (GET/PATCH `/api/v1/settings`) returns and updates configurable fields."
     },

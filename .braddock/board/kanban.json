@@ -41,8 +41,8 @@
       "TASK-039",
       "TASK-040"
     ],
-    "doing": ["TASK-002"],
-    "review": [],
+    "doing": [],
+    "review": ["TASK-002"],
     "done": ["TASK-001"]
   }
 }
