@@ -151,7 +151,7 @@
       "epic": "EPIC-001",
       "story": "STORY-001",
       "owner": "tech-lead",
-      "status": "review",
+      "status": "done",
       "dependencies": [],
       "definition_of_done": "Monorepo initialized with pnpm workspaces or Turborepo. `apps/api`, `apps/web`, and `packages/types` directories exist. Root `package.json` defines workspaces. Shared types package compiles. CI placeholder exists. README documents local setup steps."
     },
