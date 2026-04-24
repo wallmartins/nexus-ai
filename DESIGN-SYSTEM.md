@@ -35,8 +35,8 @@
 4. **Hierarquia tipográfica por peso, não por tamanho.** Títulos em peso 400 (regular) e destaques dentro do título em 600 (semibold). Nunca use peso 700+ em display.
 5. **Instrument Serif (itálico) é uso raro e expressivo.** Apenas em palavras-chave dentro de títulos de cover/hero para humanizar. Nunca em UI funcional.
 6. **Monospace (`--font-mono`) para qualquer dado técnico:** IDs, timestamps, paths, métricas numéricas em tabelas, código, correlation IDs, similaridades (0.89).
-7. **Cantos arredondados generosos:** botões e inputs são `9999px` (pills). Cards são `20px` (`--r-lg`) ou `28px` (`--r-xl`). **Nunca** use `4px` ou `8px` em cards — fica anêmico.
-8. **Ícones: apenas lucide-style line icons, stroke 1.75, 16px padrão.** Nunca misture estilos. Já existe um set em `components.jsx → <Icon>`.
+7. **Cantos arredondados generosos:** pills, nav items e badges são `9999px` (`--r-pill`). Botões primary/secondary e inputs são `14px` (`--r-md`). Cards são `20px` (`--r-lg`) ou `28px` (`--r-xl`). **Nunca** use `4px` ou `8px` em cards — fica anêmico.
+8. **Ícones: apenas lucide-style line icons, stroke 1.75, 16px padrão.** Nunca misture estilos. Importe diretamente de `lucide-react`.
 9. **Não invente cores.** Use tokens CSS. Se precisar de uma variação, use `oklch()` ou opacidade (`rgba(255,255,255,0.06)`) sobre um token existente.
 10. **Emoji é proibido em UI funcional.** Só em copy de demo/marketing específico.
 
@@ -139,7 +139,8 @@
 | `--r-lg`   | `20px`   | **Padrão para cards**                    |
 | `--r-xl`   | `28px`   | Cards grandes, AI insight                |
 | `--r-2xl`  | `36px`   | Hero cards raros                         |
-| `--r-pill` | `9999px` | Todos os botões, pills, nav items        |
+| `--r-pill` | `9999px` | Pills, nav items, tags, badges           |
+| `--r-md`   | `14px`   | Botões primary/secondary, inputs, tiles  |
 
 ### Shadows
 
@@ -155,12 +156,12 @@ Nexus **não usa shadow em cards**. A separação vem da combinação surface + 
 ### Families
 
 ```css
---font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, sans-serif;
---font-mono: "JetBrains Mono", ui-monospace, "SF Mono", Menlo, monospace;
+--font-sans: "Geist", ui-sans-serif, system-ui, -apple-system, sans-serif;
+--font-mono: "Geist Mono", ui-monospace, "SF Mono", Menlo, monospace;
 /* Uso raro: Instrument Serif via Google Fonts — <em> em headings de cover */
 ```
 
-> **Nota:** originalmente o sistema usava Geist. Para empacotamento standalone migramos para Inter + JetBrains Mono (funcionam com Google Fonts, sem dependências self-hosted).
+> **Nota:** o sistema usa Geist (sans + mono) via pacote `geist` para Next.js. Fontes são carregadas via `geist/font/sans` e `geist/font/mono` para otimização automática de subsets e variáveis CSS.
 
 ### Escala (desktop)
 
@@ -288,7 +289,7 @@ Em cover/hero, pode-se adicionar serif itálico em **uma palavra-chave**:
 
 ### Fonte
 
-Todos os ícones são **line icons estilo Lucide**, inline SVG, definidos em `components.jsx → <Icon name={...} />`.
+Todos os ícones são **line icons estilo Lucide**, via `lucide-react`. Importe diretamente do pacote (ex: `import { MessageSquare } from 'lucide-react'`).
 
 ### Regras
 
@@ -301,7 +302,7 @@ Todos os ícones são **line icons estilo Lucide**, inline SVG, definidos em `co
 
 `chart, chat, agents, knowledge, eval, observe, settings, search, bell, arrow-up-right, arrow-right, arrow-left, plus, check, x, upload, doc, pdf, md, sparkle, mic, paperclip, filter, clock, zap, shield, cpu, database, flow, dot, play, pause, refresh, more, chevron-down, chevron-right, menu, home, layers, eye, copy, link, quote, trash, download`.
 
-Se precisar de um ícone novo, **adicione ao set existente** em `components.jsx`.
+Se precisar de um ícone novo, verifique se já existe em `lucide-react` antes de criar um SVG customizado.
 
 ### Ícone em contexto
 
