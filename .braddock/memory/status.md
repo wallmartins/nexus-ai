@@ -1,7 +1,7 @@
 # Status
 
 ## Current state
-TASK-002 (NestJS bootstrap with environment config) implemented and in review. PR opened at https://github.com/wallmartins/nexus-ai/pull/2.
+TASK-002 (NestJS bootstrap with environment config) merged to main. TASK-003 (Next.js frontend bootstrap with app shell) in progress.
 
 ## Last update
 - Vision document read and validated.
@@ -12,7 +12,8 @@ TASK-002 (NestJS bootstrap with environment config) implemented and in review. P
 - Tasks broken down into `.braddock/memory/tasks.json` (40 tasks, 9 epics, 16 stories).
 - Kanban board initialized in `.braddock/board/kanban.json`.
 - **TASK-001 completed**: Monorepo scaffolded with pnpm workspaces, shared types package compiles, CI placeholder added, README updated.
-- **TASK-002 in review**: NestJS app bootstrapped with Zod-based env validation, global exception filter, CORS, and Settings API (GET/PATCH `/api/v1/settings`).
+- **TASK-002 completed**: NestJS app bootstrapped with Zod-based env validation, global exception filter, CORS, and Settings API (GET/PATCH `/api/v1/settings`). PR #2 merged.
+- **TASK-003 in progress**: Next.js 14+ App Router frontend bootstrap with Tailwind CSS, app shell, sidebar navigation, error boundary, and responsive layout.
 
 ## Suggested next step
-Review/merge PR #2, then run `/implement-task` for the next eligible task.
+Complete TASK-003 implementation, then run `/implement-task` for the next eligible task.

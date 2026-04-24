@@ -1,0 +1,56 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --color-bg-canvas: #000000;
+    --color-bg-elevated: #0a0a0a;
+    --color-surface-1: #111111;
+    --color-surface-2: #161616;
+    --color-surface-3: #1e1e1e;
+    --color-brand-lime: #c5f547;
+    --color-brand-lime-hover: #b4e639;
+    --color-brand-purple: #8b5cf6;
+    --color-brand-purple-light: #a78bfa;
+    --color-text-primary: #ffffff;
+    --color-text-secondary: #c7c7c7;
+    --color-text-muted: #8a8a8a;
+    --color-text-disabled: #555555;
+    --color-border-subtle: rgba(255, 255, 255, 0.06);
+    --color-border-default: rgba(255, 255, 255, 0.10);
+    --color-border-strong: rgba(255, 255, 255, 0.16);
+    --color-status-success: #c5f547;
+    --color-status-warning: #f7b955;
+    --color-status-danger: #f47266;
+    --color-status-info: #a78bfa;
+  }
+
+  html {
+    background-color: var(--color-bg-canvas);
+    color: var(--color-text-primary);
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  body {
+    background-color: var(--color-bg-canvas);
+    color: var(--color-text-primary);
+  }
+
+  :focus-visible {
+    outline: 2px solid var(--color-brand-lime);
+    outline-offset: 2px;
+  }
+
+  a:focus-visible,
+  button:focus-visible,
+  [role="button"]:focus-visible,
+  input:focus-visible,
+  select:focus-visible,
+  textarea:focus-visible {
+    outline: 2px solid var(--color-brand-lime);
+    outline-offset: 2px;
+    border-radius: 6px;
+  }
+}
