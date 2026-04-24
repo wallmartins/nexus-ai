@@ -4,8 +4,14 @@ import { QueueService } from '../queue/queue.service';
 import { OllamaEmbeddingProvider } from './providers/ollama-embedding.provider';
 import { EmbeddingProvider } from './interfaces/embedding-provider.interface';
 
+const EMBEDDING_PROVIDER_PREFIXES: Record<string, string> = {
+  'text-embedding': 'openai',
+};
+
 function resolveProviderName(modelName: string): string {
-  if (modelName.startsWith('text-embedding')) return 'openai';
+  for (const [prefix, provider] of Object.entries(EMBEDDING_PROVIDER_PREFIXES)) {
+    if (modelName.startsWith(prefix)) return provider;
+  }
   return 'ollama';
 }
 

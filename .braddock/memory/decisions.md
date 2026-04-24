@@ -130,10 +130,10 @@
 **Rationale:** Supports both local models (e.g., `nomic-embed-text`, 768d) and cloud models (e.g., `text-embedding-3-small`, 1536d) without schema migrations.
 **Date:** 2026-04-24
 
-### D33 — Embedding Model Provider Resolution by Prefix
-**Decision:** `EmbeddingsService.resolveProvider` uses a simple prefix heuristic (`modelName.startsWith('text-embedding')` → 'openai', else → 'ollama') to route models to providers. No fixed model registry.
-**Rationale:** Avoids maintaining a hardcoded list of model names. Callers pass any `modelName`; resolution is deterministic and extensible. When new providers are added, the prefix rule is expanded (e.g., `startsWith('cohere')` → 'cohere').
-**Trade-off:** Assumes model naming conventions from providers are stable. If a provider breaks convention, the rule is adjusted in one place.
+### D33 — Embedding Model Provider Resolution by Prefix Hash-List
+**Decision:** `EmbeddingsService` uses a `EMBEDDING_PROVIDER_PREFIXES` hash-list (`Record<prefix, providerName>`) to resolve providers. The first matching prefix wins; unmatched models fallback to 'ollama'.
+**Rationale:** Hash-lists scale better than if/else chains. Adding a new provider requires only a new entry in the dictionary. No conditional logic grows with the number of providers.
+**Trade-off:** Assumes model naming conventions from providers are stable and prefixable. If a provider breaks convention, the prefix rule is adjusted in one place.
 **Date:** 2026-04-24
 
 ### D34 — Document Upload Pipeline Gap
