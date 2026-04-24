@@ -6,6 +6,7 @@ import { validateEnv } from './config/env.schema';
 import { DatabaseModule } from './database/database.module';
 import { DocumentsModule } from './documents/documents.module';
 import { HealthModule } from './health/health.module';
+import { LlmModule } from './llm/llm.module';
 import { RedisModule } from './redis/redis.module';
 import { SettingsModule } from './settings/settings.module';
 
@@ -18,6 +19,7 @@ import { SettingsModule } from './settings/settings.module';
     DatabaseModule,
     DocumentsModule,
     HealthModule,
+    LlmModule,
     RedisModule,
     SettingsModule,
   ],

@@ -241,7 +241,7 @@
       "epic": "EPIC-002",
       "story": "STORY-003",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-009"],
       "definition_of_done": "`DocumentParserService` extracts text from PDF, TXT, and Markdown. Strips non-content noise and normalizes whitespace. `ChunkingService` splits text via recursive character strategy with configurable chunk size and overlap. Unit tests cover each file type and edge cases."
     },
@@ -281,7 +281,7 @@
       "epic": "EPIC-003",
       "story": "STORY-005",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-002"],
       "definition_of_done": "`ILLMProvider` interface defined with `generate(prompt, options): Promise<LlmResponse>`. `OllamaProvider` implements interface, calls local endpoint, and returns parsed content with token usage. Handles connection and timeout errors gracefully."
     },
