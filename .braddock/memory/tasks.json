@@ -381,7 +381,7 @@
       "epic": "EPIC-006",
       "story": "STORY-010",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-002"],
       "definition_of_done": "Pino logger emits structured JSON logs. Correlation ID middleware generates unique ID per request and propagates it to downstream services, LLM calls, and agent steps. All logs include correlation ID. Verified via middleware tests."
     },
