@@ -1,7 +1,7 @@
 # Status
 
 ## Current state
-TASK-007 (Health check endpoint) implemented and in review. PR opened at https://github.com/wallmartins/nexus-ai/pull/7.
+TASK-008 (Database schema migrations) implemented and in review. PR opened at https://github.com/wallmartins/nexus-ai/pull/8.
 
 ## Last update
 - Vision document read and validated.
@@ -17,7 +17,8 @@ TASK-007 (Health check endpoint) implemented and in review. PR opened at https:/
 - **TASK-004 completed**: PostgreSQL + pgvector + Prisma setup with DatabaseModule, connection pooling, raw SQL support, and initial migration with pgvector extension. PR #4 merged.
 - **TASK-005 completed**: Redis connection module with ioredis, automatic reconnection with exponential backoff, health ping, and configurable retry settings. PR #5 merged.
 - **TASK-006 completed**: Docker Compose for local development with PostgreSQL (pgvector), Redis, and Ollama services. PR #6 merged.
-- **TASK-007 in review**: Health check endpoint with database, Redis, and pgvector status monitoring. Returns 200 or 503 based on dependency health. PR #7 opened.
+- **TASK-007 completed**: Health check endpoint with database, Redis, and pgvector status monitoring. Returns 200 or 503 based on dependency health. PR #7 merged.
+- **TASK-008 in review**: Database schema migrations for all 9 entities (Document, Chunk, Embedding, Session, Message, EvaluationRun, EvaluationResult, LogEntry, JobRecord) with foreign keys, cascading deletes, and indexes. PR #8 opened.
 
 ## Suggested next step
-Review/merge PR #7, then run `/implement-task` for the next eligible task.
+Review/merge PR #8, then run `/implement-task` for the next eligible task.

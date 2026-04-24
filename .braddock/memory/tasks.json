@@ -221,7 +221,7 @@
       "epic": "EPIC-001",
       "story": "STORY-002",
       "owner": "architect-specialist",
-      "status": "doing",
+      "status": "review",
       "dependencies": ["TASK-004"],
       "definition_of_done": "Prisma migrations create all entities from spec section 6.1: Document, Chunk, Embedding, Session, Message, EvaluationRun, EvaluationResult, LogEntry, JobRecord. Foreign keys, cascading deletes, and indexes defined. Migration is idempotent and runs in CI."
     },
