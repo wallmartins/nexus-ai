@@ -231,7 +231,7 @@
       "epic": "EPIC-002",
       "story": "STORY-003",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-002", "TASK-008"],
       "definition_of_done": "`POST /api/v1/documents` accepts multipart/form-data. Validates MIME type (PDF, TXT, MD) and enforces 10MB max size. Returns 201 with document metadata. Creates Document record with status `pending` and enqueues ingestion job."
     },
@@ -241,7 +241,7 @@
       "epic": "EPIC-002",
       "story": "STORY-003",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-009"],
       "definition_of_done": "`DocumentParserService` extracts text from PDF, TXT, and Markdown. Strips non-content noise and normalizes whitespace. `ChunkingService` splits text via recursive character strategy with configurable chunk size and overlap. Unit tests cover each file type and edge cases."
     },
