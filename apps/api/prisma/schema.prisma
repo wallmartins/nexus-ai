@@ -8,12 +8,151 @@ datasource db {
 }
 
 model Document {
+  id           String   @id @default(uuid())
+  filename     String
+  originalName String
+  mimeType     String
+  sizeBytes    Int
+  status       String
+  metadata     Json     @default("{}")
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  chunks Chunk[]
+
+  @@index([status])
+  @@index([createdAt])
+  @@map("documents")
+}
+
+model Chunk {
+  id         String   @id @default(uuid())
+  documentId String
+  content    String
+  index      Int
+  metadata   Json     @default("{}")
+  createdAt  DateTime @default(now())
+
+  document   Document    @relation(fields: [documentId], references: [id], onDelete: Cascade)
+  embedding  Embedding?
+
+  @@index([documentId])
+  @@index([index])
+  @@map("chunks")
+}
+
+model Embedding {
   id        String   @id @default(uuid())
-  filename  String
-  mimeType  String
-  status    String
+  chunkId   String   @unique
+  vector    Unsupported("vector(768)")
+  modelName String
+  createdAt DateTime @default(now())
+
+  chunk Chunk @relation(fields: [chunkId], references: [id], onDelete: Cascade)
+
+  @@index([chunkId])
+  @@map("embeddings")
+}
+
+model Session {
+  id        String   @id @default(uuid())
+  metadata  Json     @default("{}")
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
-  @@map("documents")
+  messages Message[]
+
+  @@map("sessions")
+}
+
+model Message {
+  id            String   @id @default(uuid())
+  sessionId     String
+  role          String
+  content       String
+  sources       Json     @default("[]")
+  latencyMs     Int?
+  tokens        Json     @default("{}")
+  correlationId String
+  modelProvider String
+  modelName     String
+  createdAt     DateTime @default(now())
+
+  session Session @relation(fields: [sessionId], references: [id], onDelete: Cascade)
+
+  @@index([sessionId])
+  @@index([correlationId])
+  @@index([createdAt])
+  @@map("messages")
+}
+
+model EvaluationRun {
+  id                String    @id @default(uuid())
+  datasetVersion    String
+  status            String
+  models            Json      @default("[]")
+  aggregatedMetrics Json      @default("{}")
+  startedAt         DateTime  @default(now())
+  completedAt       DateTime?
+
+  results EvaluationResult[]
+
+  @@index([status])
+  @@index([startedAt])
+  @@map("evaluation_runs")
+}
+
+model EvaluationResult {
+  id                String   @id @default(uuid())
+  runId             String
+  questionId        String
+  questionText      String
+  expectedAnswer    String?
+  generatedAnswer   String
+  retrievedChunkIds Json     @default("[]")
+  relevanceScore    Float?
+  consistencyScore  Float?
+  groundingScore    Float?
+  latencyMs         Int?
+  tokens            Json     @default("{}")
+  createdAt         DateTime @default(now())
+
+  run EvaluationRun @relation(fields: [runId], references: [id], onDelete: Cascade)
+
+  @@index([runId])
+  @@index([createdAt])
+  @@map("evaluation_results")
+}
+
+model LogEntry {
+  id            String   @id @default(uuid())
+  correlationId String
+  level         String
+  service       String
+  eventType     String
+  payload       Json     @default("{}")
+  timestamp     DateTime @default(now())
+
+  @@index([correlationId])
+  @@index([timestamp])
+  @@index([level])
+  @@index([eventType])
+  @@map("log_entries")
+}
+
+model JobRecord {
+  id           String   @id @default(uuid())
+  queueName    String
+  bullJobId    String
+  status       String
+  payload      Json     @default("{}")
+  attempts     Int      @default(0)
+  failedReason String?
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  @@index([queueName])
+  @@index([status])
+  @@index([bullJobId])
+  @@map("job_records")
 }
