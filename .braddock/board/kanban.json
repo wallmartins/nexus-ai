@@ -5,7 +5,6 @@
       "TASK-011",
       "TASK-012",
       "TASK-013",
-      "TASK-014",
       "TASK-015",
       "TASK-016",
       "TASK-017",
@@ -35,7 +34,7 @@
     ],
     "doing": [],
     "review": [
-      "TASK-010"
+      "TASK-014"
     ],
     "done": [
       "TASK-001",
@@ -46,7 +45,8 @@
       "TASK-006",
       "TASK-007",
       "TASK-008",
-      "TASK-009"
+      "TASK-009",
+      "TASK-010"
     ]
   }
 }

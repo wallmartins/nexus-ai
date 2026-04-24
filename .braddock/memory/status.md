@@ -1,7 +1,7 @@
 # Status
 
 ## Current state
-TASK-010 (Document parser and chunking service) in review.
+TASK-014 (LLMProvider interface and Ollama provider) in review.
 
 ## Last update
 - Vision document read and validated.
@@ -20,7 +20,8 @@ TASK-010 (Document parser and chunking service) in review.
 - **TASK-007 completed**: Health check endpoint with database, Redis, and pgvector status monitoring. Returns 200 or 503 based on dependency health. PR #7 merged.
 - **TASK-008 completed**: Database schema migrations for all 9 entities with foreign keys, cascading deletes, and indexes. PR #8 merged.
 - **TASK-009 completed**: Document upload API with validation. POST /api/v1/documents accepts multipart/form-data with MIME type validation (PDF, TXT, MD) and 10MB max size. PR #10 merged.
-- **TASK-010 in review**: Document parser and chunking service. DocumentParserService supports PDF, TXT, MD with noise stripping and whitespace normalization. ChunkingService implements recursive character splitting with configurable size/overlap. 18 unit tests pass. PR opened.
+- **TASK-010 completed**: Document parser and chunking service. DocumentParserService supports PDF, TXT, MD with noise stripping and whitespace normalization. ChunkingService implements recursive character splitting with configurable size/overlap. 18 unit tests pass. PR #11 merged.
+- **TASK-014 in review**: LLMProvider interface and Ollama provider. `ILLMProvider` interface defined with `generate(prompt, options): Promise<LlmResponse>`. `OllamaProvider` implements interface, calls local endpoint, returns parsed content with token usage and latency. Handles connection and timeout errors gracefully. 9 unit tests pass. PR opened.
 
 ## Suggested next step
-Review/merge PR for TASK-010, then run `/implement-task` for the next eligible task.
+Review/merge PR for TASK-014, then run `/implement-task` for the next eligible task.
