@@ -6,11 +6,20 @@ import {
   HttpStatus,
 } from '@nestjs/common';
 
-interface ErrorResponse {
+type ErrorResponse = {
   statusCode: number;
   code: string;
   message: string;
   timestamp: string;
+};
+
+function hasMessageProperty(value: unknown): value is { message: string } {
+  return (
+    typeof value === 'object' &&
+    value !== null &&
+    'message' in value &&
+    typeof (value as Record<string, unknown>).message === 'string'
+  );
 }
 
 @Catch()
@@ -30,10 +39,8 @@ export class GlobalExceptionFilter implements ExceptionFilter {
       const res = exception.getResponse();
       if (typeof res === 'string') {
         message = res;
-      } else {
-        const payload = res as Record<string, unknown>;
-        message =
-          typeof payload.message === 'string' ? payload.message : message;
+      } else if (hasMessageProperty(res)) {
+        message = res.message;
       }
       code = `HTTP_${status}`;
     } else if (exception instanceof Error) {

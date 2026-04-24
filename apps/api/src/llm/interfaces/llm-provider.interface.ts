@@ -1,31 +1,31 @@
-export interface PromptContext {
+export type PromptContext = {
   system?: string;
   user: string;
   history?: Array<{ role: 'user' | 'assistant'; content: string }>;
-}
+};
 
-export interface LlmOptions {
+export type LlmOptions = {
   model?: string;
   temperature?: number;
   maxTokens?: number;
   jsonMode?: boolean;
-}
+};
 
-export interface TokenUsage {
+export type TokenUsage = {
   input: number;
   output: number;
-}
+};
 
-export interface LlmResponse {
+export type LlmResponse = {
   content: string;
   model: string;
   provider: string;
   tokens: TokenUsage;
   latencyMs: number;
-}
+};
 
-export interface ILLMProvider {
+export type ILLMProvider = {
   readonly providerName: string;
 
   generate(prompt: PromptContext, options?: LlmOptions): Promise<LlmResponse>;
-}
+};

@@ -3,6 +3,16 @@ import { ConfigService } from '@nestjs/config';
 import { RedisService } from '../redis/redis.service';
 import { SessionMessage, MemoryContext } from './memory.types';
 
+function isSessionMessage(value: unknown): value is SessionMessage {
+  if (typeof value !== 'object' || value === null) return false;
+  const msg = value as Record<string, unknown>;
+  return (
+    (msg.role === 'user' || msg.role === 'assistant') &&
+    typeof msg.content === 'string' &&
+    typeof msg.timestamp === 'number'
+  );
+}
+
 @Injectable()
 export class MemoryService {
   private readonly defaultDepth: number;
@@ -37,8 +47,8 @@ export class MemoryService {
     const client = this.redisService.getClient();
     const key = this.buildKey(sessionId);
 
-    const entries = await client.lrange(key, 0, -1);
-    const messages = entries
+    const rawEntries = await client.lrange(key, 0, -1);
+    const messages = rawEntries
       .map((e) => this.safeParse(e))
       .filter((m): m is SessionMessage => m !== null)
       .reverse(); // oldest first
@@ -64,7 +74,8 @@ export class MemoryService {
 
   private safeParse(raw: string): SessionMessage | null {
     try {
-      return JSON.parse(raw) as SessionMessage;
+      const parsed = JSON.parse(raw);
+      return isSessionMessage(parsed) ? parsed : null;
     } catch {
       return null;
     }

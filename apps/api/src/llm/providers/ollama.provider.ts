@@ -7,7 +7,7 @@ import {
   LlmResponse,
 } from '../interfaces/llm-provider.interface';
 
-interface OllamaGenerateRequest {
+type OllamaGenerateRequest = {
   model: string;
   prompt: string;
   system?: string;
@@ -17,15 +17,26 @@ interface OllamaGenerateRequest {
     num_predict?: number;
   };
   format?: 'json';
-}
+};
 
-interface OllamaGenerateResponse {
+type OllamaGenerateResponse = {
   response: string;
   model: string;
   created_at: string;
   done: boolean;
   prompt_eval_count?: number;
   eval_count?: number;
+};
+
+function isOllamaGenerateResponse(value: unknown): value is OllamaGenerateResponse {
+  if (typeof value !== 'object' || value === null) return false;
+  const obj = value as Record<string, unknown>;
+  return (
+    typeof obj.response === 'string' &&
+    typeof obj.model === 'string' &&
+    typeof obj.created_at === 'string' &&
+    typeof obj.done === 'boolean'
+  );
 }
 
 @Injectable()
@@ -76,16 +87,19 @@ export class OllamaProvider implements ILLMProvider {
         );
       }
 
-      const data = (await res.json()) as OllamaGenerateResponse;
+      const responseBody = await res.json();
+      if (!isOllamaGenerateResponse(responseBody)) {
+        throw new Error('Invalid Ollama generate response structure');
+      }
       const latencyMs = Math.round(performance.now() - start);
 
       return {
-        content: data.response.trim(),
-        model: data.model,
+        content: responseBody.response.trim(),
+        model: responseBody.model,
         provider: this.providerName,
         tokens: {
-          input: data.prompt_eval_count ?? this.estimateTokens(fullPrompt),
-          output: data.eval_count ?? this.estimateTokens(data.response),
+          input: responseBody.prompt_eval_count ?? this.estimateTokens(fullPrompt),
+          output: responseBody.eval_count ?? this.estimateTokens(responseBody.response),
         },
         latencyMs,
       };

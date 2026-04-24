@@ -1,9 +1,9 @@
-export interface SessionMessage {
+export type SessionMessage = {
   role: 'user' | 'assistant';
   content: string;
   timestamp: number;
-}
+};
 
-export interface MemoryContext {
+export type MemoryContext = {
   messages: SessionMessage[];
-}
+};

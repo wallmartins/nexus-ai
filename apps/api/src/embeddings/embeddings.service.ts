@@ -84,9 +84,10 @@ export class EmbeddingsService {
     modelName: string,
   ): Promise<void> {
     const vectorLiteral = `[${vector.join(',')}]`;
-    await this.prisma.executeRaw(
-      `INSERT INTO embeddings (id, "chunkId", vector, "modelName") VALUES (gen_random_uuid(), $1, $2::vector(768), $3) ON CONFLICT ("chunkId") DO UPDATE SET vector = $2::vector(768), "modelName" = $3`,
-      [chunkId, vectorLiteral, modelName],
-    );
+    await this.prisma.$queryRaw`
+      INSERT INTO embeddings (id, "chunkId", vector, "modelName")
+      VALUES (gen_random_uuid(), ${chunkId}, ${vectorLiteral}::vector(768), ${modelName})
+      ON CONFLICT ("chunkId") DO UPDATE SET vector = ${vectorLiteral}::vector(768), "modelName" = ${modelName}
+    `;
   }
 }

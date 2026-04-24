@@ -4,8 +4,22 @@ import pino from 'pino';
 import { CorrelationService } from './correlation.service';
 import { LogPersistenceService } from './log-persistence.service';
 
-export interface LogContext {
+export type LogContext = {
   [key: string]: unknown;
+};
+
+const LOG_LEVELS = ['info', 'warn', 'error', 'debug'] as const;
+type LogLevel = (typeof LOG_LEVELS)[number];
+
+function toString(value: unknown, fallback: string): string {
+  return typeof value === 'string' ? value : fallback;
+}
+
+function isLogLevel(level: string): level is LogLevel {
+  for (const l of LOG_LEVELS) {
+    if (l === level) return true;
+  }
+  return false;
 }
 
 @Injectable()
@@ -61,12 +75,14 @@ export class LoggerService {
     const correlationId = this.correlationService.getCorrelationId();
     this.logger[level]({ correlationId, ...context }, message);
 
+    const safeLevel = isLogLevel(level) ? level : 'info';
+
     void this.logPersistence
       .writeLog({
         correlationId: correlationId ?? 'unknown',
-        level: level as 'info' | 'warn' | 'error' | 'debug',
-        service: (context?.service as string) ?? 'app',
-        eventType: (context?.eventType as string) ?? 'log',
+        level: safeLevel,
+        service: toString(context?.service, 'app'),
+        eventType: toString(context?.eventType, 'log'),
         payload: { message, ...(context ?? {}) },
       })
       .catch(() => {

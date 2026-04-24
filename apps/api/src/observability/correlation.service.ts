@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import { AsyncLocalStorage } from 'async_hooks';
 import { randomUUID } from 'crypto';
 
-interface CorrelationContext {
+type CorrelationContext = {
   correlationId: string;
-}
+};
 
 @Injectable()
 export class CorrelationService {

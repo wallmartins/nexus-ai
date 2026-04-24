@@ -2,13 +2,19 @@ import { Injectable } from '@nestjs/common';
 import { ConfigService } from '@nestjs/config';
 import { EmbeddingProvider } from '../interfaces/embedding-provider.interface';
 
-interface OllamaEmbeddingRequest {
+type OllamaEmbeddingRequest = {
   model: string;
   prompt: string;
-}
+};
 
-interface OllamaEmbeddingResponse {
+type OllamaEmbeddingResponse = {
   embedding: number[];
+};
+
+function isOllamaEmbeddingResponse(value: unknown): value is OllamaEmbeddingResponse {
+  if (typeof value !== 'object' || value === null) return false;
+  const obj = value as Record<string, unknown>;
+  return Array.isArray(obj.embedding) && obj.embedding.every((n) => typeof n === 'number');
 }
 
 @Injectable()
@@ -43,8 +49,11 @@ export class OllamaEmbeddingProvider implements EmbeddingProvider {
         );
       }
 
-      const data = (await res.json()) as OllamaEmbeddingResponse;
-      embeddings.push(data.embedding);
+      const responseBody = await res.json();
+      if (!isOllamaEmbeddingResponse(responseBody)) {
+        throw new Error('Invalid Ollama embedding response structure');
+      }
+      embeddings.push(responseBody.embedding);
     }
 
     return embeddings;
