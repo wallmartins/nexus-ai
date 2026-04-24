@@ -85,8 +85,11 @@ export class LoggerService {
         eventType: toString(context?.eventType, 'log'),
         payload: { message, ...(context ?? {}) },
       })
-      .catch(() => {
-        // Silently fail to avoid infinite loops and not disrupt the main flow
+      .catch((err: unknown) => {
+        this.logger.error(
+          { correlationId, persistenceError: err instanceof Error ? err.message : String(err) },
+          'Log persistence failed',
+        );
       });
   }
 }

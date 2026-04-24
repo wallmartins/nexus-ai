@@ -178,5 +178,22 @@ describe('LoggerService', () => {
       await new Promise((resolve) => setTimeout(resolve, 10));
       expect(mockWriteLog).toHaveBeenCalledTimes(1);
     });
+
+    it('emits fallback error through pino when persistence fails', async () => {
+      mockWriteLog.mockRejectedValueOnce(new Error('DB down'));
+
+      correlationService.runWithCorrelationId(() => {
+        logger.info('Safe message');
+      });
+
+      await new Promise((resolve) => setTimeout(resolve, 10));
+
+      const pinoInstance = mockedPino.mock.results[0].value as any;
+      expect(pinoInstance.error).toHaveBeenCalledTimes(1);
+      const [context, message] = pinoInstance.error.mock.calls[0];
+      expect(message).toBe('Log persistence failed');
+      expect(context.persistenceError).toBe('DB down');
+      expect(context.correlationId).toBeDefined();
+    });
   });
 });
