@@ -78,7 +78,7 @@ describe('LogPersistenceService', () => {
         take: 10,
         skip: 0,
       });
-      expect(result.data).toEqual(logs);
+      expect(result.entries).toEqual(logs);
       expect(result.total).toBe(2);
       expect(result.limit).toBe(10);
       expect(result.offset).toBe(0);

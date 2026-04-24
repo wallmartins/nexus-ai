@@ -57,7 +57,7 @@ export class LogPersistenceService {
       if (end) where.timestamp.lte = end;
     }
 
-    const [data, total] = await Promise.all([
+    const [entries, total] = await Promise.all([
       this.prisma.logEntry.findMany({
         where,
         orderBy: { timestamp: 'desc' },
@@ -67,6 +67,6 @@ export class LogPersistenceService {
       this.prisma.logEntry.count({ where }),
     ]);
 
-    return { data, total, limit, offset };
+    return { entries, total, limit, offset };
   }
 }

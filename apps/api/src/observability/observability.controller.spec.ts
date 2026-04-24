@@ -32,7 +32,7 @@ describe('ObservabilityController', () => {
   describe('GET /api/v1/observability/logs', () => {
     it('returns logs with default pagination', async () => {
       const result = {
-        data: [{ id: 'log-1' }],
+        entries: [{ id: 'log-1' }],
         total: 1,
         limit: 50,
         offset: 0,
@@ -52,7 +52,7 @@ describe('ObservabilityController', () => {
     });
 
     it('parses query filters correctly', async () => {
-      mockQueryLogs.mockResolvedValueOnce({ data: [], total: 0, limit: 10, offset: 5 });
+      mockQueryLogs.mockResolvedValueOnce({ entries: [], total: 0, limit: 10, offset: 5 });
 
       await controller.getLogs(
         'corr-123',
@@ -76,11 +76,10 @@ describe('ObservabilityController', () => {
     });
 
     it('handles invalid date strings gracefully', async () => {
-      mockQueryLogs.mockResolvedValueOnce({ data: [], total: 0, limit: 50, offset: 0 });
+      mockQueryLogs.mockResolvedValueOnce({ entries: [], total: 0, limit: 50, offset: 0 });
 
       await controller.getLogs(undefined, 'invalid-date');
 
-      // The controller passes the invalid string to Date constructor which produces an invalid Date object
       const call = mockQueryLogs.mock.calls[0][0];
       expect(call.start).toBeInstanceOf(Date);
       expect(isNaN(call.start.getTime())).toBe(true);
