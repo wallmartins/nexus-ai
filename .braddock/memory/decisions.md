@@ -130,10 +130,10 @@
 **Rationale:** Supports both local models (e.g., `nomic-embed-text`, 768d) and cloud models (e.g., `text-embedding-3-small`, 1536d) without schema migrations.
 **Date:** 2026-04-24
 
-### D33 — Embedding Model Registry for Provider Routing
-**Decision:** `EmbeddingsService` uses a `EMBEDDING_MODEL_REGISTRY` constant (`Record<modelName, providerName>`) to resolve which provider handles which model. Unknown models fallback to 'ollama'.
-**Rationale:** Prevents hardcoding provider names in business logic. Enables model-agnostic embedding generation: callers pass `modelName`, the registry resolves the provider. OpenAI embedding provider will be registered when implemented; no changes needed to `resolveProvider` logic.
-**Trade-off:** Adding a new model requires updating the registry. Registry lives in `embeddings.service.ts` close to usage, not in a separate config file, per KISS.
+### D33 — Embedding Model Provider Resolution by Prefix
+**Decision:** `EmbeddingsService.resolveProvider` uses a simple prefix heuristic (`modelName.startsWith('text-embedding')` → 'openai', else → 'ollama') to route models to providers. No fixed model registry.
+**Rationale:** Avoids maintaining a hardcoded list of model names. Callers pass any `modelName`; resolution is deterministic and extensible. When new providers are added, the prefix rule is expanded (e.g., `startsWith('cohere')` → 'cohere').
+**Trade-off:** Assumes model naming conventions from providers are stable. If a provider breaks convention, the rule is adjusted in one place.
 **Date:** 2026-04-24
 
 ### D34 — Document Upload Pipeline Gap

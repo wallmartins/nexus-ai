@@ -4,11 +4,10 @@ import { QueueService } from '../queue/queue.service';
 import { OllamaEmbeddingProvider } from './providers/ollama-embedding.provider';
 import { EmbeddingProvider } from './interfaces/embedding-provider.interface';
 
-const EMBEDDING_MODEL_REGISTRY: Record<string, string> = {
-  'nomic-embed-text': 'ollama',
-  'text-embedding-3-small': 'openai',
-  'text-embedding-3-large': 'openai',
-};
+function resolveProviderName(modelName: string): string {
+  if (modelName.startsWith('text-embedding')) return 'openai';
+  return 'ollama';
+}
 
 @Injectable()
 export class EmbeddingsService {
@@ -75,7 +74,7 @@ export class EmbeddingsService {
   }
 
   private resolveProvider(modelName: string): EmbeddingProvider {
-    const providerName = EMBEDDING_MODEL_REGISTRY[modelName] ?? 'ollama';
+    const providerName = resolveProviderName(modelName);
     const provider = this.providers.get(providerName);
     if (!provider) {
       throw new Error(
