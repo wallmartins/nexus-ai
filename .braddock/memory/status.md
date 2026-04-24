@@ -1,24 +1,18 @@
 # Status
 
 ## Current state
-Technical specification refined with DESIGN-SYSTEM.md (frontend single source of truth). All documents synchronized.
+TASK-002 (NestJS bootstrap with environment config) implemented and in review. PR opened at https://github.com/wallmartins/nexus-ai/pull/2.
 
 ## Last update
 - Vision document read and validated.
 - PRD written to `.braddock/memory/prd.md`.
 - Architecture written to `.braddock/memory/architecture.md`.
-- **Specification refined** in `.braddock/memory/spec.md` with:
-  - Dark-first token system (black canvas, lime primary, purple AI)
-  - Inter + JetBrains Mono typography (Instrument Serif rare)
-  - Complete component inventory (Pill, Button, Card, MetricCard, Delta, CatTile, Orb, MiniOrb, ChatInput, etc.)
-  - 7 canonical screen patterns (Overview, Chat, Knowledge, Agents, Evaluations, Observability, Settings)
-  - Voice & copywriting guidelines (precise, technical, honest)
-  - Mobile companion patterns (floating bottom tab bar)
-  - 10 non-negotiable frontend rules
-  - Accessibility requirements specific to dark mode and high contrast
-- **Decisions** recorded in `.braddock/memory/decisions.md` (32 decisions including 6 design ADRs from DESIGN-SYSTEM.md).
+- Specification refined in `.braddock/memory/spec.md` with design system tokens, components, canonical screen patterns, voice/copywriting, mobile patterns, and 10 non-negotiable frontend rules.
+- Decisions recorded in `.braddock/memory/decisions.md` (32 decisions including 6 design ADRs from DESIGN-SYSTEM.md).
 - Tasks broken down into `.braddock/memory/tasks.json` (40 tasks, 9 epics, 16 stories).
 - Kanban board initialized in `.braddock/board/kanban.json`.
+- **TASK-001 completed**: Monorepo scaffolded with pnpm workspaces, shared types package compiles, CI placeholder added, README updated.
+- **TASK-002 in review**: NestJS app bootstrapped with Zod-based env validation, global exception filter, CORS, and Settings API (GET/PATCH `/api/v1/settings`).
 
 ## Suggested next step
-/implement-task
+Review/merge PR #2, then run `/implement-task` for the next eligible task.
