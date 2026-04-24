@@ -191,7 +191,7 @@
       "epic": "EPIC-001",
       "story": "STORY-002",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": [],
       "definition_of_done": "Redis client connects on startup and reconnects on failure. Health ping check implemented. Redis module is importable by other NestJS modules. Connection URL and retry settings read from env config."
     },
@@ -201,7 +201,7 @@
       "epic": "EPIC-001",
       "story": "STORY-001",
       "owner": "tech-lead",
-      "status": "todo",
+      "status": "doing",
       "dependencies": [],
       "definition_of_done": "`docker-compose.yml` defines PostgreSQL (with pgvector image), Redis, and Ollama services. Backend and frontend can reach services via documented env vars. `docker compose up` starts all dependencies. Persistent volumes configured for PostgreSQL data."
     },
