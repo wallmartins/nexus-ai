@@ -1,7 +1,7 @@
 # Status
 
 ## Current state
-TASK-006 (Docker Compose for local development) implemented and in review. PR opened at https://github.com/wallmartins/nexus-ai/pull/6.
+TASK-007 (Health check endpoint) implemented and in review. PR opened at https://github.com/wallmartins/nexus-ai/pull/7.
 
 ## Last update
 - Vision document read and validated.
@@ -16,7 +16,8 @@ TASK-006 (Docker Compose for local development) implemented and in review. PR op
 - **TASK-003 completed**: Next.js 14+ App Router frontend bootstrap with Tailwind CSS, app shell, sidebar navigation, global error boundary, loading states, and responsive layout. PR #3 merged.
 - **TASK-004 completed**: PostgreSQL + pgvector + Prisma setup with DatabaseModule, connection pooling, raw SQL support, and initial migration with pgvector extension. PR #4 merged.
 - **TASK-005 completed**: Redis connection module with ioredis, automatic reconnection with exponential backoff, health ping, and configurable retry settings. PR #5 merged.
-- **TASK-006 in review**: Docker Compose for local development with PostgreSQL (pgvector), Redis, and Ollama services. PR #6 opened.
+- **TASK-006 completed**: Docker Compose for local development with PostgreSQL (pgvector), Redis, and Ollama services. PR #6 merged.
+- **TASK-007 in review**: Health check endpoint with database, Redis, and pgvector status monitoring. Returns 200 or 503 based on dependency health. PR #7 opened.
 
 ## Suggested next step
-Review/merge PR #6, then run `/implement-task` for the next eligible task.
+Review/merge PR #7, then run `/implement-task` for the next eligible task.
