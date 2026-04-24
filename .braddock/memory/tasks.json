@@ -201,7 +201,7 @@
       "epic": "EPIC-001",
       "story": "STORY-001",
       "owner": "tech-lead",
-      "status": "review",
+      "status": "done",
       "dependencies": [],
       "definition_of_done": "`docker-compose.yml` defines PostgreSQL (with pgvector image), Redis, and Ollama services. Backend and frontend can reach services via documented env vars. `docker compose up` starts all dependencies. Persistent volumes configured for PostgreSQL data."
     },
@@ -211,7 +211,7 @@
       "epic": "EPIC-001",
       "story": "STORY-002",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "doing",
       "dependencies": ["TASK-002", "TASK-004", "TASK-005"],
       "definition_of_done": "`GET /api/v1/health` returns 200 JSON with database, redis, and pgvector statuses. Returns 503 if any dependency is unhealthy. Verified via integration test."
     },
