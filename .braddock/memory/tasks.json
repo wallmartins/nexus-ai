@@ -251,7 +251,7 @@
       "epic": "EPIC-002",
       "story": "STORY-004",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-010", "TASK-031"],
       "definition_of_done": "Service generates embeddings for each chunk asynchronously via BullMQ worker. Stores vectors in pgvector with dimension aligned to active model. Updates Document status through `embedding` to `completed`. Handles `nomic-embed-text` and `text-embedding-3-small`."
     },
