@@ -4,6 +4,12 @@ import { QueueService } from '../queue/queue.service';
 import { OllamaEmbeddingProvider } from './providers/ollama-embedding.provider';
 import { EmbeddingProvider } from './interfaces/embedding-provider.interface';
 
+const EMBEDDING_MODEL_REGISTRY: Record<string, string> = {
+  'nomic-embed-text': 'ollama',
+  'text-embedding-3-small': 'openai',
+  'text-embedding-3-large': 'openai',
+};
+
 @Injectable()
 export class EmbeddingsService {
   private readonly providers: Map<string, EmbeddingProvider> = new Map();
@@ -69,11 +75,12 @@ export class EmbeddingsService {
   }
 
   private resolveProvider(modelName: string): EmbeddingProvider {
-    // For now, all local models go through Ollama.
-    // Future: inspect modelName prefix or registry to route to OpenAI.
-    const provider = this.providers.get('ollama');
+    const providerName = EMBEDDING_MODEL_REGISTRY[modelName] ?? 'ollama';
+    const provider = this.providers.get(providerName);
     if (!provider) {
-      throw new Error('No embedding provider available');
+      throw new Error(
+        `No embedding provider available for model: ${modelName} (provider: ${providerName})`,
+      );
     }
     return provider;
   }

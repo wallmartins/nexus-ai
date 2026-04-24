@@ -130,5 +130,24 @@ describe('EmbeddingsService', () => {
         service.generateAndStoreEmbeddings('doc-1', ['chunk-1', 'chunk-2'], 'nomic-embed-text'),
       ).rejects.toThrow('Embedding count mismatch');
     });
+
+    it('falls back to ollama for unknown model names', async () => {
+      mockChunkFindMany.mockResolvedValueOnce([
+        { id: 'chunk-1', content: 'Hello' },
+      ]);
+      mockEmbed.mockResolvedValueOnce([[0.1, 0.2, 0.3]]);
+      mockQueryRaw.mockResolvedValueOnce(undefined);
+      mockDocumentUpdate.mockResolvedValueOnce({ id: 'doc-1', status: 'completed' });
+
+      await service.generateAndStoreEmbeddings('doc-1', ['chunk-1'], 'unknown-model');
+
+      expect(mockEmbed).toHaveBeenCalledWith(['Hello'], 'unknown-model');
+    });
+
+    it('throws when provider for known model is not registered', async () => {
+      await expect(
+        service.generateAndStoreEmbeddings('doc-1', ['chunk-1'], 'text-embedding-3-small'),
+      ).rejects.toThrow('No embedding provider available for model: text-embedding-3-small (provider: openai)');
+    });
   });
 });
