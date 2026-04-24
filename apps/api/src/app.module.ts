@@ -7,6 +7,7 @@ import { DatabaseModule } from './database/database.module';
 import { DocumentsModule } from './documents/documents.module';
 import { HealthModule } from './health/health.module';
 import { LlmModule } from './llm/llm.module';
+import { QueueModule } from './queue/queue.module';
 import { RedisModule } from './redis/redis.module';
 import { SettingsModule } from './settings/settings.module';
 
@@ -20,6 +21,7 @@ import { SettingsModule } from './settings/settings.module';
     DocumentsModule,
     HealthModule,
     LlmModule,
+    QueueModule,
     RedisModule,
     SettingsModule,
   ],
