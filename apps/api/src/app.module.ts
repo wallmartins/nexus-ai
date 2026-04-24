@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validateEnv } from './config/env.schema';
+import { DatabaseModule } from './database/database.module';
 import { SettingsModule } from './settings/settings.module';
 
 @Module({
@@ -11,6 +12,7 @@ import { SettingsModule } from './settings/settings.module';
       isGlobal: true,
       validate: validateEnv,
     }),
+    DatabaseModule,
     SettingsModule,
   ],
   controllers: [AppController],
