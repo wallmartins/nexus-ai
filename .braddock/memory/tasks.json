@@ -181,7 +181,7 @@
       "epic": "EPIC-001",
       "story": "STORY-002",
       "owner": "backend-senior",
-      "status": "doing",
+      "status": "review",
       "dependencies": [],
       "definition_of_done": "Prisma schema and client configured for PostgreSQL. `prisma migrate dev` runs successfully. pgvector extension enabled in migration. Prisma client exported from a shared `DatabaseModule`. Connection pooling configured. Raw SQL queries can be executed for vector operations."
     },
