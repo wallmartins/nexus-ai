@@ -191,7 +191,7 @@
       "epic": "EPIC-001",
       "story": "STORY-002",
       "owner": "backend-senior",
-      "status": "doing",
+      "status": "review",
       "dependencies": [],
       "definition_of_done": "Redis client connects on startup and reconnects on failure. Health ping check implemented. Redis module is importable by other NestJS modules. Connection URL and retry settings read from env config."
     },
