@@ -130,6 +130,18 @@
 **Rationale:** Supports both local models (e.g., `nomic-embed-text`, 768d) and cloud models (e.g., `text-embedding-3-small`, 1536d) without schema migrations.
 **Date:** 2026-04-24
 
+### D33 — Embedding Model Provider Resolution by Prefix Hash-List
+**Decision:** `EmbeddingsService` uses a `EMBEDDING_PROVIDER_PREFIXES` hash-list (`Record<prefix, providerName>`) to resolve providers. The first matching prefix wins; unmatched models fallback to 'ollama'.
+**Rationale:** Hash-lists scale better than if/else chains. Adding a new provider requires only a new entry in the dictionary. No conditional logic grows with the number of providers.
+**Trade-off:** Assumes model naming conventions from providers are stable and prefixable. If a provider breaks convention, the prefix rule is adjusted in one place.
+**Date:** 2026-04-24
+
+### D34 — Document Upload Pipeline Gap
+**Decision:** `DocumentsService.create()` currently creates the document record but does NOT enqueue an embedding job. The ingestion worker (TASK-032) is responsible for parsing, chunking, and triggering embedding.
+**Rationale:** Upload API should remain lightweight and return quickly. Heavy processing (parsing, chunking, embedding) is async via BullMQ worker.
+**Gap:** The ingestion worker does not exist yet. Until TASK-032 is implemented, uploaded documents remain in `pending` status indefinitely.
+**Date:** 2026-04-24
+
 ### D10 — Cache Key Fingerprinting
 **Decision:** Response cache keys include a hash of query text + provider + model + ordered list of top-k chunk IDs to ensure cache invalidation when underlying documents change.
 **Rationale:** Prevents stale cached responses after document updates or ingestion.

@@ -251,7 +251,7 @@
       "epic": "EPIC-002",
       "story": "STORY-004",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-010", "TASK-031"],
       "definition_of_done": "Service generates embeddings for each chunk asynchronously via BullMQ worker. Stores vectors in pgvector with dimension aligned to active model. Updates Document status through `embedding` to `completed`. Handles `nomic-embed-text` and `text-embedding-3-small`."
     },
@@ -281,7 +281,7 @@
       "epic": "EPIC-003",
       "story": "STORY-005",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-002"],
       "definition_of_done": "`ILLMProvider` interface defined with `generate(prompt, options): Promise<LlmResponse>`. `OllamaProvider` implements interface, calls local endpoint, and returns parsed content with token usage. Handles connection and timeout errors gracefully."
     },
@@ -361,7 +361,7 @@
       "epic": "EPIC-005",
       "story": "STORY-009",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-005"],
       "definition_of_done": "Redis stores last N messages per session (default N=10). Messages retrievable by session ID. Memory injected into prompt context for multi-turn conversations. TTL defaults to 24 hours. Unit tests verify storage and retrieval."
     },
@@ -381,7 +381,7 @@
       "epic": "EPIC-006",
       "story": "STORY-010",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-002"],
       "definition_of_done": "Pino logger emits structured JSON logs. Correlation ID middleware generates unique ID per request and propagates it to downstream services, LLM calls, and agent steps. All logs include correlation ID. Verified via middleware tests."
     },
@@ -391,7 +391,7 @@
       "epic": "EPIC-006",
       "story": "STORY-010",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-024", "TASK-008"],
       "definition_of_done": "Log entries written to `LogEntry` table with correlation ID, level, service, event type, and JSON payload. API supports querying by correlation ID and time range. Index on correlationId and timestamp columns."
     },
@@ -451,7 +451,7 @@
       "epic": "EPIC-008",
       "story": "STORY-013",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-005"],
       "definition_of_done": "Queue module registers `ingestion`, `embedding`, and `evaluation` queues using shared Redis connection. Queue names centralized in config. Producers can enqueue jobs with typed payloads."
     },

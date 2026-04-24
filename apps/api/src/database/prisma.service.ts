@@ -30,8 +30,4 @@ export class PrismaService
   async onModuleDestroy() {
     await this.$disconnect();
   }
-
-  async executeRaw(query: string, values?: unknown[]) {
-    return this.$queryRawUnsafe(query, ...(values ?? []));
-  }
 }

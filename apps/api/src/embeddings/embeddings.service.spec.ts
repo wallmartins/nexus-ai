@@ -10,14 +10,14 @@ describe('EmbeddingsService', () => {
   let queueService: QueueService;
   let ollamaProvider: OllamaEmbeddingProvider;
 
-  const mockExecuteRaw = jest.fn();
+  const mockQueryRaw = jest.fn();
   const mockDocumentUpdate = jest.fn();
   const mockChunkFindMany = jest.fn();
   const mockEnqueueEmbedding = jest.fn();
   const mockEmbed = jest.fn();
 
   beforeEach(async () => {
-    mockExecuteRaw.mockClear();
+    mockQueryRaw.mockClear();
     mockDocumentUpdate.mockClear();
     mockChunkFindMany.mockClear();
     mockEnqueueEmbedding.mockClear();
@@ -29,7 +29,7 @@ describe('EmbeddingsService', () => {
         {
           provide: PrismaService,
           useValue: {
-            executeRaw: mockExecuteRaw,
+            $queryRaw: mockQueryRaw,
             document: { update: mockDocumentUpdate },
             chunk: { findMany: mockChunkFindMany },
           },
@@ -91,7 +91,7 @@ describe('EmbeddingsService', () => {
         [0.1, 0.2, 0.3],
         [0.4, 0.5, 0.6],
       ]);
-      mockExecuteRaw.mockResolvedValueOnce(undefined);
+      mockQueryRaw.mockResolvedValueOnce(undefined);
       mockDocumentUpdate.mockResolvedValueOnce({ id: 'doc-1', status: 'completed' });
 
       await service.generateAndStoreEmbeddings('doc-1', ['chunk-1', 'chunk-2'], 'nomic-embed-text');
@@ -104,7 +104,7 @@ describe('EmbeddingsService', () => {
         ['Hello world', 'Second chunk'],
         'nomic-embed-text',
       );
-      expect(mockExecuteRaw).toHaveBeenCalledTimes(2);
+      expect(mockQueryRaw).toHaveBeenCalledTimes(2);
       expect(mockDocumentUpdate).toHaveBeenCalledWith({
         where: { id: 'doc-1' },
         data: { status: 'completed' },
@@ -129,6 +129,25 @@ describe('EmbeddingsService', () => {
       await expect(
         service.generateAndStoreEmbeddings('doc-1', ['chunk-1', 'chunk-2'], 'nomic-embed-text'),
       ).rejects.toThrow('Embedding count mismatch');
+    });
+
+    it('falls back to ollama for unknown model names', async () => {
+      mockChunkFindMany.mockResolvedValueOnce([
+        { id: 'chunk-1', content: 'Hello' },
+      ]);
+      mockEmbed.mockResolvedValueOnce([[0.1, 0.2, 0.3]]);
+      mockQueryRaw.mockResolvedValueOnce(undefined);
+      mockDocumentUpdate.mockResolvedValueOnce({ id: 'doc-1', status: 'completed' });
+
+      await service.generateAndStoreEmbeddings('doc-1', ['chunk-1'], 'unknown-model');
+
+      expect(mockEmbed).toHaveBeenCalledWith(['Hello'], 'unknown-model');
+    });
+
+    it('throws when provider for known model is not registered', async () => {
+      await expect(
+        service.generateAndStoreEmbeddings('doc-1', ['chunk-1'], 'text-embedding-3-small'),
+      ).rejects.toThrow('No embedding provider available for model: text-embedding-3-small (provider: openai)');
     });
   });
 });

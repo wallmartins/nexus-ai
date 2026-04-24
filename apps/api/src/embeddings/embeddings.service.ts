@@ -4,6 +4,17 @@ import { QueueService } from '../queue/queue.service';
 import { OllamaEmbeddingProvider } from './providers/ollama-embedding.provider';
 import { EmbeddingProvider } from './interfaces/embedding-provider.interface';
 
+const EMBEDDING_PROVIDER_PREFIXES: Record<string, string> = {
+  'text-embedding': 'openai',
+};
+
+function resolveProviderName(modelName: string): string {
+  for (const [prefix, provider] of Object.entries(EMBEDDING_PROVIDER_PREFIXES)) {
+    if (modelName.startsWith(prefix)) return provider;
+  }
+  return 'ollama';
+}
+
 @Injectable()
 export class EmbeddingsService {
   private readonly providers: Map<string, EmbeddingProvider> = new Map();
@@ -69,11 +80,12 @@ export class EmbeddingsService {
   }
 
   private resolveProvider(modelName: string): EmbeddingProvider {
-    // For now, all local models go through Ollama.
-    // Future: inspect modelName prefix or registry to route to OpenAI.
-    const provider = this.providers.get('ollama');
+    const providerName = resolveProviderName(modelName);
+    const provider = this.providers.get(providerName);
     if (!provider) {
-      throw new Error('No embedding provider available');
+      throw new Error(
+        `No embedding provider available for model: ${modelName} (provider: ${providerName})`,
+      );
     }
     return provider;
   }
@@ -84,9 +96,10 @@ export class EmbeddingsService {
     modelName: string,
   ): Promise<void> {
     const vectorLiteral = `[${vector.join(',')}]`;
-    await this.prisma.executeRaw(
-      `INSERT INTO embeddings (id, "chunkId", vector, "modelName") VALUES (gen_random_uuid(), $1, $2::vector(768), $3) ON CONFLICT ("chunkId") DO UPDATE SET vector = $2::vector(768), "modelName" = $3`,
-      [chunkId, vectorLiteral, modelName],
-    );
+    await this.prisma.$queryRaw`
+      INSERT INTO embeddings (id, "chunkId", vector, "modelName")
+      VALUES (gen_random_uuid(), ${chunkId}, ${vectorLiteral}::vector(768), ${modelName})
+      ON CONFLICT ("chunkId") DO UPDATE SET vector = ${vectorLiteral}::vector(768), "modelName" = ${modelName}
+    `;
   }
 }
