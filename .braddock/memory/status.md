@@ -1,7 +1,7 @@
 # Status
 
 ## Current state
-TASK-002 (NestJS bootstrap with environment config) merged to main. TASK-003 (Next.js frontend bootstrap with app shell) in progress.
+TASK-004 (PostgreSQL + pgvector + Prisma setup) implemented and in review. PR opened at https://github.com/wallmartins/nexus-ai/pull/4.
 
 ## Last update
 - Vision document read and validated.
@@ -13,7 +13,8 @@ TASK-002 (NestJS bootstrap with environment config) merged to main. TASK-003 (Ne
 - Kanban board initialized in `.braddock/board/kanban.json`.
 - **TASK-001 completed**: Monorepo scaffolded with pnpm workspaces, shared types package compiles, CI placeholder added, README updated.
 - **TASK-002 completed**: NestJS app bootstrapped with Zod-based env validation, global exception filter, CORS, and Settings API (GET/PATCH `/api/v1/settings`). PR #2 merged.
-- **TASK-003 in progress**: Next.js 14+ App Router frontend bootstrap with Tailwind CSS, app shell, sidebar navigation, error boundary, and responsive layout.
+- **TASK-003 completed**: Next.js 14+ App Router frontend bootstrap with Tailwind CSS, dark-themed design system, app shell, sidebar navigation, global error boundary, loading states, and responsive layout. PR #3 merged.
+- **TASK-004 in review**: PostgreSQL + pgvector + Prisma setup with DatabaseModule, connection pooling, raw SQL support, and initial migration with pgvector extension. PR #4 opened.
 
 ## Suggested next step
-Complete TASK-003 implementation, then run `/implement-task` for the next eligible task.
+Review/merge PR #4, then run `/implement-task` for the next eligible task.
