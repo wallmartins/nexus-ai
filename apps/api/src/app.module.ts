@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validateEnv } from './config/env.schema';
 import { DatabaseModule } from './database/database.module';
+import { HealthModule } from './health/health.module';
 import { RedisModule } from './redis/redis.module';
 import { SettingsModule } from './settings/settings.module';
 
@@ -14,6 +15,7 @@ import { SettingsModule } from './settings/settings.module';
       validate: validateEnv,
     }),
     DatabaseModule,
+    HealthModule,
     RedisModule,
     SettingsModule,
   ],
