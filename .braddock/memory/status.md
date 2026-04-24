@@ -1,7 +1,7 @@
 # Status
 
 ## Current state
-TASK-009 (Document upload API with validation) in progress.
+TASK-009 (Document upload API with validation) implemented and in review. PR opened at https://github.com/wallmartins/nexus-ai/pull/10.
 
 ## Last update
 - Vision document read and validated.
@@ -18,8 +18,8 @@ TASK-009 (Document upload API with validation) in progress.
 - **TASK-005 completed**: Redis connection module with ioredis, automatic reconnection with exponential backoff, health ping, and configurable retry settings. PR #5 merged.
 - **TASK-006 completed**: Docker Compose for local development with PostgreSQL (pgvector), Redis, and Ollama services. PR #6 merged.
 - **TASK-007 completed**: Health check endpoint with database, Redis, and pgvector status monitoring. Returns 200 or 503 based on dependency health. PR #7 merged.
-- **TASK-008 completed**: Database schema migrations for all 9 entities (Document, Chunk, Embedding, Session, Message, EvaluationRun, EvaluationResult, LogEntry, JobRecord) with foreign keys, cascading deletes, and indexes. PR #8 merged.
-- **TASK-009 in progress**: Document upload API with validation. POST /api/v1/documents accepts multipart/form-data with MIME type validation (PDF, TXT, MD) and 10MB max size.
+- **TASK-008 completed**: Database schema migrations for all 9 entities with foreign keys, cascading deletes, and indexes. PR #8 merged.
+- **TASK-009 in review**: Document upload API with validation. POST /api/v1/documents accepts multipart/form-data with MIME type validation (PDF, TXT, MD) and 10MB max size. PR #10 opened.
 
 ## Suggested next step
-Complete TASK-009 implementation, then run `/implement-task` for the next eligible task.
+Review/merge PR #10, then run `/implement-task` for the next eligible task.
