@@ -1,0 +1,16 @@
+{
+  "name": "nexus-ai",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "pnpm --filter \"./apps/**\" --filter \"./packages/**\" build",
+    "dev": "pnpm --filter \"./apps/**\" --filter \"./packages/**\" dev",
+    "lint": "pnpm --filter \"./apps/**\" --filter \"./packages/**\" lint",
+    "test": "pnpm --filter \"./apps/**\" --filter \"./packages/**\" test",
+    "type-check": "pnpm --filter \"./apps/**\" --filter \"./packages/**\" type-check"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  },
+  "packageManager": "pnpm@9.0.0"
+}

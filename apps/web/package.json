@@ -1,0 +1,18 @@
+{
+  "name": "@nexus-ai/web",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "build": "tsc",
+    "dev": "echo 'Next.js dev server placeholder'",
+    "lint": "echo 'lint placeholder'",
+    "test": "echo 'test placeholder'",
+    "type-check": "tsc --noEmit"
+  },
+  "dependencies": {
+    "@nexus-ai/types": "workspace:*"
+  },
+  "devDependencies": {
+    "typescript": "^5.4.0"
+  }
+}
