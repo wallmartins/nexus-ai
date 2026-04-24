@@ -211,7 +211,7 @@
       "epic": "EPIC-001",
       "story": "STORY-002",
       "owner": "backend-senior",
-      "status": "doing",
+      "status": "review",
       "dependencies": ["TASK-002", "TASK-004", "TASK-005"],
       "definition_of_done": "`GET /api/v1/health` returns 200 JSON with database, redis, and pgvector statuses. Returns 503 if any dependency is unhealthy. Verified via integration test."
     },
