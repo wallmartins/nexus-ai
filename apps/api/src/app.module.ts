@@ -8,6 +8,7 @@ import { DocumentsModule } from './documents/documents.module';
 import { EmbeddingsModule } from './embeddings/embeddings.module';
 import { HealthModule } from './health/health.module';
 import { LlmModule } from './llm/llm.module';
+import { MemoryModule } from './memory/memory.module';
 import { ObservabilityModule } from './observability/observability.module';
 import { QueueModule } from './queue/queue.module';
 import { RedisModule } from './redis/redis.module';
@@ -25,6 +26,7 @@ import { SettingsModule } from './settings/settings.module';
     EmbeddingsModule,
     HealthModule,
     LlmModule,
+    MemoryModule,
     QueueModule,
     RedisModule,
     SettingsModule,
