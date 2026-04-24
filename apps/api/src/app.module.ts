@@ -8,6 +8,7 @@ import { DocumentsModule } from './documents/documents.module';
 import { EmbeddingsModule } from './embeddings/embeddings.module';
 import { HealthModule } from './health/health.module';
 import { LlmModule } from './llm/llm.module';
+import { ObservabilityModule } from './observability/observability.module';
 import { QueueModule } from './queue/queue.module';
 import { RedisModule } from './redis/redis.module';
 import { SettingsModule } from './settings/settings.module';
@@ -18,6 +19,7 @@ import { SettingsModule } from './settings/settings.module';
       isGlobal: true,
       validate: validateEnv,
     }),
+    ObservabilityModule,
     DatabaseModule,
     DocumentsModule,
     EmbeddingsModule,
