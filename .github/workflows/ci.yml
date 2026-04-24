@@ -9,6 +9,13 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+    # Usa o environment 'staging' para acessar secrets organizados por ambiente
+    environment: staging
+
+    env:
+      NODE_ENV: test
+      DATABASE_URL: ${{ secrets.DATABASE_URL || 'postgresql://nexus:nexus@localhost:5432/nexus_ai' }}
+      REDIS_URL: ${{ secrets.REDIS_URL || 'redis://localhost:6379' }}
 
     steps:
       - uses: actions/checkout@v4
