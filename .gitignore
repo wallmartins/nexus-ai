@@ -3,6 +3,7 @@ dist/
 build/
 .next/
 uploads/
+generated/
 *.log
 .env
 .env.local
