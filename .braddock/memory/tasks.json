@@ -1,0 +1,549 @@
+{
+  "epics": [
+    {
+      "id": "EPIC-001",
+      "title": "Foundation & Infrastructure",
+      "description": "Project scaffolding, NestJS and Next.js setup, database and Redis connections, environment configuration, health checks, and local development Docker Compose."
+    },
+    {
+      "id": "EPIC-002",
+      "title": "RAG Pipeline",
+      "description": "Document upload, text parsing, chunking, embedding generation, pgvector storage, retrieval with top-k and MMR, and document deletion."
+    },
+    {
+      "id": "EPIC-003",
+      "title": "LLM Orchestration",
+      "description": "LLMProvider abstraction, Ollama/OpenAI/Anthropic implementations, versioned prompt manager, guardrails, and token/latency tracking."
+    },
+    {
+      "id": "EPIC-004",
+      "title": "Agent Layer",
+      "description": "Decision agent, LangGraph synthesis workflow, tool registry, and the integrated chat API that orchestrates agents, memory, and RAG."
+    },
+    {
+      "id": "EPIC-005",
+      "title": "Memory & State",
+      "description": "Redis-backed session memory, context persistence, response cache with deterministic key hashing, and TTL management."
+    },
+    {
+      "id": "EPIC-006",
+      "title": "Observability",
+      "description": "Structured logging with Pino, correlation ID propagation, request log persistence, metrics aggregation, and dashboard API."
+    },
+    {
+      "id": "EPIC-007",
+      "title": "Evaluation Pipeline",
+      "description": "Static evaluation dataset loader, on-demand evaluation runner, scoring service, and evaluation results API."
+    },
+    {
+      "id": "EPIC-008",
+      "title": "Async Processing",
+      "description": "BullMQ queue setup, ingestion and embedding workers, evaluation worker, retry logic, dead-letter handling, and job status API."
+    },
+    {
+      "id": "EPIC-009",
+      "title": "Web Interface",
+      "description": "Next.js pages for document management, chat with citations, settings, observability dashboard, and evaluation UI."
+    }
+  ],
+  "stories": [
+    {
+      "id": "STORY-001",
+      "title": "Project scaffolding and dev environment",
+      "epic": "EPIC-001",
+      "description": "Initialize monorepo, shared types, and containerized local development environment."
+    },
+    {
+      "id": "STORY-002",
+      "title": "Database and infrastructure setup",
+      "epic": "EPIC-001",
+      "description": "Configure PostgreSQL + pgvector, Redis, Prisma, health checks, and schema migrations."
+    },
+    {
+      "id": "STORY-003",
+      "title": "Document ingestion backend",
+      "epic": "EPIC-002",
+      "description": "Build upload API, document parser, and configurable text chunking service."
+    },
+    {
+      "id": "STORY-004",
+      "title": "Vector search and retrieval",
+      "epic": "EPIC-002",
+      "description": "Implement embedding generation, vector similarity search, MMR, and document deletion."
+    },
+    {
+      "id": "STORY-005",
+      "title": "LLM provider abstraction",
+      "epic": "EPIC-003",
+      "description": "Define unified LLMProvider interface and implement Ollama, OpenAI, and Anthropic adapters."
+    },
+    {
+      "id": "STORY-006",
+      "title": "Prompts and guardrails",
+      "epic": "EPIC-003",
+      "description": "Create versioned prompt manager, input/output guardrails, and token/latency tracking."
+    },
+    {
+      "id": "STORY-007",
+      "title": "Agent workflows",
+      "epic": "EPIC-004",
+      "description": "Set up LangGraph, decision agent, synthesis workflow, and tool registry."
+    },
+    {
+      "id": "STORY-008",
+      "title": "Chat API integration",
+      "epic": "EPIC-004",
+      "description": "Integrate agent layer, memory, cache, and RAG into a single chat endpoint."
+    },
+    {
+      "id": "STORY-009",
+      "title": "Memory and caching",
+      "epic": "EPIC-005",
+      "description": "Implement session memory persistence and deterministic response cache in Redis."
+    },
+    {
+      "id": "STORY-010",
+      "title": "Logging and tracing",
+      "epic": "EPIC-006",
+      "description": "Emit structured logs, propagate correlation IDs, and persist request log entries."
+    },
+    {
+      "id": "STORY-011",
+      "title": "Metrics and dashboard API",
+      "epic": "EPIC-006",
+      "description": "Aggregate metrics and expose observability dashboard data via REST API."
+    },
+    {
+      "id": "STORY-012",
+      "title": "Evaluation backend",
+      "epic": "EPIC-007",
+      "description": "Load evaluation dataset, run evaluations, compute scores, and expose results."
+    },
+    {
+      "id": "STORY-013",
+      "title": "Async job processing",
+      "epic": "EPIC-008",
+      "description": "Configure BullMQ queues and workers for ingestion, embedding, evaluation, and dead-letter handling."
+    },
+    {
+      "id": "STORY-014",
+      "title": "Document management UI",
+      "epic": "EPIC-009",
+      "description": "Drag-and-drop upload, document list, ingestion status, and delete actions."
+    },
+    {
+      "id": "STORY-015",
+      "title": "Chat and settings UI",
+      "epic": "EPIC-009",
+      "description": "Chat interface with citations, sources panel, streaming, and system settings panel."
+    },
+    {
+      "id": "STORY-016",
+      "title": "Observability and evaluation UI",
+      "epic": "EPIC-009",
+      "description": "Dashboard charts, request log table, trace drawer, and evaluation runs with comparisons."
+    }
+  ],
+  "tasks": [
+    {
+      "id": "TASK-001",
+      "title": "Monorepo scaffolding and shared types",
+      "epic": "EPIC-001",
+      "story": "STORY-001",
+      "owner": "tech-lead",
+      "status": "doing",
+      "dependencies": [],
+      "definition_of_done": "Monorepo initialized with pnpm workspaces or Turborepo. `apps/api`, `apps/web`, and `packages/types` directories exist. Root `package.json` defines workspaces. Shared types package compiles. CI placeholder exists. README documents local setup steps."
+    },
+    {
+      "id": "TASK-002",
+      "title": "NestJS bootstrap with environment config",
+      "epic": "EPIC-001",
+      "story": "STORY-001",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": [],
+      "definition_of_done": "NestJS app boots on `npm run start:dev`. Global validation pipe (Zod), exception filter, and CORS middleware configured. `ConfigModule` validates required env vars via Zod schema and fails fast with descriptive messages. `.env.example` documents all variables. Settings API (GET/PATCH `/api/v1/settings`) returns and updates configurable fields."
+    },
+    {
+      "id": "TASK-003",
+      "title": "Next.js frontend bootstrap with app shell",
+      "epic": "EPIC-001",
+      "story": "STORY-001",
+      "owner": "frontend-senior",
+      "status": "todo",
+      "dependencies": [],
+      "definition_of_done": "Next.js 14+ App Router boots on `npm run dev`. Tailwind CSS configured. Root layout and app shell with sidebar navigation render without errors. Global error boundary and loading states present. Layout is responsive on desktop and tablet."
+    },
+    {
+      "id": "TASK-004",
+      "title": "PostgreSQL + pgvector + Prisma setup",
+      "epic": "EPIC-001",
+      "story": "STORY-002",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": [],
+      "definition_of_done": "Prisma schema and client configured for PostgreSQL. `prisma migrate dev` runs successfully. pgvector extension enabled in migration. Prisma client exported from a shared `DatabaseModule`. Connection pooling configured. Raw SQL queries can be executed for vector operations."
+    },
+    {
+      "id": "TASK-005",
+      "title": "Redis connection module",
+      "epic": "EPIC-001",
+      "story": "STORY-002",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": [],
+      "definition_of_done": "Redis client connects on startup and reconnects on failure. Health ping check implemented. Redis module is importable by other NestJS modules. Connection URL and retry settings read from env config."
+    },
+    {
+      "id": "TASK-006",
+      "title": "Docker Compose for local development",
+      "epic": "EPIC-001",
+      "story": "STORY-001",
+      "owner": "tech-lead",
+      "status": "todo",
+      "dependencies": [],
+      "definition_of_done": "`docker-compose.yml` defines PostgreSQL (with pgvector image), Redis, and Ollama services. Backend and frontend can reach services via documented env vars. `docker compose up` starts all dependencies. Persistent volumes configured for PostgreSQL data."
+    },
+    {
+      "id": "TASK-007",
+      "title": "Health check endpoint",
+      "epic": "EPIC-001",
+      "story": "STORY-002",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-002", "TASK-004", "TASK-005"],
+      "definition_of_done": "`GET /api/v1/health` returns 200 JSON with database, redis, and pgvector statuses. Returns 503 if any dependency is unhealthy. Verified via integration test."
+    },
+    {
+      "id": "TASK-008",
+      "title": "Database schema migrations",
+      "epic": "EPIC-001",
+      "story": "STORY-002",
+      "owner": "architect-specialist",
+      "status": "todo",
+      "dependencies": ["TASK-004"],
+      "definition_of_done": "Prisma migrations create all entities from spec section 6.1: Document, Chunk, Embedding, Session, Message, EvaluationRun, EvaluationResult, LogEntry, JobRecord. Foreign keys, cascading deletes, and indexes defined. Migration is idempotent and runs in CI."
+    },
+    {
+      "id": "TASK-009",
+      "title": "Document upload API with validation",
+      "epic": "EPIC-002",
+      "story": "STORY-003",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-002", "TASK-008"],
+      "definition_of_done": "`POST /api/v1/documents` accepts multipart/form-data. Validates MIME type (PDF, TXT, MD) and enforces 10MB max size. Returns 201 with document metadata. Creates Document record with status `pending` and enqueues ingestion job."
+    },
+    {
+      "id": "TASK-010",
+      "title": "Document parser and chunking service",
+      "epic": "EPIC-002",
+      "story": "STORY-003",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-009"],
+      "definition_of_done": "`DocumentParserService` extracts text from PDF, TXT, and Markdown. Strips non-content noise and normalizes whitespace. `ChunkingService` splits text via recursive character strategy with configurable chunk size and overlap. Unit tests cover each file type and edge cases."
+    },
+    {
+      "id": "TASK-011",
+      "title": "Embedding generation service",
+      "epic": "EPIC-002",
+      "story": "STORY-004",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-010", "TASK-031"],
+      "definition_of_done": "Service generates embeddings for each chunk asynchronously via BullMQ worker. Stores vectors in pgvector with dimension aligned to active model. Updates Document status through `embedding` to `completed`. Handles `nomic-embed-text` and `text-embedding-3-small`."
+    },
+    {
+      "id": "TASK-012",
+      "title": "Vector retrieval service (top-k and MMR)",
+      "epic": "EPIC-002",
+      "story": "STORY-004",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-008", "TASK-011"],
+      "definition_of_done": "`RetrievalService` executes top-k similarity search against pgvector. Optional MMR diversification reduces redundancy. Returns chunks with relevance scores. p95 latency < 200ms for up to 10,000 chunks. Unit tests verify retrieval accuracy."
+    },
+    {
+      "id": "TASK-013",
+      "title": "Document deletion API",
+      "epic": "EPIC-002",
+      "story": "STORY-004",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-009", "TASK-011"],
+      "definition_of_done": "`DELETE /api/v1/documents/:id` removes the document and cascades deletion to chunks and embeddings. Returns 204. Integration test confirms data is fully removed."
+    },
+    {
+      "id": "TASK-014",
+      "title": "LLMProvider interface and Ollama provider",
+      "epic": "EPIC-003",
+      "story": "STORY-005",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-002"],
+      "definition_of_done": "`ILLMProvider` interface defined with `generate(prompt, options): Promise<LlmResponse>`. `OllamaProvider` implements interface, calls local endpoint, and returns parsed content with token usage. Handles connection and timeout errors gracefully."
+    },
+    {
+      "id": "TASK-015",
+      "title": "OpenAI provider implementation",
+      "epic": "EPIC-003",
+      "story": "STORY-005",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-014"],
+      "definition_of_done": "`OpenAiProvider` implements `ILLMProvider`. Calls chat completions API with JSON mode support where applicable. API key read exclusively from env. Returns parsed response with input/output token counts."
+    },
+    {
+      "id": "TASK-016",
+      "title": "Anthropic provider implementation",
+      "epic": "EPIC-003",
+      "story": "STORY-005",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-014"],
+      "definition_of_done": "`AnthropicProvider` implements `ILLMProvider`. Calls Messages API. API key read exclusively from env. Returns parsed response with token counts. Integration test verifies end-to-end call."
+    },
+    {
+      "id": "TASK-017",
+      "title": "Prompt manager and guardrails service",
+      "epic": "EPIC-003",
+      "story": "STORY-006",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-014"],
+      "definition_of_done": "`PromptManager` loads versioned TypeScript prompt assets from `src/prompts/`. Composes system, user, and context prompts. `GuardrailService` rejects empty or oversized input with HTTP 400. Validates LLM output against JSON schema; retries once or returns structured error on failure."
+    },
+    {
+      "id": "TASK-018",
+      "title": "Token tracking and latency recording",
+      "epic": "EPIC-003",
+      "story": "STORY-006",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-014", "TASK-024"],
+      "definition_of_done": "Every LLM call records input/output tokens and latencyMs. Data stored in Message table and observability logs. Token counts accurate per provider. Latency measured from dispatch to parsed response. Verified via unit tests."
+    },
+    {
+      "id": "TASK-019",
+      "title": "LangGraph setup and decision agent",
+      "epic": "EPIC-004",
+      "story": "STORY-007",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-014"],
+      "definition_of_done": "LangGraph installed and configured. `DecisionAgent` classifies queries as DIRECT or RAG. State graph has nodes for classification and routing. Classification logged with correlation ID. Unit tests cover both paths with sample queries."
+    },
+    {
+      "id": "TASK-020",
+      "title": "Synthesis workflow",
+      "epic": "EPIC-004",
+      "story": "STORY-007",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-019", "TASK-012", "TASK-017"],
+      "definition_of_done": "Default workflow implements retrieve → synthesize → validate → format. Final response includes answer and cited chunk IDs. If retrieval returns zero chunks, responds that no relevant context was found. State transitions logged with correlation IDs."
+    },
+    {
+      "id": "TASK-021",
+      "title": "Tool registry with retrieval and calculator tools",
+      "epic": "EPIC-004",
+      "story": "STORY-007",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-019", "TASK-012"],
+      "definition_of_done": "`ToolRegistry` registers `RetrievalTool` (wraps vector search) and `CalculatorTool` (math evaluation). Tools invoked dynamically based on workflow state. Outputs merged back into LangGraph state. Unit tests cover tool invocation and error handling."
+    },
+    {
+      "id": "TASK-022",
+      "title": "Session memory service",
+      "epic": "EPIC-005",
+      "story": "STORY-009",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-005"],
+      "definition_of_done": "Redis stores last N messages per session (default N=10). Messages retrievable by session ID. Memory injected into prompt context for multi-turn conversations. TTL defaults to 24 hours. Unit tests verify storage and retrieval."
+    },
+    {
+      "id": "TASK-023",
+      "title": "Response cache service",
+      "epic": "EPIC-005",
+      "story": "STORY-009",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-005", "TASK-022"],
+      "definition_of_done": "Cache keys generated from deterministic hash of query text + provider + model + ordered top-k chunk IDs. Redis stores cached responses. TTL configurable (default 1h). Cache hit skips LLM call and returns cached answer with cache indicator."
+    },
+    {
+      "id": "TASK-024",
+      "title": "Structured logging and correlation ID middleware",
+      "epic": "EPIC-006",
+      "story": "STORY-010",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-002"],
+      "definition_of_done": "Pino logger emits structured JSON logs. Correlation ID middleware generates unique ID per request and propagates it to downstream services, LLM calls, and agent steps. All logs include correlation ID. Verified via middleware tests."
+    },
+    {
+      "id": "TASK-025",
+      "title": "Request logs persistence",
+      "epic": "EPIC-006",
+      "story": "STORY-010",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-024", "TASK-008"],
+      "definition_of_done": "Log entries written to `LogEntry` table with correlation ID, level, service, event type, and JSON payload. API supports querying by correlation ID and time range. Index on correlationId and timestamp columns."
+    },
+    {
+      "id": "TASK-026",
+      "title": "Metrics aggregation service",
+      "epic": "EPIC-006",
+      "story": "STORY-011",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-025"],
+      "definition_of_done": "Aggregates total requests, average/p95 latency, total tokens, and error rate over selectable time windows. Data sourced from LogEntry and Message tables. Results accurate and performant for 10k+ records."
+    },
+    {
+      "id": "TASK-027",
+      "title": "Observability dashboard API",
+      "epic": "EPIC-006",
+      "story": "STORY-011",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-026"],
+      "definition_of_done": "`GET /api/v1/observability/logs` returns filtered log entries. `GET /api/v1/observability/metrics` returns aggregated metrics with time range and granularity. Response shapes match API spec. Integration tests pass."
+    },
+    {
+      "id": "TASK-028",
+      "title": "Evaluation dataset loader",
+      "epic": "EPIC-007",
+      "story": "STORY-012",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-002"],
+      "definition_of_done": "Static dataset file committed with 20-50 domain-relevant questions, expected answers, and reference chunk info. `DatasetLoader` parses and validates structure. Dataset version tracked via filename or git hash."
+    },
+    {
+      "id": "TASK-029",
+      "title": "Evaluation runner and scoring service",
+      "epic": "EPIC-007",
+      "story": "STORY-012",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-028", "TASK-020", "TASK-031"],
+      "definition_of_done": "On-demand evaluation run triggered via API. Runs each question through configured models asynchronously. Computes relevance, consistency, and grounding scores. Records per-question latency and tokens. Uses `eval-` correlation ID prefix."
+    },
+    {
+      "id": "TASK-030",
+      "title": "Evaluation results API",
+      "epic": "EPIC-007",
+      "story": "STORY-012",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-029"],
+      "definition_of_done": "Endpoints exist to list runs, get run details, and get per-question results. Supports filtering by model. Returns aggregated metrics and full result sets matching spec shapes."
+    },
+    {
+      "id": "TASK-031",
+      "title": "BullMQ queue setup",
+      "epic": "EPIC-008",
+      "story": "STORY-013",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-005"],
+      "definition_of_done": "Queue module registers `ingestion`, `embedding`, and `evaluation` queues using shared Redis connection. Queue names centralized in config. Producers can enqueue jobs with typed payloads."
+    },
+    {
+      "id": "TASK-032",
+      "title": "Ingestion and embedding workers",
+      "epic": "EPIC-008",
+      "story": "STORY-013",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-031", "TASK-010", "TASK-011"],
+      "definition_of_done": "Workers consume ingestion jobs (parse + chunk) and embedding jobs. Concurrency enforced: ingestion=1, embedding=2. Retry with exponential backoff up to 3 attempts. Job status mirrored to `JobRecord` table."
+    },
+    {
+      "id": "TASK-033",
+      "title": "Evaluation worker and dead-letter handling",
+      "epic": "EPIC-008",
+      "story": "STORY-013",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-031", "TASK-029"],
+      "definition_of_done": "Evaluation worker consumes jobs with concurrency=1. Failed jobs retried up to 3 times. Exhausted retries moved to dead-letter state queryable via `/api/v1/queues/dead-letter`. Partial results preserved on failure."
+    },
+    {
+      "id": "TASK-034",
+      "title": "Job status API",
+      "epic": "EPIC-008",
+      "story": "STORY-013",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-031"],
+      "definition_of_done": "Endpoint returns job status (pending, active, completed, failed) by queue or job ID. SSE endpoint streams real-time status updates for ingestion and evaluation jobs. Fallback to short polling documented."
+    },
+    {
+      "id": "TASK-035",
+      "title": "Chat API endpoint",
+      "epic": "EPIC-004",
+      "story": "STORY-008",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-020", "TASK-022", "TASK-023"],
+      "definition_of_done": "`POST /api/v1/chat` accepts message, optional sessionId, and options. Orchestrates decision agent, retrieval, synthesis, memory, and cache. Returns answer with sources, latencyMs, tokens, and correlationId. Handles errors with structured responses. Integration tests pass."
+    },
+    {
+      "id": "TASK-036",
+      "title": "Document management UI",
+      "epic": "EPIC-009",
+      "story": "STORY-014",
+      "owner": "frontend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-003", "TASK-009", "TASK-013", "TASK-034"],
+      "definition_of_done": "`/documents` page features drag-and-drop upload zone with file type and size validation. Lists uploaded documents with status badge, size, and timestamp. Delete action with confirmation. Real-time status updates via SSE or polling."
+    },
+    {
+      "id": "TASK-037",
+      "title": "Chat UI with citations and sources panel",
+      "epic": "EPIC-009",
+      "story": "STORY-015",
+      "owner": "frontend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-003", "TASK-035"],
+      "definition_of_done": "`/chat` page supports message input and streaming assistant responses. Inline citation markers `[1]` rendered as clickable buttons. Expandable sources panel shows chunk previews. Multi-turn conversations retain context. Accessible focus states and keyboard navigation."
+    },
+    {
+      "id": "TASK-038",
+      "title": "Settings panel",
+      "epic": "EPIC-009",
+      "story": "STORY-015",
+      "owner": "frontend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-003", "TASK-002"],
+      "definition_of_done": "`/settings` page allows selecting LLM provider and model, embedding model, chunk size/overlap, retrieval top-k, MMR toggle, session memory depth, and cache TTL. Changes saved via API and active immediately. Form validation and accessible labels present."
+    },
+    {
+      "id": "TASK-039",
+      "title": "Observability dashboard UI",
+      "epic": "EPIC-009",
+      "story": "STORY-016",
+      "owner": "frontend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-003", "TASK-027"],
+      "definition_of_done": "`/dashboard` displays request log table (sortable, filterable), latency charts (p50/p95), token usage chart, and error rate chart. Time range selector. Trace detail drawer renders Gantt-style timeline with color-coded stages. Correlation ID copyable."
+    },
+    {
+      "id": "TASK-040",
+      "title": "Evaluation runs and comparison UI",
+      "epic": "EPIC-009",
+      "story": "STORY-016",
+      "owner": "frontend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-003", "TASK-030"],
+      "definition_of_done": "`/evaluations` lists past runs with status and summary. 'New Run' modal selects models and triggers evaluation. Live progress indicator during run. Results page shows scorecards (relevance, consistency, grounding) and side-by-side comparison table. Drill-down to per-question details."
+    }
+  ]
+}
