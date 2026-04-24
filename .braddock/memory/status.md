@@ -1,7 +1,7 @@
 # Status
 
 ## Current state
-TASK-024 (Structured logging and correlation ID middleware) in review.
+TASK-022 (Session memory service) in review.
 
 ## Last update
 - Vision document read and validated.
@@ -24,7 +24,8 @@ TASK-024 (Structured logging and correlation ID middleware) in review.
 - **TASK-014 completed**: LLMProvider interface and Ollama provider. `ILLMProvider` interface defined with `generate(prompt, options): Promise<LlmResponse>`. `OllamaProvider` implements interface, calls local endpoint, returns parsed content with token usage and latency. Handles connection and timeout errors gracefully. 9 unit tests pass. PR #12 merged.
 - **TASK-031 completed**: BullMQ queue setup. Queue module registers `ingestion`, `embedding`, and `evaluation` queues using shared Redis connection. Queue names centralized in config. Typed payloads for all 3 queues. Producers can enqueue jobs. 7 unit tests pass. PR #13 merged.
 - **TASK-011 completed**: Embedding generation service. `EmbeddingsService` generates embeddings via `OllamaEmbeddingProvider` and stores vectors in pgvector. Updates document status through `embedding` to `completed`. Supports enqueuing embedding jobs via `QueueService`. 8 unit tests pass. PR #14 merged.
-- **TASK-024 in review**: Structured logging and correlation ID middleware. `CorrelationService` uses AsyncLocalStorage to propagate correlation IDs. `CorrelationMiddleware` generates/accepts correlation IDs per HTTP request. `LoggerService` uses Pino for structured JSON logs with correlation ID injection. 16 unit tests pass. PR opened.
+- **TASK-024 completed**: Structured logging and correlation ID middleware. `CorrelationService` uses AsyncLocalStorage to propagate correlation IDs. `CorrelationMiddleware` generates/accepts correlation IDs per HTTP request. `LoggerService` uses Pino for structured JSON logs with correlation ID injection. 16 unit tests pass. PR #15 merged.
+- **TASK-022 in review**: Session memory service. `MemoryService` stores last N messages per session in Redis with configurable depth and TTL. Supports adding messages, retrieving context, clearing sessions, and extending TTL. 9 unit tests pass. PR opened.
 
 ## Suggested next step
-Review/merge PR for TASK-024, then run `/implement-task` for the next eligible task.
+Review/merge PR for TASK-022, then run `/implement-task` for the next eligible task.

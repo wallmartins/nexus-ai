@@ -361,7 +361,7 @@
       "epic": "EPIC-005",
       "story": "STORY-009",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-005"],
       "definition_of_done": "Redis stores last N messages per session (default N=10). Messages retrievable by session ID. Memory injected into prompt context for multi-turn conversations. TTL defaults to 24 hours. Unit tests verify storage and retrieval."
     },
