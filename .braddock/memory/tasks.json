@@ -221,7 +221,7 @@
       "epic": "EPIC-001",
       "story": "STORY-002",
       "owner": "architect-specialist",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-004"],
       "definition_of_done": "Prisma migrations create all entities from spec section 6.1: Document, Chunk, Embedding, Session, Message, EvaluationRun, EvaluationResult, LogEntry, JobRecord. Foreign keys, cascading deletes, and indexes defined. Migration is idempotent and runs in CI."
     },
@@ -231,7 +231,7 @@
       "epic": "EPIC-002",
       "story": "STORY-003",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "doing",
       "dependencies": ["TASK-002", "TASK-008"],
       "definition_of_done": "`POST /api/v1/documents` accepts multipart/form-data. Validates MIME type (PDF, TXT, MD) and enforces 10MB max size. Returns 201 with document metadata. Creates Document record with status `pending` and enqueues ingestion job."
     },
