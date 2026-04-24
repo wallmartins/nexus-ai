@@ -1,15 +1,16 @@
 import { Injectable } from '@nestjs/common';
 import { PrismaService } from '../database/prisma.service';
+import type { Prisma } from '../../generated/prisma';
 
-export interface LogEntryInput {
+export type LogEntryInput = {
   correlationId: string;
   level: 'info' | 'warn' | 'error' | 'debug';
   service: string;
   eventType: string;
-  payload: Record<string, any>;
-}
+  payload: Prisma.InputJsonValue;
+};
 
-export interface LogQueryFilters {
+export type LogQueryFilters = {
   correlationId?: string;
   start?: Date;
   end?: Date;
@@ -17,7 +18,7 @@ export interface LogQueryFilters {
   eventType?: string;
   limit?: number;
   offset?: number;
-}
+};
 
 @Injectable()
 export class LogPersistenceService {
@@ -46,14 +47,14 @@ export class LogPersistenceService {
       offset = 0,
     } = filters;
 
-    const where: Record<string, unknown> = {};
+    const where: Prisma.LogEntryWhereInput = {};
     if (correlationId) where.correlationId = correlationId;
     if (level) where.level = level;
     if (eventType) where.eventType = eventType;
     if (start || end) {
       where.timestamp = {};
-      if (start) (where.timestamp as Record<string, Date>).gte = start;
-      if (end) (where.timestamp as Record<string, Date>).lte = end;
+      if (start) where.timestamp.gte = start;
+      if (end) where.timestamp.lte = end;
     }
 
     const [data, total] = await Promise.all([
