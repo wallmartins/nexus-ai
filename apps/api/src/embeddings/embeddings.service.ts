@@ -79,6 +79,15 @@ export class EmbeddingsService {
     });
   }
 
+  async embedQuery(text: string, modelName: string): Promise<number[]> {
+    const provider = this.resolveProvider(modelName);
+    const embeddings = await provider.embed([text], modelName);
+    if (embeddings.length === 0 || embeddings[0] === undefined) {
+      throw new Error('Embedding provider returned empty result for query');
+    }
+    return embeddings[0];
+  }
+
   private resolveProvider(modelName: string): EmbeddingProvider {
     const providerName = resolveProviderName(modelName);
     const provider = this.providers.get(providerName);

@@ -11,6 +11,7 @@ import { LlmModule } from './llm/llm.module';
 import { MemoryModule } from './memory/memory.module';
 import { ObservabilityModule } from './observability/observability.module';
 import { QueueModule } from './queue/queue.module';
+import { RagModule } from './rag/rag.module';
 import { RedisModule } from './redis/redis.module';
 import { SettingsModule } from './settings/settings.module';
 
@@ -28,6 +29,7 @@ import { SettingsModule } from './settings/settings.module';
     LlmModule,
     MemoryModule,
     QueueModule,
+    RagModule,
     RedisModule,
     SettingsModule,
   ],
