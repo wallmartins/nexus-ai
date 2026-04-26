@@ -261,7 +261,7 @@
       "epic": "EPIC-002",
       "story": "STORY-004",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-008", "TASK-011"],
       "definition_of_done": "`RetrievalService` executes top-k similarity search against pgvector. Optional MMR diversification reduces redundancy. Returns chunks with relevance scores. p95 latency < 200ms for up to 10,000 chunks. Unit tests verify retrieval accuracy."
     },
