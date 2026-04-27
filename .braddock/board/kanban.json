@@ -12,13 +12,8 @@
       "TASK-033",
       "TASK-034",
       "TASK-036",
-      "TASK-038",
       "TASK-039",
       "TASK-040"
-    ],
-    "doing": [],
-    "review": [
-      "TASK-037"
     ],
     "doing": [],
     "review": [],
@@ -48,7 +43,9 @@
       "TASK-031",
       "TASK-032",
       "TASK-020",
-      "TASK-035"
+      "TASK-035",
+      "TASK-037",
+      "TASK-038"
     ]
   }
 }
