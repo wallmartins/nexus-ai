@@ -9,6 +9,7 @@ import { CacheService } from '../memory/cache.service';
 import { SettingsService } from '../settings/settings.service';
 import { LoggerService } from '../observability/logger.service';
 import { LlmService } from '../llm/llm.service';
+import { ToolRegistry } from './tools/tool-registry.service';
 import { SynthesisInput } from './agent.types';
 import { RetrievedChunk } from '../rag/rag.types';
 
@@ -62,6 +63,10 @@ describe('SynthesisWorkflow', () => {
     generate: jest.fn(),
   };
 
+  const toolRegistry = {
+    invoke: jest.fn(),
+  };
+
   beforeEach(async () => {
     jest.clearAllMocks();
 
@@ -77,6 +82,7 @@ describe('SynthesisWorkflow', () => {
         { provide: SettingsService, useValue: settingsService },
         { provide: LoggerService, useValue: loggerService },
         { provide: LlmService, useValue: llmService },
+        { provide: ToolRegistry, useValue: toolRegistry },
       ],
     }).compile();
 
@@ -94,25 +100,35 @@ describe('SynthesisWorkflow', () => {
         correlationId: 'corr-123',
       };
 
+      toolRegistry.invoke.mockImplementation((toolName: string) => {
+        if (toolName === 'calculator') {
+          return Promise.resolve({ toolName: 'calculator', output: null, error: 'Query does not look like a math expression' });
+        }
+        if (toolName === 'retrieval') {
+          return Promise.resolve({
+            toolName: 'retrieval',
+            output: [
+              {
+                chunkId: 'chunk-1',
+                documentId: 'doc-1',
+                content: 'Refunds are allowed within 30 days.',
+                index: 0,
+                metadata: {},
+                score: 0.92,
+                modelName: 'nomic-embed-text',
+              },
+            ],
+          });
+        }
+        return Promise.resolve({ toolName, output: null });
+      });
+
       decisionAgent.invoke.mockResolvedValue({
         query: input.query,
         classification: 'RAG',
         correlationId: input.correlationId,
       });
 
-      const chunks: RetrievedChunk[] = [
-        {
-          chunkId: 'chunk-1',
-          documentId: 'doc-1',
-          content: 'Refunds are allowed within 30 days.',
-          index: 0,
-          metadata: {},
-          score: 0.92,
-          modelName: 'nomic-embed-text',
-        },
-      ];
-
-      retrievalService.retrieve.mockResolvedValue(chunks);
       cacheService.get.mockResolvedValue(null);
 
       promptManager.compose.mockReturnValue({
@@ -139,7 +155,8 @@ describe('SynthesisWorkflow', () => {
       expect(result.correlationId).toBe('corr-123');
       expect(result.provider).toBe('ollama');
 
-      expect(retrievalService.retrieve).toHaveBeenCalledWith({ query: input.query });
+      expect(toolRegistry.invoke).toHaveBeenCalledWith('calculator', { query: input.query, correlationId: input.correlationId });
+      expect(toolRegistry.invoke).toHaveBeenCalledWith('retrieval', { query: input.query, correlationId: input.correlationId });
       expect(promptManager.compose).toHaveBeenCalledWith(
         'rag-synthesis',
         expect.objectContaining({
@@ -158,13 +175,21 @@ describe('SynthesisWorkflow', () => {
         correlationId: 'corr-456',
       };
 
+      toolRegistry.invoke.mockImplementation((toolName: string) => {
+        if (toolName === 'calculator') {
+          return Promise.resolve({ toolName: 'calculator', output: null, error: 'Query does not look like a math expression' });
+        }
+        if (toolName === 'retrieval') {
+          return Promise.resolve({ toolName: 'retrieval', output: [] });
+        }
+        return Promise.resolve({ toolName, output: null });
+      });
+
       decisionAgent.invoke.mockResolvedValue({
         query: input.query,
         classification: 'RAG',
         correlationId: input.correlationId,
       });
-
-      retrievalService.retrieve.mockResolvedValue([]);
 
       const result = await workflow.execute(input);
 
@@ -175,7 +200,7 @@ describe('SynthesisWorkflow', () => {
       expect(result.model).toBe('');
       expect(result.provider).toBe('');
 
-      expect(retrievalService.retrieve).toHaveBeenCalled();
+      expect(toolRegistry.invoke).toHaveBeenCalledWith('retrieval', { query: input.query, correlationId: input.correlationId });
       expect(llmService.generate).not.toHaveBeenCalled();
       expect(cacheService.set).not.toHaveBeenCalled();
     });
@@ -187,6 +212,13 @@ describe('SynthesisWorkflow', () => {
         query: 'Hello!',
         correlationId: 'corr-789',
       };
+
+      toolRegistry.invoke.mockImplementation((toolName: string) => {
+        if (toolName === 'calculator') {
+          return Promise.resolve({ toolName: 'calculator', output: null, error: 'Query does not look like a math expression' });
+        }
+        return Promise.resolve({ toolName, output: null });
+      });
 
       decisionAgent.invoke.mockResolvedValue({
         query: input.query,
@@ -214,7 +246,7 @@ describe('SynthesisWorkflow', () => {
       expect(result.classification).toBe('DIRECT');
       expect(result.content).toBe('Hello! How can I help you today?');
       expect(result.sources).toHaveLength(0);
-      expect(retrievalService.retrieve).not.toHaveBeenCalled();
+      expect(toolRegistry.invoke).not.toHaveBeenCalledWith('retrieval', expect.anything());
       expect(promptManager.compose).toHaveBeenCalledWith(
         'direct-answer',
         expect.objectContaining({ userQuery: input.query }),
@@ -229,25 +261,34 @@ describe('SynthesisWorkflow', () => {
         correlationId: 'corr-cache',
       };
 
+      toolRegistry.invoke.mockImplementation((toolName: string) => {
+        if (toolName === 'calculator') {
+          return Promise.resolve({ toolName: 'calculator', output: null, error: 'Query does not look like a math expression' });
+        }
+        if (toolName === 'retrieval') {
+          return Promise.resolve({
+            toolName: 'retrieval',
+            output: [
+              {
+                chunkId: 'chunk-1',
+                documentId: 'doc-1',
+                content: 'Refunds are allowed within 30 days.',
+                index: 0,
+                metadata: {},
+                score: 0.92,
+                modelName: 'nomic-embed-text',
+              },
+            ],
+          });
+        }
+        return Promise.resolve({ toolName, output: null });
+      });
+
       decisionAgent.invoke.mockResolvedValue({
         query: input.query,
         classification: 'RAG',
         correlationId: input.correlationId,
       });
-
-      const chunks: RetrievedChunk[] = [
-        {
-          chunkId: 'chunk-1',
-          documentId: 'doc-1',
-          content: 'Refunds are allowed within 30 days.',
-          index: 0,
-          metadata: {},
-          score: 0.92,
-          modelName: 'nomic-embed-text',
-        },
-      ];
-
-      retrievalService.retrieve.mockResolvedValue(chunks);
 
       cacheService.get.mockResolvedValue({
         content: 'Cached answer [1].',
@@ -279,6 +320,13 @@ describe('SynthesisWorkflow', () => {
         correlationId: 'corr-nocache',
         options: { useCache: false },
       };
+
+      toolRegistry.invoke.mockImplementation((toolName: string) => {
+        if (toolName === 'calculator') {
+          return Promise.resolve({ toolName: 'calculator', output: null, error: 'Query does not look like a math expression' });
+        }
+        return Promise.resolve({ toolName, output: null });
+      });
 
       decisionAgent.invoke.mockResolvedValue({
         query: input.query,
@@ -314,6 +362,13 @@ describe('SynthesisWorkflow', () => {
         correlationId: 'corr-openai',
         options: { provider: 'openai', model: 'gpt-4o' },
       };
+
+      toolRegistry.invoke.mockImplementation((toolName: string) => {
+        if (toolName === 'calculator') {
+          return Promise.resolve({ toolName: 'calculator', output: null, error: 'Query does not look like a math expression' });
+        }
+        return Promise.resolve({ toolName, output: null });
+      });
 
       decisionAgent.invoke.mockResolvedValue({
         query: input.query,
@@ -351,6 +406,13 @@ describe('SynthesisWorkflow', () => {
         sessionId: 'session-1',
         correlationId: 'corr-memory',
       };
+
+      toolRegistry.invoke.mockImplementation((toolName: string) => {
+        if (toolName === 'calculator') {
+          return Promise.resolve({ toolName: 'calculator', output: null, error: 'Query does not look like a math expression' });
+        }
+        return Promise.resolve({ toolName, output: null });
+      });
 
       memoryService.getContext.mockResolvedValue({
         messages: [
@@ -407,6 +469,13 @@ describe('SynthesisWorkflow', () => {
         correlationId: 'corr-empty',
       };
 
+      toolRegistry.invoke.mockImplementation((toolName: string) => {
+        if (toolName === 'calculator') {
+          return Promise.resolve({ toolName: 'calculator', output: null, error: 'Query does not look like a math expression' });
+        }
+        return Promise.resolve({ toolName, output: null });
+      });
+
       decisionAgent.invoke.mockResolvedValue({
         query: input.query,
         classification: 'DIRECT',
@@ -440,6 +509,13 @@ describe('SynthesisWorkflow', () => {
         query: 'Hello!',
         correlationId: 'corr-log',
       };
+
+      toolRegistry.invoke.mockImplementation((toolName: string) => {
+        if (toolName === 'calculator') {
+          return Promise.resolve({ toolName: 'calculator', output: null, error: 'Query does not look like a math expression' });
+        }
+        return Promise.resolve({ toolName, output: null });
+      });
 
       decisionAgent.invoke.mockResolvedValue({
         query: input.query,
@@ -476,6 +552,72 @@ describe('SynthesisWorkflow', () => {
         'Synthesis workflow completed',
         expect.objectContaining({ correlationId: 'corr-log', service: 'synthesis-workflow', eventType: 'workflow.complete', step: 'format' }),
       );
+    });
+  });
+
+  describe('Calculator tool short-circuit', () => {
+    it('returns calculator result directly for math expressions', async () => {
+      const input: SynthesisInput = {
+        query: '42 * 3 + 8',
+        correlationId: 'corr-calc',
+      };
+
+      toolRegistry.invoke.mockImplementation((toolName: string) => {
+        if (toolName === 'calculator') {
+          return Promise.resolve({ toolName: 'calculator', output: 134 });
+        }
+        return Promise.resolve({ toolName, output: null });
+      });
+
+      const result = await workflow.execute(input);
+
+      expect(result.content).toBe('134');
+      expect(result.classification).toBe('DIRECT');
+      expect(result.sources).toHaveLength(0);
+      expect(result.tokens).toEqual({ input: 0, output: 0 });
+      expect(decisionAgent.invoke).not.toHaveBeenCalled();
+      expect(llmService.generate).not.toHaveBeenCalled();
+    });
+
+    it('falls through to normal flow when calculator returns error', async () => {
+      const input: SynthesisInput = {
+        query: '2 + + + 3',
+        correlationId: 'corr-calc-err',
+      };
+
+      toolRegistry.invoke.mockImplementation((toolName: string) => {
+        if (toolName === 'calculator') {
+          return Promise.resolve({ toolName: 'calculator', output: null, error: 'Expected number' });
+        }
+        return Promise.resolve({ toolName, output: null });
+      });
+
+      decisionAgent.invoke.mockResolvedValue({
+        query: input.query,
+        classification: 'DIRECT',
+        correlationId: input.correlationId,
+      });
+
+      cacheService.get.mockResolvedValue(null);
+
+      promptManager.compose.mockReturnValue({
+        system: 'You are a helpful assistant.',
+        user: '2 + + + 3',
+      });
+
+      llmService.generate.mockResolvedValue({
+        content: 'That expression is invalid.',
+        model: 'llama3',
+        provider: 'ollama',
+        tokens: { input: 10, output: 5 },
+        latencyMs: 200,
+      });
+
+      const result = await workflow.execute(input);
+
+      expect(result.content).toBe('That expression is invalid.');
+      expect(decisionAgent.invoke).toHaveBeenCalled();
+      expect(llmService.generate).toHaveBeenCalled();
     });
   });
 });

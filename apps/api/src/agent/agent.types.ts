@@ -6,6 +6,10 @@ export const StateAnnotation = Annotation.Root({
   query: Annotation<string>,
   classification: Annotation<QueryClassification | null>,
   correlationId: Annotation<string>,
+  toolOutputs: Annotation<Record<string, unknown>>({
+    value: (a, b) => ({ ...a, ...b }),
+    default: () => ({}),
+  }),
 });
 
 export type AgentState = typeof StateAnnotation.State;
