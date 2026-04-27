@@ -99,3 +99,43 @@ export async function updateSettings(
     body: JSON.stringify(dto),
   });
 }
+
+export type DocumentItem = {
+  id: string;
+  originalName: string;
+  status: string;
+  sizeBytes: number;
+  createdAt: string;
+};
+
+export async function listDocuments(): Promise<DocumentItem[]> {
+  return fetchJson<DocumentItem[]>(`${API_BASE}/documents`);
+}
+
+export async function uploadDocument(file: File): Promise<DocumentItem> {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await fetch(`${API_BASE}/documents`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.message || `HTTP ${res.status}`);
+  }
+
+  return res.json() as Promise<DocumentItem>;
+}
+
+export async function deleteDocument(id: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/documents/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.message || `HTTP ${res.status}`);
+  }
+}
