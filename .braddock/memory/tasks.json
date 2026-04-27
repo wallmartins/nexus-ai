@@ -491,7 +491,7 @@
       "epic": "EPIC-004",
       "story": "STORY-008",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-020", "TASK-022", "TASK-023"],
       "definition_of_done": "`POST /api/v1/chat` accepts message, optional sessionId, and options. Orchestrates decision agent, retrieval, synthesis, memory, and cache. Returns answer with sources, latencyMs, tokens, and correlationId. Handles errors with structured responses. Integration tests pass."
     },
@@ -511,7 +511,7 @@
       "epic": "EPIC-009",
       "story": "STORY-015",
       "owner": "frontend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-003", "TASK-035"],
       "definition_of_done": "`/chat` page supports message input and streaming assistant responses. Inline citation markers `[1]` rendered as clickable buttons. Expandable sources panel shows chunk previews. Multi-turn conversations retain context. Accessible focus states and keyboard navigation."
     },
