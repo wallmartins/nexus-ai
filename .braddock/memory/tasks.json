@@ -311,7 +311,7 @@
       "epic": "EPIC-003",
       "story": "STORY-006",
       "owner": "backend-senior",
-      "status": "doing",
+      "status": "review",
       "dependencies": ["TASK-014"],
       "definition_of_done": "`PromptManager` loads versioned TypeScript prompt assets from `src/prompts/`. Composes system, user, and context prompts. `GuardrailService` rejects empty or oversized input with HTTP 400. Validates LLM output against JSON schema; retries once or returns structured error on failure."
     },
