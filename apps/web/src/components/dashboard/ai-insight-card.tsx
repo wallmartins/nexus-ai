@@ -3,7 +3,9 @@
 import { InsightMiniChart } from './token-chart';
 import { Sparkles } from 'lucide-react';
 
-export function AiInsightCard() {
+export function AiInsightCard({ score }: { score?: number }) {
+  const hasScore = score !== undefined;
+
   return (
     <div className="relative flex h-full flex-col overflow-hidden rounded-lg border border-border-subtle bg-surface-1">
       {/* Purple gradient background */}
@@ -54,10 +56,17 @@ export function AiInsightCard() {
           </span>
         </div>
 
-        <div className="mb-1">
-          <span className="text-5xl font-semibold tracking-tight text-text-primary">78%</span>
-          <p className="mt-1 text-sm text-text-muted">Overall system score</p>
-        </div>
+        {hasScore ? (
+          <div className="mb-1">
+            <span className="text-5xl font-semibold tracking-tight text-text-primary">{score.toFixed(0)}%</span>
+            <p className="mt-1 text-sm text-text-muted">Overall system score</p>
+          </div>
+        ) : (
+          <div className="mb-1">
+            <span className="text-5xl font-semibold tracking-tight text-text-muted">—</span>
+            <p className="mt-1 text-sm text-text-muted">Overall system score</p>
+          </div>
+        )}
 
         <div className="mt-2 flex-1">
           <InsightMiniChart />
@@ -68,7 +77,7 @@ export function AiInsightCard() {
             <div className="h-2 w-2 rounded-full bg-brand-purple" />
           </div>
           <p className="text-xs leading-relaxed text-text-secondary">
-            Grounding is trending up (+3%). Consider re-running eval-dataset v3 against gpt-4o-mini to validate.
+            Insights will appear here once evaluation data is available.
           </p>
         </div>
       </div>

@@ -268,6 +268,16 @@ Used Playwright to open `nexus-rag.html` reference design, captured screenshots 
 - Toggle pill groups: Strategy (Semantic/Fixed/Sentence), Top-K (3/5/10), MMR (Off/On)
 - Left sidebar with icons for all settings sections
 
+### Mock Data Removal
+- Cleared `mockConversations` from chat sidebar — shows "No conversations yet" empty state
+- Cleared `TIMELINE_EVENTS` from timeline card — shows "No recent activity" empty state
+- Cleared `LEGEND` and `CHART_DATA` from knowledge base card — shows "No data source breakdown available" empty state
+- Removed hardcoded "78%" from AI Insight card — now accepts optional `score` prop, renders "—" when no score available
+- Removed hardcoded donut chart values (62%/28%/10%) from error-rate-chart — now accepts `data` prop, renders "No data" empty state
+- Removed hardcoded file names from source panel — displays truncated document/chunk IDs from real `ChatSource` data
+- Removed hardcoded route classification from source panel — generic "Workflow" label with step chain
+- Removed hardcoded status pills from dashboard (v0.4, llama3:8b, 2,847 chunks) — replaced with generic operational status
+
 ### Verification
 - **332 API tests pass** (no regressions)
 - **Frontend build passes** — all 7 routes generate successfully
@@ -278,4 +288,4 @@ Used Playwright to open `nexus-rag.html` reference design, captured screenshots 
 
 ## Suggested next step
 
-Review/merge TASK-051 changes, then continue with post-MVP backlog. Priority: rate limiting → vector index → E2E tests → cache indicator → Swagger → Redis graceful degradation.
+TASK-051 is complete. Continue with post-MVP backlog. Priority: rate limiting → vector index → E2E tests → cache indicator → Swagger → Redis graceful degradation.

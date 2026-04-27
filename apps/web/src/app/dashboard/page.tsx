@@ -100,17 +100,14 @@ export default function DashboardPage() {
         {/* Status pills */}
         <div className="flex flex-wrap items-center gap-2">
           <span className="rounded-md border border-border-subtle bg-surface-1 px-2.5 py-1 text-[11px] font-medium text-text-muted">
-            Nexus AI · v0.4
+            Nexus AI
           </span>
           <span className="rounded-md border border-border-subtle bg-surface-1 px-2.5 py-1 text-[11px] font-medium text-text-muted">
-            Ollama · llama3:8b
-          </span>
-          <span className="rounded-md border border-border-subtle bg-surface-1 px-2.5 py-1 text-[11px] font-medium text-text-muted">
-            pgvector · 2,847 chunks
+            Local-first RAG
           </span>
           <span className="inline-flex items-center gap-1.5 rounded-md border border-border-subtle bg-surface-1 px-2.5 py-1 text-[11px] font-medium text-status-success">
             <span className="inline-block h-1.5 w-1.5 rounded-full bg-status-success" />
-            All queues healthy
+            System operational
           </span>
         </div>
       </div>

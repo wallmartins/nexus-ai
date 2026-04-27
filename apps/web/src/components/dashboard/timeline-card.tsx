@@ -2,37 +2,16 @@
 
 import { ArrowRight } from 'lucide-react';
 
-const TIMELINE_EVENTS = [
-  {
-    time: '07:48',
-    title: 'Ingestion · invoices.pdf',
-    avatar: 'I',
-    color: 'bg-orange-500',
-    featured: false,
-  },
-  {
-    time: '08:32',
-    title: 'Re-embed chunks',
-    avatar: 'R',
-    color: 'bg-brand-purple',
-    featured: false,
-  },
-  {
-    time: '09:14',
-    title: 'RAG query · pricing',
-    avatar: 'RQ',
-    color: 'bg-brand-lime',
-    textColor: 'text-bg-canvas',
-    featured: true,
-  },
-  {
-    time: '10:52',
-    title: 'Eval run · v3',
-    avatar: 'E',
-    color: 'bg-blue-500',
-    featured: false,
-  },
-];
+type TimelineEvent = {
+  time: string;
+  title: string;
+  avatar: string;
+  color: string;
+  textColor?: string;
+  featured: boolean;
+};
+
+const TIMELINE_EVENTS: TimelineEvent[] = [];
 
 const HOURS = ['07:00', '08:00', '09:00', '10:00', '11:00', '12:00'];
 
@@ -72,30 +51,36 @@ export function TimelineCard() {
       </div>
 
       {/* Event cards */}
-      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
-        {TIMELINE_EVENTS.map((event) => (
-          <div
-            key={event.time}
-            className={`flex flex-col gap-2 rounded-lg border p-3 ${
-              event.featured
-                ? 'border-brand-lime/30 bg-brand-lime/10'
-                : 'border-border-subtle bg-surface-2/50'
-            }`}
-          >
-            <span className="text-[10px] text-text-muted">{event.time}</span>
-            <div className="flex items-center gap-2">
-              <div
-                className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold ${event.color} ${
-                  event.textColor ?? 'text-white'
-                }`}
-              >
-                {event.avatar}
+      {TIMELINE_EVENTS.length === 0 ? (
+        <div className="flex flex-1 items-center justify-center rounded-lg border border-dashed border-border-subtle">
+          <p className="text-xs text-text-muted">No recent activity</p>
+        </div>
+      ) : (
+        <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+          {TIMELINE_EVENTS.map((event) => (
+            <div
+              key={event.time}
+              className={`flex flex-col gap-2 rounded-lg border p-3 ${
+                event.featured
+                  ? 'border-brand-lime/30 bg-brand-lime/10'
+                  : 'border-border-subtle bg-surface-2/50'
+              }`}
+            >
+              <span className="text-[10px] text-text-muted">{event.time}</span>
+              <div className="flex items-center gap-2">
+                <div
+                  className={`flex h-6 w-6 items-center justify-center rounded-full text-[10px] font-bold ${event.color} ${
+                    event.textColor ?? 'text-white'
+                  }`}
+                >
+                  {event.avatar}
+                </div>
+                <span className="text-xs font-medium text-text-secondary">{event.title}</span>
               </div>
-              <span className="text-xs font-medium text-text-secondary">{event.title}</span>
             </div>
-          </div>
-        ))}
-      </div>
+          ))}
+        </div>
+      )}
     </div>
   );
 }

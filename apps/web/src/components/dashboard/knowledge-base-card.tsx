@@ -1,12 +1,16 @@
 'use client';
 
-import { KnowledgeBaseChart } from './error-rate-chart';
+import { KnowledgeBaseChart, type KnowledgeBaseDataItem } from './error-rate-chart';
 
-const LEGEND = [
-  { label: 'Unstructured (PDF, MD)', value: '62%', color: 'bg-brand-lime' },
-  { label: 'Structured (JSON, CSV)', value: '28%', color: 'bg-brand-purple' },
-  { label: 'Web / URL', value: '10%', color: 'bg-surface-3' },
-];
+type LegendItem = {
+  label: string;
+  value: string;
+  color: string;
+};
+
+const LEGEND: LegendItem[] = [];
+
+const CHART_DATA: KnowledgeBaseDataItem[] = [];
 
 export function KnowledgeBaseCard() {
   return (
@@ -19,19 +23,24 @@ export function KnowledgeBaseCard() {
       </div>
 
       <div className="flex flex-1 flex-col items-center justify-center gap-4 sm:flex-row">
-        <KnowledgeBaseChart />
-
-        <div className="flex w-full flex-col gap-2 sm:w-auto">
-          {LEGEND.map((item) => (
-            <div key={item.label} className="flex items-center justify-between gap-6 text-sm">
-              <div className="flex items-center gap-2">
-                <span className={`inline-block h-2 w-2 rounded-full ${item.color}`} />
-                <span className="text-text-secondary">{item.label}</span>
-              </div>
-              <span className="font-medium text-text-primary">{item.value}</span>
+        {LEGEND.length === 0 ? (
+          <p className="text-xs text-text-muted">No data source breakdown available</p>
+        ) : (
+          <>
+            <KnowledgeBaseChart data={CHART_DATA} />
+            <div className="flex w-full flex-col gap-2 sm:w-auto">
+              {LEGEND.map((item) => (
+                <div key={item.label} className="flex items-center justify-between gap-6 text-sm">
+                  <div className="flex items-center gap-2">
+                    <span className={`inline-block h-2 w-2 rounded-full ${item.color}`} />
+                    <span className="text-text-secondary">{item.label}</span>
+                  </div>
+                  <span className="font-medium text-text-primary">{item.value}</span>
+                </div>
+              ))}
             </div>
-          ))}
-        </div>
+          </>
+        )}
       </div>
     </div>
   );

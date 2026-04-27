@@ -29,13 +29,7 @@ type Conversation = {
   dateGroup: 'TODAY' | 'YESTERDAY';
 };
 
-const mockConversations: Conversation[] = [
-  { id: '1', title: 'Pricing model for enterprise tier', turnCount: 8, provider: 'Ollama', dateGroup: 'TODAY' },
-  { id: '2', title: 'Ingestion limits in MVP', turnCount: 3, provider: 'GPT-4o', dateGroup: 'TODAY' },
-  { id: '3', title: 'Guardrails policy review', turnCount: 12, provider: 'Claude 3.5', dateGroup: 'YESTERDAY' },
-  { id: '4', title: 'What does chunking size do?', turnCount: 5, provider: 'Ollama', dateGroup: 'YESTERDAY' },
-  { id: '5', title: 'Eval metrics explained', turnCount: 2, provider: 'Ollama', dateGroup: 'YESTERDAY' },
-];
+const conversations: Conversation[] = [];
 
 const quickActions = [
   { label: 'Cite every answer', Icon: Quote, color: 'text-brand-purple-light', bg: 'bg-brand-purple/15' },
@@ -49,7 +43,7 @@ export function ChatInterface() {
   const [sessionId, setSessionId] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
   const [activeSources, setActiveSources] = useState<ChatSource[]>([]);
-  const [activeConversationId, setActiveConversationId] = useState<string>('1');
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef(false);
 
@@ -156,35 +150,44 @@ export function ChatInterface() {
           </div>
         </div>
         <div className="flex-1 overflow-y-auto px-2">
-          {(['TODAY', 'YESTERDAY'] as const).map((group) => (
-            <div key={group} className="py-2">
-              <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-                {group}
-              </div>
-              {mockConversations
-                .filter((c) => c.dateGroup === group)
-                .map((conv) => (
-                  <button
-                    key={conv.id}
-                    type="button"
-                    onClick={() => setActiveConversationId(conv.id)}
-                    className={cn(
-                      'w-full rounded-lg px-3 py-2 text-left transition-colors',
-                      activeConversationId === conv.id
-                        ? 'bg-surface-1'
-                        : 'hover:bg-surface-1/50'
-                    )}
-                  >
-                    <div className="text-sm font-medium text-text-primary">
-                      {conv.title}
-                    </div>
-                    <div className="text-xs text-text-muted">
-                      {conv.turnCount} turns · {conv.provider}
-                    </div>
-                  </button>
-                ))}
+          {conversations.length === 0 ? (
+            <div className="px-3 py-8 text-center">
+              <p className="text-xs text-text-muted">No conversations yet</p>
+              <p className="mt-1 text-[10px] text-text-muted">Start a new chat to see history here</p>
             </div>
-          ))}
+          ) : (
+            (['TODAY', 'YESTERDAY'] as const).map((group) => {
+              const groupConversations = conversations.filter((c) => c.dateGroup === group);
+              if (groupConversations.length === 0) return null;
+              return (
+                <div key={group} className="py-2">
+                  <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+                    {group}
+                  </div>
+                  {groupConversations.map((conv) => (
+                    <button
+                      key={conv.id}
+                      type="button"
+                      onClick={() => setActiveConversationId(conv.id)}
+                      className={cn(
+                        'w-full rounded-lg px-3 py-2 text-left transition-colors',
+                        activeConversationId === conv.id
+                          ? 'bg-surface-1'
+                          : 'hover:bg-surface-1/50'
+                      )}
+                    >
+                      <div className="text-sm font-medium text-text-primary">
+                        {conv.title}
+                      </div>
+                      <div className="text-xs text-text-muted">
+                        {conv.turnCount} turns · {conv.provider}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              );
+            })
+          )}
         </div>
       </div>
 

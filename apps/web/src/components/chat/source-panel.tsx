@@ -8,30 +8,16 @@ type SourcePanelProps = {
   sources: ChatSource[];
 };
 
-function getSourceMeta(index: number, source: ChatSource) {
-  const names = [
-    'pricing-v2.pdf',
-    'enterprise-contract.md',
-    'sla-guidelines.md',
-    'roadmap-q2.pdf',
-    'deployment-guide.pdf',
-    'api-reference.md',
-  ];
-  const name = names[index % names.length];
-  const type = name.endsWith('.pdf') ? 'pdf' : name.endsWith('.md') ? 'md' : 'other';
-  const hash = source.chunkId.split('').reduce((a, b) => a + b.charCodeAt(0), 0);
-  const chunkNum = (hash % 20) + 1;
-  const totalChunks = 28;
-  const agoOptions = ['2d ago', '5d ago', '1w ago', '3d ago'];
-  const updatedAgo = agoOptions[index % agoOptions.length];
-  return { name, type, chunkNum, totalChunks, updatedAgo };
-}
-
 const typeStyles: Record<string, { iconColor: string; bg: string }> = {
   pdf: { iconColor: 'text-orange-400', bg: 'bg-orange-400/15' },
   md: { iconColor: 'text-brand-purple-light', bg: 'bg-brand-purple/15' },
   other: { iconColor: 'text-text-secondary', bg: 'bg-surface-3' },
 };
+
+function getDocType(documentId: string): string {
+  // Simple heuristic based on common patterns; real implementation would use document metadata
+  return 'other';
+}
 
 export function SourcePanel({ sources }: SourcePanelProps) {
   return (
@@ -63,8 +49,8 @@ export function SourcePanel({ sources }: SourcePanelProps) {
       <div className="flex-1 overflow-y-auto px-4 py-2">
         <div className="flex flex-col gap-3">
           {sources.map((source, index) => {
-            const meta = getSourceMeta(index, source);
-            const styles = typeStyles[meta.type] ?? typeStyles.other;
+            const docType = getDocType(source.documentId);
+            const styles = typeStyles[docType] ?? typeStyles.other;
             const scorePercent = Math.round(source.score * 100);
 
             return (
@@ -87,11 +73,11 @@ export function SourcePanel({ sources }: SourcePanelProps) {
                         [{index + 1}]
                       </span>
                       <span className="truncate text-xs font-semibold text-text-primary">
-                        {meta.name}
+                        {source.documentId.slice(0, 8)}
                       </span>
                     </div>
                     <div className="text-[10px] text-text-muted">
-                      Chunk {meta.chunkNum}/{meta.totalChunks} · updated {meta.updatedAgo}
+                      Chunk {source.chunkId.slice(0, 8)}
                     </div>
                   </div>
                 </div>
@@ -122,12 +108,10 @@ export function SourcePanel({ sources }: SourcePanelProps) {
       <div className="border-t border-border-subtle px-4 py-4">
         <div className="rounded-xl border border-border-subtle bg-surface-1 p-3">
           <div className="mb-1 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
-            Route decision
+            Workflow
           </div>
           <p className="text-xs leading-relaxed text-text-secondary">
-            Agent classified query as{' '}
-            <span className="font-semibold text-brand-lime">RAG</span>. Workflow:
-            retrieve → synthesize → validate → format.
+            retrieve → synthesize → validate → format
           </p>
         </div>
       </div>
