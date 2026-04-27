@@ -11,6 +11,7 @@ export const updateSettingsSchema = z.object({
   useMMR: z.boolean().optional(),
   sessionMemoryDepth: z.number().int().min(1).max(50).optional(),
   cacheTtlSeconds: z.number().int().min(60).max(86400).optional(),
+  maxInputLength: z.number().int().min(100).max(10000).optional(),
 });
 
 export type UpdateSettingsDto = z.infer<typeof updateSettingsSchema>;
@@ -25,4 +26,5 @@ export interface AppSettings {
   useMMR: boolean;
   sessionMemoryDepth: number;
   cacheTtlSeconds: number;
+  maxInputLength: number;
 }

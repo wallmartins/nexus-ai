@@ -1,10 +1,11 @@
 # Status
 
 ## Current state
+
 TASK-017 (Prompt manager and guardrails service) in review. PR #22 opened.
-TASK-019 (LangGraph setup and decision agent) in review. PR #23 opened.
 
 ## Last update
+
 - Vision document read and validated.
 - PRD written to `.braddock/memory/prd.md`.
 - Architecture written to `.braddock/memory/architecture.md`.
@@ -33,7 +34,7 @@ TASK-019 (LangGraph setup and decision agent) in review. PR #23 opened.
 - **TASK-015 completed**: OpenAI provider implementation. `OpenAiProvider` implements `ILLMProvider`, calls OpenAI chat completions API with JSON mode support. API key read from `OPENAI_API_KEY` env. Returns parsed response with input/output token counts and latency. 115 total tests pass. PR #20 merged.
 - **TASK-016 completed**: Anthropic provider implementation. `AnthropicProvider` implements `ILLMProvider`, calls Anthropic Messages API. API key read from `ANTHROPIC_API_KEY` env. Returns parsed response with input/output token counts and latency. 123 total tests pass. PR #21 merged.
 - **TASK-017 in review**: Prompt manager and guardrails service. `PromptManager` loads versioned TypeScript prompt assets from `src/llm/prompts/`. `GuardrailService` validates input (empty/oversized) with HTTP 400 and output against Zod schemas with one retry. `maxInputLength` added to settings. 150 total tests pass. PR #22 opened.
-- **TASK-019 in review**: LangGraph setup and decision agent. `@langchain/core` and `@langchain/langgraph` installed. `DecisionAgent` uses a 2-node state graph (classify -> route) to classify queries as DIRECT or RAG. Classification decisions logged with correlation ID. Falls back to RAG on errors. 158 total tests pass. PR #23 opened.
 
 ## Suggested next step
-Review/merge PRs for TASK-017 and TASK-019, then run `/implement-task` for the next eligible task.
+
+Review/merge PR for TASK-017, then run `/implement-task` for the next eligible task.
