@@ -461,7 +461,7 @@
       "epic": "EPIC-008",
       "story": "STORY-013",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "doing",
       "dependencies": ["TASK-031", "TASK-010", "TASK-011"],
       "definition_of_done": "Workers consume ingestion jobs (parse + chunk) and embedding jobs. Concurrency enforced: ingestion=1, embedding=2. Retry with exponential backoff up to 3 attempts. Job status mirrored to `JobRecord` table."
     },
