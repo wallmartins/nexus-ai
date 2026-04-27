@@ -38,7 +38,8 @@ TASK-032 (Ingestion and embedding workers) in review. PR #25 opened.
 - **TASK-023 completed**: Response cache service. `CacheService` generates deterministic SHA-256 cache keys from query + provider + model + ordered chunk IDs. Stores responses in Redis with configurable TTL (default 1h). Cache hits return `cached: true`. Auto-invalidates corrupted entries. 142 total tests pass. PR #24 merged.
 - **TASK-032 completed**: Ingestion and embedding workers. `IngestionWorker` (concurrency=1) parses documents, chunks text, stores chunks in DB, and enqueues embedding jobs. `EmbeddingWorker` (concurrency=2) generates embeddings via `EmbeddingsService` and stores vectors in pgvector. `JobRecordService` mirrors BullMQ job status to `JobRecord` table. 181 total tests pass. PR #25 merged.
 - **TASK-020 completed**: Synthesis workflow. `SynthesisWorkflow` orchestrates classify → retrieve → synthesize → validate → format. Supports RAG and DIRECT paths, zero-chunk guard, response caching, session memory injection, and provider/model overrides. 191 total tests pass. PR #26 merged.
+- **TASK-035 in review**: Chat API endpoint. `POST /api/v1/chat` accepts message, optional sessionId, and options. `ChatService` orchestrates `SynthesisWorkflow`, persists messages to PostgreSQL, updates Redis session memory, and auto-creates sessions. `GET /api/v1/chat/sessions/:sessionId/messages` returns ordered history. Input guardrails via `GuardrailService`. 204 total tests pass. PR #27 opened.
 
 ## Suggested next step
 
-TASK-035 (Chat API endpoint) is the next highest-impact task on the critical path. Dependencies (TASK-020, TASK-022, TASK-023) are all satisfied.
+Review/merge PR #27 for TASK-035, then select the next eligible task from the critical path when instructed.
