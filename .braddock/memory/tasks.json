@@ -301,7 +301,7 @@
       "epic": "EPIC-003",
       "story": "STORY-005",
       "owner": "backend-senior",
-      "status": "doing",
+      "status": "review",
       "dependencies": ["TASK-014"],
       "definition_of_done": "`AnthropicProvider` implements `ILLMProvider`. Calls Messages API. API key read exclusively from env. Returns parsed response with token counts. Integration test verifies end-to-end call."
     },
