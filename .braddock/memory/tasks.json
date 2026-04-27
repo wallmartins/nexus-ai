@@ -411,7 +411,7 @@
       "epic": "EPIC-006",
       "story": "STORY-011",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-026"],
       "definition_of_done": "`GET /api/v1/observability/logs` returns filtered log entries. `GET /api/v1/observability/metrics` returns aggregated metrics with time range and granularity. Response shapes match API spec. Integration tests pass."
     },
