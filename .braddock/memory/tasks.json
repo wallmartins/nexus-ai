@@ -421,7 +421,7 @@
       "epic": "EPIC-007",
       "story": "STORY-012",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-002"],
       "definition_of_done": "Static dataset file committed with 20-50 domain-relevant questions, expected answers, and reference chunk info. `DatasetLoader` parses and validates structure. Dataset version tracked via filename or git hash."
     },
