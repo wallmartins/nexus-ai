@@ -211,6 +211,71 @@ The identified gaps are real but do not block the MVP's primary value propositio
 - **TASK-018 completed**: Token tracking and latency recording. `LlmService` wraps all provider calls with consistent observability: logs prompt preview before dispatch, response preview + tokens + latency after receipt, and errors with correlation IDs. `SynthesisWorkflow` now delegates to `LlmService` instead of calling providers directly. 300 total tests pass. PR #40 merged.
 - **TASK-021 completed**: Tool registry with retrieval and calculator tools. `ToolRegistry` registers `RetrievalTool` (wraps `RetrievalService`) and `CalculatorTool` (safe recursive-descent math parser without eval). Tools invoked dynamically: `SynthesisWorkflow` tries calculator first for math expressions, then routes RAG queries through retrieval tool. `AgentState` extended with `toolOutputs` using LangGraph annotation reducer. 32 new tests. 332 total tests pass. PR #41 merged.
 
+## Post-MVP Tasks Created
+
+11 new tasks added to address delivery review gaps and UI improvements:
+
+- **TASK-041** (todo): Rate limiting with `@nestjs/throttler`
+- **TASK-042** (todo): pgvector HNSW vector index
+- **TASK-043** (todo): E2E tests with Playwright
+- **TASK-044** (todo): Cache indicator in chat UI
+- **TASK-045** (todo): Swagger/OpenAPI auto-generated docs
+- **TASK-046** (todo): Redis graceful degradation
+- **TASK-047** (todo): Chat comparison mode
+- **TASK-048** (todo): Dockerfile for backend deployment
+- **TASK-049** (todo): Align frontend state management with spec (Zustand + React Query)
+- **TASK-050** (todo): Embedding model selector in settings UI
+- **TASK-051** (review): Pixel-perfect UI improvements from reference design
+
+---
+
+## TASK-051 — Pixel-Perfect UI Improvements (In Review)
+
+### What Was Implemented
+
+Used Playwright to open `nexus-rag.html` reference design, captured screenshots of all 7 screens (overview, chat, documents, agents, evaluations, observability, settings) plus mobile variants. Analyzed layout, typography, colors, spacing, and component shapes against the reference.
+
+#### Dashboard / Overview Page
+- Added "System overview" pill with sparkle icon
+- Large mixed-weight headline: "Answers you can trust, grounded by real documents."
+- Status pills row: version, provider, chunks, queue health
+- 4 metric cards: first is lime featured (Grounding score), others are dark with delta chips
+- Combined latency/token bar chart with rounded bars and dual colors
+- AI Insight card with purple gradient background and star particles
+- Today's timeline with colored event cards
+- Data sources donut chart with legend
+
+#### Chat Page
+- Three-panel layout: conversation sidebar, main chat, sources panel
+- Left sidebar: "+ New conversation" lime button, search bar, TODAY/YESTERDAY sections, conversation list
+- Agent messages: purple orb avatar, "Nexus Agent · RAG route" label, inline citation markers `[N]`, metrics bar (Grounded score, latency, tokens), action buttons
+- User messages: lime green rounded bubbles, right-aligned
+- Quick action chips: "Cite every answer", "Show retrieval sources", "Explain last failure", "Generate eval cases"
+- Redesigned input bar with route metadata footer
+- Sources panel: colored file icons, similarity bars, route decision box
+
+#### Documents Page
+- "Knowledge base" pill, large headline, Filter/Upload action buttons
+- 4 metric cards (Documents, Chunks, Embedding queue, Storage)
+- Two-panel middle: drop zone with browse/URL buttons + ingestion pipeline timeline (5 steps with colored icons)
+- Redesigned document list: colored file icons, chunk counts, timestamps, status badges (Indexed/Processing/Failed), progress bars
+- Filter pills (All/Completed/Processing/Failed)
+
+#### Settings Page
+- "Providers" pill, "LLM & embedding provider" headline
+- Provider cards with colored icons, model names, status indicators, pricing
+- Chunking parameters card with side-by-side sliders
+- Toggle pill groups: Strategy (Semantic/Fixed/Sentence), Top-K (3/5/10), MMR (Off/On)
+- Left sidebar with icons for all settings sections
+
+### Verification
+- **332 API tests pass** (no regressions)
+- **Frontend build passes** — all 7 routes generate successfully
+- **TypeScript strict mode** compiles cleanly
+- **Playwright** used to capture reference screenshots for comparison
+
+---
+
 ## Suggested next step
 
-Tag `v0.1.0-mvp` and begin post-MVP backlog. Priority: rate limiting → vector index → E2E tests → cache indicator → Swagger → Redis graceful degradation.
+Review/merge TASK-051 changes, then continue with post-MVP backlog. Priority: rate limiting → vector index → E2E tests → cache indicator → Swagger → Redis graceful degradation.

@@ -321,7 +321,7 @@
       "epic": "EPIC-003",
       "story": "STORY-006",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-014", "TASK-024"],
       "definition_of_done": "Every LLM call records input/output tokens and latencyMs. Data stored in Message table and observability logs. Token counts accurate per provider. Latency measured from dispatch to parsed response. Verified via unit tests."
     },
@@ -351,7 +351,7 @@
       "epic": "EPIC-004",
       "story": "STORY-007",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-019", "TASK-012"],
       "definition_of_done": "`ToolRegistry` registers `RetrievalTool` (wraps vector search) and `CalculatorTool` (math evaluation). Tools invoked dynamically based on workflow state. Outputs merged back into LangGraph state. Unit tests cover tool invocation and error handling."
     },
@@ -521,9 +521,119 @@
       "epic": "EPIC-009",
       "story": "STORY-016",
       "owner": "frontend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-003", "TASK-030"],
       "definition_of_done": "`/evaluations` lists past runs with status and summary. 'New Run' modal selects models and triggers evaluation. Live progress indicator during run. Results page shows scorecards (relevance, consistency, grounding) and side-by-side comparison table. Drill-down to per-question details."
+    },
+    {
+      "id": "TASK-041",
+      "title": "Rate limiting with @nestjs/throttler",
+      "epic": "EPIC-001",
+      "story": "STORY-002",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-002", "TASK-035"],
+      "definition_of_done": "`@nestjs/throttler` installed and configured. Rate limits applied to `POST /api/v1/chat` (100/min per IP) and `POST /api/v1/documents` (20/min per IP). Returns 429 with `Retry-After` header. Configurable via env vars. Tests verify limit enforcement."
+    },
+    {
+      "id": "TASK-042",
+      "title": "pgvector HNSW vector index",
+      "epic": "EPIC-002",
+      "story": "STORY-004",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-008", "TASK-012"],
+      "definition_of_done": "Prisma migration creates HNSW index on `embeddings.vector` for cosine similarity. Index is conditional on pgvector >= 0.5.0. Query planner uses index for top-k retrieval. Benchmark shows p95 < 200ms at 10k chunks."
+    },
+    {
+      "id": "TASK-043",
+      "title": "E2E tests with Playwright",
+      "epic": "EPIC-001",
+      "story": "STORY-001",
+      "owner": "frontend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-003", "TASK-037", "TASK-036"],
+      "definition_of_done": "Playwright E2E tests cover 3 critical journeys: (1) upload PDF and ask grounded question, (2) run evaluation and view results, (3) check observability dashboard for logged request. Tests run in CI against local stack."
+    },
+    {
+      "id": "TASK-044",
+      "title": "Cache indicator in chat UI",
+      "epic": "EPIC-005",
+      "story": "STORY-009",
+      "owner": "frontend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-037", "TASK-023"],
+      "definition_of_done": "`SynthesisResult` and `ChatMessageResponse` include `cached: boolean` flag. Chat UI displays a subtle 'Cached' badge on assistant messages served from cache. Backend sets flag when `CacheService` returns hit."
+    },
+    {
+      "id": "TASK-045",
+      "title": "Swagger/OpenAPI auto-generated docs",
+      "epic": "EPIC-001",
+      "story": "STORY-001",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-002"],
+      "definition_of_done": "`@nestjs/swagger` installed. Swagger UI served at `/api/docs`. All controllers and DTOs annotated. Auth-free for MVP. Tags group endpoints by domain (Documents, Chat, Queues, Observability, Evaluations, Settings)."
+    },
+    {
+      "id": "TASK-046",
+      "title": "Redis graceful degradation",
+      "epic": "EPIC-005",
+      "story": "STORY-009",
+      "owner": "backend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-022", "TASK-023", "TASK-035"],
+      "definition_of_done": "If Redis is unreachable, chat continues without session memory and response cache. `MemoryService` and `CacheService` catch Redis errors, log warnings, and return empty results. No hard failures. BullMQ jobs remain queued until Redis recovers."
+    },
+    {
+      "id": "TASK-047",
+      "title": "Chat comparison mode",
+      "epic": "EPIC-009",
+      "story": "STORY-015",
+      "owner": "frontend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-037", "TASK-038"],
+      "definition_of_done": "Chat UI supports 'Compare Models' toggle. When active, two requests are sent (provider A + provider B). Responses displayed in split-pane on desktop (50/50) and stacked tabs below 1024px. Each pane shows its own citations and latency badge."
+    },
+    {
+      "id": "TASK-048",
+      "title": "Dockerfile for backend deployment",
+      "epic": "EPIC-001",
+      "story": "STORY-001",
+      "owner": "tech-lead",
+      "status": "todo",
+      "dependencies": ["TASK-002", "TASK-006"],
+      "definition_of_done": "`Dockerfile` in `apps/api/` builds NestJS app in multi-stage image (node:22-alpine). Final stage runs `node dist/main.js`. Health check endpoint used as Docker HEALTHCHECK. Image size < 200MB. `.dockerignore` excludes node_modules and build artifacts."
+    },
+    {
+      "id": "TASK-049",
+      "title": "Align frontend state management with spec",
+      "epic": "EPIC-009",
+      "story": "STORY-014",
+      "owner": "frontend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-003"],
+      "definition_of_done": "Zustand store manages global UI state (active session, settings draft, sidebar). React Query (TanStack Query) manages server state with 30s stale-time for logs and 5s for active jobs. Replaces ad-hoc fetch hooks and Context providers."
+    },
+    {
+      "id": "TASK-050",
+      "title": "Embedding model selector in settings UI",
+      "epic": "EPIC-009",
+      "story": "STORY-014",
+      "owner": "frontend-senior",
+      "status": "todo",
+      "dependencies": ["TASK-038"],
+      "definition_of_done": "Settings panel includes 'Embedding Model' section with dropdown/select for available models (nomic-embed-text, text-embedding-3-small). Selection persisted via PATCH `/api/v1/settings` and reflected in embedding generation."
+    },
+    {
+      "id": "TASK-051",
+      "title": "Pixel-perfect UI improvements from reference design",
+      "epic": "EPIC-009",
+      "story": "STORY-016",
+      "owner": "frontend-senior",
+      "status": "review",
+      "dependencies": ["TASK-037", "TASK-038", "TASK-039", "TASK-040"],
+      "definition_of_done": "Frontend UI audited against `nexus-rag.html` reference design. Typography, spacing, colors, component shapes, and layout proportions match reference within 2px tolerance. Screenshots captured with Playwright for regression testing."
     }
   ]
 }

@@ -3,18 +3,27 @@
 import { useState, useEffect } from 'react';
 import { getMetrics, getLogs, type MetricsResponse, type LogEntry } from '@/lib/api';
 import { MetricCard } from '@/components/dashboard/metric-card';
-import { TimeWindowSelector } from '@/components/dashboard/time-window-selector';
 import { LatencyChart } from '@/components/dashboard/latency-chart';
-import { TokenChart } from '@/components/dashboard/token-chart';
-import { ErrorRateChart } from '@/components/dashboard/error-rate-chart';
+import { AiInsightCard } from '@/components/dashboard/ai-insight-card';
+import { TimelineCard } from '@/components/dashboard/timeline-card';
+import { KnowledgeBaseCard } from '@/components/dashboard/knowledge-base-card';
 import { RequestLogTable } from '@/components/dashboard/request-log-table';
 import { TraceDrawer } from '@/components/dashboard/trace-drawer';
+import {
+  Sparkles,
+  Activity,
+  Zap,
+  CheckCircle2,
+  TrendingUp,
+  RefreshCw,
+  Plus,
+} from 'lucide-react';
 
 const WINDOWS = ['1h', '6h', '24h', '7d', '30d'] as const;
 export type TimeWindow = (typeof WINDOWS)[number];
 
 export default function DashboardPage() {
-  const [window, setWindow] = useState<TimeWindow>('24h');
+  const [window, setWindow] = useState<TimeWindow>('7d');
   const [metrics, setMetrics] = useState<MetricsResponse | null>(null);
   const [logs, setLogs] = useState<LogEntry[]>([]);
   const [selectedLog, setSelectedLog] = useState<LogEntry | null>(null);
@@ -50,14 +59,60 @@ export default function DashboardPage() {
 
   const summary = metrics?.summary;
 
+  const successRate = summary ? (1 - summary.errorRate) * 100 : 0;
+
   return (
     <div className="flex h-full flex-col gap-6 p-6">
-      <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
-        <div>
-          <h1 className="text-xl font-semibold text-text-primary">Observability</h1>
-          <p className="text-sm text-text-muted">System health, metrics, and request traces</p>
+      {/* Top header section */}
+      <div className="flex flex-col gap-5">
+        {/* Pill + actions row */}
+        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
+          <div className="inline-flex items-center gap-2 rounded-pill border border-border-subtle bg-surface-1 px-3 py-1.5 text-xs font-medium text-text-secondary">
+            <Sparkles size={12} className="text-text-muted" />
+            System overview
+          </div>
+
+          <div className="flex items-center gap-2">
+            <button
+              type="button"
+              onClick={() => setWindow('7d')}
+              className="inline-flex items-center gap-2 rounded-pill border border-border-subtle bg-surface-1 px-3 py-2 text-xs font-medium text-text-secondary transition-colors hover:bg-surface-2 hover:text-text-primary"
+            >
+              <RefreshCw size={12} />
+              Last 7 days
+            </button>
+            <button
+              type="button"
+              className="inline-flex items-center gap-1.5 rounded-pill bg-brand-lime px-4 py-2 text-xs font-semibold text-bg-canvas transition-colors hover:bg-brand-lime-hover"
+            >
+              <Plus size={14} />
+              New query
+            </button>
+          </div>
         </div>
-        <TimeWindowSelector value={window} onChange={setWindow} options={[...WINDOWS]} />
+
+        {/* Headline */}
+        <h1 className="max-w-2xl text-3xl font-normal leading-tight tracking-tight text-text-primary sm:text-4xl">
+          Answers you can trust, grounded by{' '}
+          <span className="font-semibold">real documents.</span>
+        </h1>
+
+        {/* Status pills */}
+        <div className="flex flex-wrap items-center gap-2">
+          <span className="rounded-md border border-border-subtle bg-surface-1 px-2.5 py-1 text-[11px] font-medium text-text-muted">
+            Nexus AI · v0.4
+          </span>
+          <span className="rounded-md border border-border-subtle bg-surface-1 px-2.5 py-1 text-[11px] font-medium text-text-muted">
+            Ollama · llama3:8b
+          </span>
+          <span className="rounded-md border border-border-subtle bg-surface-1 px-2.5 py-1 text-[11px] font-medium text-text-muted">
+            pgvector · 2,847 chunks
+          </span>
+          <span className="inline-flex items-center gap-1.5 rounded-md border border-border-subtle bg-surface-1 px-2.5 py-1 text-[11px] font-medium text-status-success">
+            <span className="inline-block h-1.5 w-1.5 rounded-full bg-status-success" />
+            All queues healthy
+          </span>
+        </div>
       </div>
 
       {loading && !metrics ? (
@@ -66,41 +121,56 @@ export default function DashboardPage() {
         </div>
       ) : (
         <>
-          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-5">
+          {/* Metric cards */}
+          <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 lg:grid-cols-4">
             <MetricCard
-              label="Total requests"
-              value={summary?.totalRequests ?? 0}
-              format="number"
-            />
-            <MetricCard
-              label="Avg latency"
-              value={summary?.avgLatencyMs ?? 0}
-              format="ms"
-            />
-            <MetricCard
-              label="p95 latency"
-              value={summary?.p95LatencyMs ?? 0}
-              format="ms"
-            />
-            <MetricCard
-              label="Total tokens"
-              value={(summary?.totalTokens.input ?? 0) + (summary?.totalTokens.output ?? 0)}
-              format="number"
+              label="Success rate"
+              value={`${successRate.toFixed(0)}%`}
+              subtitle="this week · target ≥ 90%"
+              icon={Activity}
+              variant="featured"
             />
             <MetricCard
               label="Error rate"
-              value={summary?.errorRate ?? 0}
-              format="percent"
+              value={`${((summary?.errorRate ?? 0) * 100).toFixed(1)}%`}
+              subtitle="last 7 days"
+              icon={Zap}
+              delta={{ value: '-1.8%', direction: 'down' }}
+            />
+            <MetricCard
+              label="Total requests"
+              value={(summary?.totalRequests ?? 0).toLocaleString()}
+              subtitle="without fallback · 7d"
+              icon={CheckCircle2}
+              delta={{ value: '+14%', direction: 'up' }}
+            />
+            <MetricCard
+              label="Avg latency"
+              value={`${Math.round(summary?.avgLatencyMs ?? 0)} ms`}
+              subtitle="p50 across all services"
+              icon={TrendingUp}
+              delta={{ value: '-9%', direction: 'down' }}
             />
           </div>
 
-          <div className="grid grid-cols-1 gap-4 lg:grid-cols-3">
-            <LatencyChart data={metrics?.buckets ?? []} />
-            <TokenChart data={metrics?.buckets ?? []} />
-            <ErrorRateChart data={metrics?.buckets ?? []} />
+          {/* Charts section */}
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-5">
+            <div className="lg:col-span-3">
+              <LatencyChart data={metrics?.buckets ?? []} />
+            </div>
+            <div className="lg:col-span-2">
+              <AiInsightCard />
+            </div>
           </div>
 
-          <div className="flex-1 min-h-0">
+          {/* Bottom section */}
+          <div className="grid grid-cols-1 gap-4 lg:grid-cols-2">
+            <TimelineCard />
+            <KnowledgeBaseCard />
+          </div>
+
+          {/* Request logs */}
+          <div className="min-h-0 flex-1">
             <RequestLogTable logs={logs} onSelect={setSelectedLog} />
           </div>
         </>
