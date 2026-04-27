@@ -331,7 +331,7 @@
       "epic": "EPIC-004",
       "story": "STORY-007",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-014"],
       "definition_of_done": "LangGraph installed and configured. `DecisionAgent` classifies queries as DIRECT or RAG. State graph has nodes for classification and routing. Classification logged with correlation ID. Unit tests cover both paths with sample queries."
     },
