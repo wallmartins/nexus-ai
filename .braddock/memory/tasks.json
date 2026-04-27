@@ -471,7 +471,7 @@
       "epic": "EPIC-008",
       "story": "STORY-013",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-031", "TASK-029"],
       "definition_of_done": "Evaluation worker consumes jobs with concurrency=1. Failed jobs retried up to 3 times. Exhausted retries moved to dead-letter state queryable via `/api/v1/queues/dead-letter`. Partial results preserved on failure."
     },
