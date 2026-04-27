@@ -37,8 +37,8 @@ TASK-032 (Ingestion and embedding workers) in review. PR #25 opened.
 - **TASK-019 completed**: LangGraph setup and decision agent. `@langchain/core` and `@langchain/langgraph` installed. `DecisionAgent` uses a 2-node state graph (classify -> route) to classify queries as DIRECT or RAG. Classification decisions logged with correlation ID. Falls back to RAG on errors. 158 total tests pass. PR #23 merged.
 - **TASK-023 completed**: Response cache service. `CacheService` generates deterministic SHA-256 cache keys from query + provider + model + ordered chunk IDs. Stores responses in Redis with configurable TTL (default 1h). Cache hits return `cached: true`. Auto-invalidates corrupted entries. 142 total tests pass. PR #24 merged.
 - **TASK-032 completed**: Ingestion and embedding workers. `IngestionWorker` (concurrency=1) parses documents, chunks text, stores chunks in DB, and enqueues embedding jobs. `EmbeddingWorker` (concurrency=2) generates embeddings via `EmbeddingsService` and stores vectors in pgvector. `JobRecordService` mirrors BullMQ job status to `JobRecord` table. 181 total tests pass. PR #25 merged.
-- **TASK-020 in review**: Synthesis workflow. `SynthesisWorkflow` orchestrates classify → retrieve → synthesize → validate → format. Supports RAG and DIRECT paths, zero-chunk guard, response caching, session memory injection, and provider/model overrides. 191 total tests pass. PR #26 opened.
+- **TASK-020 completed**: Synthesis workflow. `SynthesisWorkflow` orchestrates classify → retrieve → synthesize → validate → format. Supports RAG and DIRECT paths, zero-chunk guard, response caching, session memory injection, and provider/model overrides. 191 total tests pass. PR #26 merged.
 
 ## Suggested next step
 
-Review/merge PR #26 for TASK-020, then select the next eligible task from the critical path when instructed.
+TASK-035 (Chat API endpoint) is the next highest-impact task on the critical path. Dependencies (TASK-020, TASK-022, TASK-023) are all satisfied.
