@@ -4,11 +4,13 @@ import { CorrelationMiddleware } from './correlation.middleware';
 import { LoggerService } from './logger.service';
 import { LogPersistenceService } from './log-persistence.service';
 import { ObservabilityController } from './observability.controller';
+import { MetricsService } from './metrics.service';
+import { MetricsController } from './metrics.controller';
 
 @Module({
-  controllers: [ObservabilityController],
-  providers: [CorrelationService, LoggerService, LogPersistenceService],
-  exports: [CorrelationService, LoggerService, LogPersistenceService],
+  controllers: [ObservabilityController, MetricsController],
+  providers: [CorrelationService, LoggerService, LogPersistenceService, MetricsService],
+  exports: [CorrelationService, LoggerService, LogPersistenceService, MetricsService],
 })
 export class ObservabilityModule implements NestModule {
   configure(consumer: MiddlewareConsumer): void {
