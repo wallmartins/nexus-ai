@@ -411,7 +411,7 @@
       "epic": "EPIC-006",
       "story": "STORY-011",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "done",
       "dependencies": ["TASK-026"],
       "definition_of_done": "`GET /api/v1/observability/logs` returns filtered log entries. `GET /api/v1/observability/metrics` returns aggregated metrics with time range and granularity. Response shapes match API spec. Integration tests pass."
     },
@@ -471,7 +471,7 @@
       "epic": "EPIC-008",
       "story": "STORY-013",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-031", "TASK-029"],
       "definition_of_done": "Evaluation worker consumes jobs with concurrency=1. Failed jobs retried up to 3 times. Exhausted retries moved to dead-letter state queryable via `/api/v1/queues/dead-letter`. Partial results preserved on failure."
     },
@@ -502,6 +502,16 @@
       "story": "STORY-014",
       "owner": "frontend-senior",
       "status": "done",
+      "dependencies": ["TASK-003", "TASK-027"],
+      "definition_of_done": "`/dashboard` displays request log table (sortable, filterable), latency charts (p50/p95), token usage chart, and error rate chart. Time range selector. Trace detail drawer renders Gantt-style timeline with color-coded stages. Correlation ID copyable."
+    },
+    {
+      "id": "TASK-039",
+      "title": "Observability dashboard UI",
+      "epic": "EPIC-009",
+      "story": "STORY-016",
+      "owner": "frontend-senior",
+      "status": "review",
       "dependencies": ["TASK-003", "TASK-027"],
       "definition_of_done": "`/dashboard` displays request log table (sortable, filterable), latency charts (p50/p95), token usage chart, and error rate chart. Time range selector. Trace detail drawer renders Gantt-style timeline with color-coded stages. Correlation ID copyable."
     },
