@@ -36,8 +36,8 @@ TASK-032 (Ingestion and embedding workers) in review. PR #25 opened.
 - **TASK-017 completed**: Prompt manager and guardrails service. `PromptManager` loads versioned TypeScript prompt assets from `src/llm/prompts/`. `GuardrailService` validates input (empty/oversized) with HTTP 400 and output against Zod schemas with one retry. `maxInputLength` added to settings. 150 total tests pass. PR #22 merged.
 - **TASK-019 completed**: LangGraph setup and decision agent. `@langchain/core` and `@langchain/langgraph` installed. `DecisionAgent` uses a 2-node state graph (classify -> route) to classify queries as DIRECT or RAG. Classification decisions logged with correlation ID. Falls back to RAG on errors. 158 total tests pass. PR #23 merged.
 - **TASK-023 completed**: Response cache service. `CacheService` generates deterministic SHA-256 cache keys from query + provider + model + ordered chunk IDs. Stores responses in Redis with configurable TTL (default 1h). Cache hits return `cached: true`. Auto-invalidates corrupted entries. 142 total tests pass. PR #24 merged.
-- **TASK-032 in review**: Ingestion and embedding workers. `IngestionWorker` (concurrency=1) parses documents, chunks text, stores chunks in DB, and enqueues embedding jobs. `EmbeddingWorker` (concurrency=2) generates embeddings via `EmbeddingsService` and stores vectors in pgvector. `JobRecordService` mirrors BullMQ job status to `JobRecord` table. 181 total tests pass. PR #25 opened.
+- **- **TASK-032 completed**: Ingestion and embedding workers. `IngestionWorker` (concurrency=1) parses documents, chunks text, stores chunks in DB, and enqueues embedding jobs. `EmbeddingWorker` (concurrency=2) generates embeddings via `EmbeddingsService` and stores vectors in pgvector. `JobRecordService` mirrors BullMQ job status to `JobRecord` table. 181 total tests pass. PR #25 merged.
 
 ## Suggested next step
 
-Review/merge PR for TASK-032, then run `/implement-task` for the next eligible task when instructed.
+Select the next eligible task from the critical path and run `/implement-task` when instructed.
