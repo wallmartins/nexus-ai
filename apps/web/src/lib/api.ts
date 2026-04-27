@@ -71,3 +71,71 @@ export async function getSessionMessages(
     `${API_BASE}/chat/sessions/${sessionId}/messages`,
   );
 }
+
+export type AppSettings = {
+  llmProvider: 'ollama' | 'openai' | 'anthropic';
+  llmModel: string;
+  embeddingModel: string;
+  chunkSize: number;
+  chunkOverlap: number;
+  retrievalTopK: number;
+  useMMR: boolean;
+  sessionMemoryDepth: number;
+  cacheTtlSeconds: number;
+  maxInputLength: number;
+};
+
+export type UpdateSettingsDto = Partial<AppSettings>;
+
+export async function getSettings(): Promise<AppSettings> {
+  return fetchJson<AppSettings>(`${API_BASE}/settings`);
+}
+
+export async function updateSettings(
+  dto: UpdateSettingsDto,
+): Promise<AppSettings> {
+  return fetchJson<AppSettings>(`${API_BASE}/settings`, {
+    method: 'PATCH',
+    body: JSON.stringify(dto),
+  });
+}
+
+export type DocumentItem = {
+  id: string;
+  originalName: string;
+  status: string;
+  sizeBytes: number;
+  createdAt: string;
+};
+
+export async function listDocuments(): Promise<DocumentItem[]> {
+  return fetchJson<DocumentItem[]>(`${API_BASE}/documents`);
+}
+
+export async function uploadDocument(file: File): Promise<DocumentItem> {
+  const formData = new FormData();
+  formData.append('file', file);
+
+  const res = await fetch(`${API_BASE}/documents`, {
+    method: 'POST',
+    body: formData,
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.message || `HTTP ${res.status}`);
+  }
+
+  return res.json() as Promise<DocumentItem>;
+}
+
+export async function deleteDocument(id: string): Promise<void> {
+  const res = await fetch(`${API_BASE}/documents/${id}`, {
+    method: 'DELETE',
+  });
+
+  if (!res.ok) {
+    const body = await res.json().catch(() => ({}));
+    throw new Error(body.message || `HTTP ${res.status}`);
+  }
+}
