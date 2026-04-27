@@ -511,7 +511,7 @@
       "epic": "EPIC-009",
       "story": "STORY-015",
       "owner": "frontend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-003", "TASK-035"],
       "definition_of_done": "`/chat` page supports message input and streaming assistant responses. Inline citation markers `[1]` rendered as clickable buttons. Expandable sources panel shows chunk previews. Multi-turn conversations retain context. Accessible focus states and keyboard navigation."
     },
