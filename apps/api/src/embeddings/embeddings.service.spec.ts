@@ -81,6 +81,33 @@ describe('EmbeddingsService', () => {
     });
   });
 
+  describe('embedQuery', () => {
+    it('returns the first embedding for a single query', async () => {
+      mockEmbed.mockResolvedValueOnce([[0.1, 0.2, 0.3]]);
+
+      const result = await service.embedQuery('hello world', 'nomic-embed-text');
+
+      expect(mockEmbed).toHaveBeenCalledWith(['hello world'], 'nomic-embed-text');
+      expect(result).toEqual([0.1, 0.2, 0.3]);
+    });
+
+    it('throws when provider returns empty embeddings', async () => {
+      mockEmbed.mockResolvedValueOnce([]);
+
+      await expect(
+        service.embedQuery('hello', 'nomic-embed-text'),
+      ).rejects.toThrow('Embedding provider returned empty result for query');
+    });
+
+    it('throws when provider returns undefined first embedding', async () => {
+      mockEmbed.mockResolvedValueOnce([undefined as unknown as number[]]);
+
+      await expect(
+        service.embedQuery('hello', 'nomic-embed-text'),
+      ).rejects.toThrow('Embedding provider returned empty result for query');
+    });
+  });
+
   describe('generateAndStoreEmbeddings', () => {
     it('generates embeddings and stores them in pgvector', async () => {
       mockChunkFindMany.mockResolvedValueOnce([

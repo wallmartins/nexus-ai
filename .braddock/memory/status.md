@@ -1,7 +1,7 @@
 # Status
 
 ## Current state
-TASK-022 (Session memory service) in review.
+TASK-012 (Vector retrieval service) in review. PR #18 opened.
 
 ## Last update
 - Vision document read and validated.
@@ -25,7 +25,9 @@ TASK-022 (Session memory service) in review.
 - **TASK-031 completed**: BullMQ queue setup. Queue module registers `ingestion`, `embedding`, and `evaluation` queues using shared Redis connection. Queue names centralized in config. Typed payloads for all 3 queues. Producers can enqueue jobs. 7 unit tests pass. PR #13 merged.
 - **TASK-011 completed**: Embedding generation service. `EmbeddingsService` generates embeddings via `OllamaEmbeddingProvider` and stores vectors in pgvector. Updates document status through `embedding` to `completed`. Supports enqueuing embedding jobs via `QueueService`. 8 unit tests pass. PR #14 merged.
 - **TASK-024 completed**: Structured logging and correlation ID middleware. `CorrelationService` uses AsyncLocalStorage to propagate correlation IDs. `CorrelationMiddleware` generates/accepts correlation IDs per HTTP request. `LoggerService` uses Pino for structured JSON logs with correlation ID injection. 16 unit tests pass. PR #15 merged.
-- **TASK-022 in review**: Session memory service. `MemoryService` stores last N messages per session in Redis with configurable depth and TTL. Supports adding messages, retrieving context, clearing sessions, and extending TTL. 9 unit tests pass. PR opened.
+- **TASK-022 completed**: Session memory service. `MemoryService` stores last N messages per session in Redis with configurable depth and TTL. Supports adding messages, retrieving context, clearing sessions, and extending TTL. 9 unit tests pass. PR #16 merged.
+- **TASK-025 completed**: Request logs persistence. `LogPersistenceService` writes structured log entries to PostgreSQL with correlation ID indexing. `ObservabilityController` exposes log querying by correlation ID and time range. 16 unit tests pass. PR merged.
+- **TASK-012 in review**: Vector retrieval service with top-k and MMR. `RetrievalService` executes pgvector similarity search with optional Maximal Marginal Relevance diversification. `EmbeddingsService` extended with `embedQuery()` for query embedding generation. `RagModule` registered in `AppModule`. 93 total tests pass. PR #18 opened.
 
 ## Suggested next step
-Review/merge PR for TASK-022, then run `/implement-task` for the next eligible task.
+Review/merge PR for TASK-012, then run `/implement-task` for the next eligible task.
