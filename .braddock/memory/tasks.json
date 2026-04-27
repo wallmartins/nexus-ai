@@ -481,7 +481,7 @@
       "epic": "EPIC-008",
       "story": "STORY-013",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "done",
       "dependencies": ["TASK-031"],
       "definition_of_done": "Endpoint returns job status (pending, active, completed, failed) by queue or job ID. SSE endpoint streams real-time status updates for ingestion and evaluation jobs. Fallback to short polling documented."
     },
@@ -521,7 +521,7 @@
       "epic": "EPIC-009",
       "story": "STORY-015",
       "owner": "frontend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-003", "TASK-002"],
       "definition_of_done": "`/settings` page allows selecting LLM provider and model, embedding model, chunk size/overlap, retrieval top-k, MMR toggle, session memory depth, and cache TTL. Changes saved via API and active immediately. Form validation and accessible labels present."
     },
