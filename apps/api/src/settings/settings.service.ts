@@ -11,6 +11,7 @@ const DEFAULT_SETTINGS: AppSettings = {
   useMMR: false,
   sessionMemoryDepth: 10,
   cacheTtlSeconds: 3600,
+  maxInputLength: 4000,
 };
 
 @Injectable()
