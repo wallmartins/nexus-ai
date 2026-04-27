@@ -2,7 +2,7 @@
 
 ## Current state
 
-TASK-017 (Prompt manager and guardrails service) in review. PR #22 opened.
+All merged tasks up to date. Awaiting instruction for next task.
 
 ## Last update
 
@@ -33,8 +33,10 @@ TASK-017 (Prompt manager and guardrails service) in review. PR #22 opened.
 - **TASK-013 completed**: Document deletion API. `DELETE /api/v1/documents/:id` validates document existence before deletion, returns 204 on success or 404 when not found. Prisma cascade deletes associated chunks and embeddings. Controller and service specs added. 106 total tests pass. PR #19 merged.
 - **TASK-015 completed**: OpenAI provider implementation. `OpenAiProvider` implements `ILLMProvider`, calls OpenAI chat completions API with JSON mode support. API key read from `OPENAI_API_KEY` env. Returns parsed response with input/output token counts and latency. 115 total tests pass. PR #20 merged.
 - **TASK-016 completed**: Anthropic provider implementation. `AnthropicProvider` implements `ILLMProvider`, calls Anthropic Messages API. API key read from `ANTHROPIC_API_KEY` env. Returns parsed response with input/output token counts and latency. 123 total tests pass. PR #21 merged.
-- **TASK-017 in review**: Prompt manager and guardrails service. `PromptManager` loads versioned TypeScript prompt assets from `src/llm/prompts/`. `GuardrailService` validates input (empty/oversized) with HTTP 400 and output against Zod schemas with one retry. `maxInputLength` added to settings. 150 total tests pass. PR #22 opened.
+- **TASK-017 completed**: Prompt manager and guardrails service. `PromptManager` loads versioned TypeScript prompt assets from `src/llm/prompts/`. `GuardrailService` validates input (empty/oversized) with HTTP 400 and output against Zod schemas with one retry. `maxInputLength` added to settings. 150 total tests pass. PR #22 merged.
+- **TASK-019 completed**: LangGraph setup and decision agent. `@langchain/core` and `@langchain/langgraph` installed. `DecisionAgent` uses a 2-node state graph (classify -> route) to classify queries as DIRECT or RAG. Classification decisions logged with correlation ID. Falls back to RAG on errors. 158 total tests pass. PR #23 merged.
+- **TASK-023 completed**: Response cache service. `CacheService` generates deterministic SHA-256 cache keys from query + provider + model + ordered chunk IDs. Stores responses in Redis with configurable TTL (default 1h). Cache hits return `cached: true`. Auto-invalidates corrupted entries. 142 total tests pass. PR #24 merged.
 
 ## Suggested next step
 
-Review/merge PR for TASK-017, then run `/implement-task` for the next eligible task.
+Run `/implement-task` for the next eligible task when instructed.

@@ -311,7 +311,7 @@
       "epic": "EPIC-003",
       "story": "STORY-006",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-014"],
       "definition_of_done": "`PromptManager` loads versioned TypeScript prompt assets from `src/prompts/`. Composes system, user, and context prompts. `GuardrailService` rejects empty or oversized input with HTTP 400. Validates LLM output against JSON schema; retries once or returns structured error on failure."
     },
@@ -331,7 +331,7 @@
       "epic": "EPIC-004",
       "story": "STORY-007",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-014"],
       "definition_of_done": "LangGraph installed and configured. `DecisionAgent` classifies queries as DIRECT or RAG. State graph has nodes for classification and routing. Classification logged with correlation ID. Unit tests cover both paths with sample queries."
     },
@@ -371,7 +371,7 @@
       "epic": "EPIC-005",
       "story": "STORY-009",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-005", "TASK-022"],
       "definition_of_done": "Cache keys generated from deterministic hash of query text + provider + model + ordered top-k chunk IDs. Redis stores cached responses. TTL configurable (default 1h). Cache hit skips LLM call and returns cached answer with cache indicator."
     },
