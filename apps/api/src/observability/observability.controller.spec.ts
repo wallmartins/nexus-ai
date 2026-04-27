@@ -58,6 +58,8 @@ describe('ObservabilityController', () => {
         'corr-123',
         '2026-04-01T00:00:00Z',
         '2026-04-24T23:59:59Z',
+        undefined,
+        undefined,
         'error',
         'llm.request',
         '10',
@@ -73,6 +75,44 @@ describe('ObservabilityController', () => {
         limit: 10,
         offset: 5,
       });
+    });
+
+    it('accepts from and to as aliases for start and end', async () => {
+      mockQueryLogs.mockResolvedValueOnce({ entries: [], total: 0, limit: 50, offset: 0 });
+
+      await controller.getLogs(
+        undefined,
+        undefined,
+        undefined,
+        '2026-04-01T00:00:00Z',
+        '2026-04-24T23:59:59Z',
+      );
+
+      expect(mockQueryLogs).toHaveBeenCalledWith(
+        expect.objectContaining({
+          start: new Date('2026-04-01T00:00:00Z'),
+          end: new Date('2026-04-24T23:59:59Z'),
+        }),
+      );
+    });
+
+    it('prefers from/to over start/end when both are provided', async () => {
+      mockQueryLogs.mockResolvedValueOnce({ entries: [], total: 0, limit: 50, offset: 0 });
+
+      await controller.getLogs(
+        undefined,
+        '2026-03-01T00:00:00Z',
+        '2026-03-31T23:59:59Z',
+        '2026-04-01T00:00:00Z',
+        '2026-04-24T23:59:59Z',
+      );
+
+      expect(mockQueryLogs).toHaveBeenCalledWith(
+        expect.objectContaining({
+          start: new Date('2026-04-01T00:00:00Z'),
+          end: new Date('2026-04-24T23:59:59Z'),
+        }),
+      );
     });
 
     it('handles invalid date strings gracefully', async () => {
