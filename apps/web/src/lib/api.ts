@@ -204,3 +204,90 @@ export async function getLogs(params?: {
     `${API_BASE}/observability/logs${qs ? `?${qs}` : ''}`,
   );
 }
+
+export type EvaluationRun = {
+  id: string;
+  datasetVersion: string;
+  status: string;
+  models: Array<{ provider: string; modelName: string }>;
+  aggregatedMetrics: {
+    avgRelevance?: number;
+    avgConsistency?: number;
+    avgGrounding?: number;
+    avgLatencyMs?: number;
+    totalTokens?: number;
+  };
+  startedAt: string;
+  completedAt: string | null;
+};
+
+export type EvaluationResult = {
+  id: string;
+  runId: string;
+  questionId: string;
+  questionText: string;
+  expectedAnswer: string | null;
+  generatedAnswer: string;
+  retrievedChunkIds: string[];
+  relevanceScore: number | null;
+  consistencyScore: number | null;
+  groundingScore: number | null;
+  latencyMs: number | null;
+  tokens: { input?: number; output?: number };
+  createdAt: string;
+};
+
+export type EvaluationRunsResponse = {
+  runs: EvaluationRun[];
+  total: number;
+  limit: number;
+  offset: number;
+};
+
+export type EvaluationResultsResponse = {
+  results: EvaluationResult[];
+  total: number;
+  limit: number;
+  offset: number;
+};
+
+export async function listEvaluationRuns(params?: {
+  status?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<EvaluationRunsResponse> {
+  const search = new URLSearchParams();
+  if (params?.status) search.set('status', params.status);
+  if (params?.limit) search.set('limit', String(params.limit));
+  if (params?.offset) search.set('offset', String(params.offset));
+
+  const qs = search.toString();
+  return fetchJson<EvaluationRunsResponse>(
+    `${API_BASE}/evaluations${qs ? `?${qs}` : ''}`,
+  );
+}
+
+export async function getEvaluationRun(id: string): Promise<EvaluationRun> {
+  return fetchJson<EvaluationRun>(`${API_BASE}/evaluations/${id}`);
+}
+
+export async function getEvaluationResults(
+  runId: string,
+  params?: { limit?: number; offset?: number },
+): Promise<EvaluationResultsResponse> {
+  const search = new URLSearchParams();
+  if (params?.limit) search.set('limit', String(params.limit));
+  if (params?.offset) search.set('offset', String(params.offset));
+
+  const qs = search.toString();
+  return fetchJson<EvaluationResultsResponse>(
+    `${API_BASE}/evaluations/${runId}/results${qs ? `?${qs}` : ''}`,
+  );
+}
+
+export async function triggerEvaluation(models: Array<{ provider: string; modelName: string }>): Promise<{ runId: string; status: string; queuedAt: string }> {
+  return fetchJson(`${API_BASE}/evaluations`, {
+    method: 'POST',
+    body: JSON.stringify({ models }),
+  });
+}

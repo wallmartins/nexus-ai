@@ -511,7 +511,7 @@
       "epic": "EPIC-009",
       "story": "STORY-016",
       "owner": "frontend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-003", "TASK-027"],
       "definition_of_done": "`/dashboard` displays request log table (sortable, filterable), latency charts (p50/p95), token usage chart, and error rate chart. Time range selector. Trace detail drawer renders Gantt-style timeline with color-coded stages. Correlation ID copyable."
     },
@@ -521,7 +521,7 @@
       "epic": "EPIC-009",
       "story": "STORY-016",
       "owner": "frontend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-003", "TASK-030"],
       "definition_of_done": "`/evaluations` lists past runs with status and summary. 'New Run' modal selects models and triggers evaluation. Live progress indicator during run. Results page shows scorecards (relevance, consistency, grounding) and side-by-side comparison table. Drill-down to per-question details."
     }
