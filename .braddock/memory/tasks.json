@@ -501,7 +501,7 @@
       "epic": "EPIC-009",
       "story": "STORY-014",
       "owner": "frontend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-003", "TASK-009", "TASK-013", "TASK-034"],
       "definition_of_done": "`/documents` page features drag-and-drop upload zone with file type and size validation. Lists uploaded documents with status badge, size, and timestamp. Delete action with confirmation. Real-time status updates via SSE or polling."
     },
