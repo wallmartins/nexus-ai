@@ -3,6 +3,7 @@ import { ConfigModule } from '@nestjs/config';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validateEnv } from './config/env.schema';
+import { AgentModule } from './agent/agent.module';
 import { DatabaseModule } from './database/database.module';
 import { DocumentsModule } from './documents/documents.module';
 import { EmbeddingsModule } from './embeddings/embeddings.module';
@@ -22,6 +23,7 @@ import { SettingsModule } from './settings/settings.module';
       validate: validateEnv,
     }),
     ObservabilityModule,
+    AgentModule,
     DatabaseModule,
     DocumentsModule,
     EmbeddingsModule,
