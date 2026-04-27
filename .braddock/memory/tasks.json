@@ -321,7 +321,7 @@
       "epic": "EPIC-003",
       "story": "STORY-006",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-014", "TASK-024"],
       "definition_of_done": "Every LLM call records input/output tokens and latencyMs. Data stored in Message table and observability logs. Token counts accurate per provider. Latency measured from dispatch to parsed response. Verified via unit tests."
     },

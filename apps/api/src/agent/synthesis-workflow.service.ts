@@ -7,9 +7,7 @@ import { MemoryService } from '../memory/memory.service';
 import { CacheService } from '../memory/cache.service';
 import { SettingsService } from '../settings/settings.service';
 import { LoggerService } from '../observability/logger.service';
-import { OllamaProvider } from '../llm/providers/ollama.provider';
-import { OpenAiProvider } from '../llm/providers/openai.provider';
-import { AnthropicProvider } from '../llm/providers/anthropic.provider';
+import { LlmService } from '../llm/llm.service';
 import {
   SynthesisInput,
   SynthesisResult,
@@ -28,9 +26,7 @@ export class SynthesisWorkflow {
     private readonly cacheService: CacheService,
     private readonly settingsService: SettingsService,
     private readonly logger: LoggerService,
-    private readonly ollamaProvider: OllamaProvider,
-    private readonly openAiProvider: OpenAiProvider,
-    private readonly anthropicProvider: AnthropicProvider,
+    private readonly llmService: LlmService,
   ) {}
 
   async execute(input: SynthesisInput): Promise<SynthesisResult> {
@@ -156,19 +152,11 @@ export class SynthesisWorkflow {
     });
 
     // 8. Generate
-    const provider = this.resolveProvider(providerName);
-    const llmResponse = await provider.generate(prompt, {
-      model: modelName,
-      temperature: 0.3,
-    });
-
-    this.logger.info('Synthesis workflow: LLM response received', {
-      service: 'synthesis-workflow',
-      eventType: 'workflow.step',
+    const llmResponse = await this.llmService.generate({
+      prompt,
+      options: { model: modelName, temperature: 0.3 },
+      providerName,
       correlationId,
-      step: 'synthesize',
-      latencyMs: llmResponse.latencyMs,
-      tokens: llmResponse.tokens,
     });
 
     // 9. Validate
@@ -222,15 +210,4 @@ export class SynthesisWorkflow {
     };
   }
 
-  private resolveProvider(providerName: string) {
-    switch (providerName) {
-      case 'openai':
-        return this.openAiProvider;
-      case 'anthropic':
-        return this.anthropicProvider;
-      case 'ollama':
-      default:
-        return this.ollamaProvider;
-    }
-  }
 }

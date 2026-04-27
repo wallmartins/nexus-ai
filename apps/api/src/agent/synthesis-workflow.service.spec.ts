@@ -8,9 +8,7 @@ import { MemoryService } from '../memory/memory.service';
 import { CacheService } from '../memory/cache.service';
 import { SettingsService } from '../settings/settings.service';
 import { LoggerService } from '../observability/logger.service';
-import { OllamaProvider } from '../llm/providers/ollama.provider';
-import { OpenAiProvider } from '../llm/providers/openai.provider';
-import { AnthropicProvider } from '../llm/providers/anthropic.provider';
+import { LlmService } from '../llm/llm.service';
 import { SynthesisInput } from './agent.types';
 import { RetrievedChunk } from '../rag/rag.types';
 
@@ -60,18 +58,7 @@ describe('SynthesisWorkflow', () => {
     debug: jest.fn(),
   };
 
-  const ollamaProvider = {
-    providerName: 'ollama',
-    generate: jest.fn(),
-  };
-
-  const openAiProvider = {
-    providerName: 'openai',
-    generate: jest.fn(),
-  };
-
-  const anthropicProvider = {
-    providerName: 'anthropic',
+  const llmService = {
     generate: jest.fn(),
   };
 
@@ -89,9 +76,7 @@ describe('SynthesisWorkflow', () => {
         { provide: CacheService, useValue: cacheService },
         { provide: SettingsService, useValue: settingsService },
         { provide: LoggerService, useValue: loggerService },
-        { provide: OllamaProvider, useValue: ollamaProvider },
-        { provide: OpenAiProvider, useValue: openAiProvider },
-        { provide: AnthropicProvider, useValue: anthropicProvider },
+        { provide: LlmService, useValue: llmService },
       ],
     }).compile();
 
@@ -135,7 +120,7 @@ describe('SynthesisWorkflow', () => {
         user: 'Question: What is the refund policy?\n\nContext:\n[1] Refunds are allowed within 30 days.',
       });
 
-      ollamaProvider.generate.mockResolvedValue({
+      llmService.generate.mockResolvedValue({
         content: 'You can request a refund within 30 days [1].',
         model: 'llama3',
         provider: 'ollama',
@@ -191,7 +176,7 @@ describe('SynthesisWorkflow', () => {
       expect(result.provider).toBe('');
 
       expect(retrievalService.retrieve).toHaveBeenCalled();
-      expect(ollamaProvider.generate).not.toHaveBeenCalled();
+      expect(llmService.generate).not.toHaveBeenCalled();
       expect(cacheService.set).not.toHaveBeenCalled();
     });
   });
@@ -216,7 +201,7 @@ describe('SynthesisWorkflow', () => {
         user: 'Hello!',
       });
 
-      ollamaProvider.generate.mockResolvedValue({
+      llmService.generate.mockResolvedValue({
         content: 'Hello! How can I help you today?',
         model: 'llama3',
         provider: 'ollama',
@@ -284,7 +269,7 @@ describe('SynthesisWorkflow', () => {
       const result = await workflow.execute(input);
 
       expect(result.content).toBe('Cached answer [1].');
-      expect(ollamaProvider.generate).not.toHaveBeenCalled();
+      expect(llmService.generate).not.toHaveBeenCalled();
       expect(cacheService.set).not.toHaveBeenCalled();
     });
 
@@ -306,7 +291,7 @@ describe('SynthesisWorkflow', () => {
         user: 'What is the refund policy?',
       });
 
-      ollamaProvider.generate.mockResolvedValue({
+      llmService.generate.mockResolvedValue({
         content: 'Direct answer.',
         model: 'llama3',
         provider: 'ollama',
@@ -343,7 +328,7 @@ describe('SynthesisWorkflow', () => {
         user: 'Hello!',
       });
 
-      openAiProvider.generate.mockResolvedValue({
+      llmService.generate.mockResolvedValue({
         content: 'Hello from OpenAI!',
         model: 'gpt-4o',
         provider: 'openai',
@@ -355,8 +340,7 @@ describe('SynthesisWorkflow', () => {
 
       expect(result.provider).toBe('openai');
       expect(result.model).toBe('gpt-4o');
-      expect(openAiProvider.generate).toHaveBeenCalled();
-      expect(ollamaProvider.generate).not.toHaveBeenCalled();
+      expect(llmService.generate).toHaveBeenCalled();
     });
   });
 
@@ -392,7 +376,7 @@ describe('SynthesisWorkflow', () => {
         ],
       });
 
-      ollamaProvider.generate.mockResolvedValue({
+      llmService.generate.mockResolvedValue({
         content: 'Sure, here is more info.',
         model: 'llama3',
         provider: 'ollama',
@@ -436,7 +420,7 @@ describe('SynthesisWorkflow', () => {
         user: 'Hello!',
       });
 
-      ollamaProvider.generate.mockResolvedValue({
+      llmService.generate.mockResolvedValue({
         content: '',
         model: 'llama3',
         provider: 'ollama',
@@ -470,7 +454,7 @@ describe('SynthesisWorkflow', () => {
         user: 'Hello!',
       });
 
-      ollamaProvider.generate.mockResolvedValue({
+      llmService.generate.mockResolvedValue({
         content: 'Hi there!',
         model: 'llama3',
         provider: 'ollama',
@@ -487,10 +471,6 @@ describe('SynthesisWorkflow', () => {
       expect(loggerService.info).toHaveBeenCalledWith(
         'Synthesis workflow classified',
         expect.objectContaining({ correlationId: 'corr-log', service: 'synthesis-workflow', eventType: 'workflow.step', step: 'classify' }),
-      );
-      expect(loggerService.info).toHaveBeenCalledWith(
-        'Synthesis workflow: LLM response received',
-        expect.objectContaining({ correlationId: 'corr-log', service: 'synthesis-workflow', eventType: 'workflow.step', step: 'synthesize' }),
       );
       expect(loggerService.info).toHaveBeenCalledWith(
         'Synthesis workflow completed',
