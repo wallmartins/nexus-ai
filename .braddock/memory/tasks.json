@@ -271,7 +271,7 @@
       "epic": "EPIC-002",
       "story": "STORY-004",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-009", "TASK-011"],
       "definition_of_done": "`DELETE /api/v1/documents/:id` removes the document and cascades deletion to chunks and embeddings. Returns 204. Integration test confirms data is fully removed."
     },
