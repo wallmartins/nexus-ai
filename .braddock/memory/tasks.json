@@ -421,7 +421,7 @@
       "epic": "EPIC-007",
       "story": "STORY-012",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-002"],
       "definition_of_done": "Static dataset file committed with 20-50 domain-relevant questions, expected answers, and reference chunk info. `DatasetLoader` parses and validates structure. Dataset version tracked via filename or git hash."
     },
@@ -431,7 +431,7 @@
       "epic": "EPIC-007",
       "story": "STORY-012",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-028", "TASK-020", "TASK-031"],
       "definition_of_done": "On-demand evaluation run triggered via API. Runs each question through configured models asynchronously. Computes relevance, consistency, and grounding scores. Records per-question latency and tokens. Uses `eval-` correlation ID prefix."
     },
