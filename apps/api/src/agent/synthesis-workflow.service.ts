@@ -8,6 +8,7 @@ import { CacheService } from '../memory/cache.service';
 import { SettingsService } from '../settings/settings.service';
 import { LoggerService } from '../observability/logger.service';
 import { LlmService } from '../llm/llm.service';
+import { ToolRegistry } from './tools/tool-registry.service';
 import {
   SynthesisInput,
   SynthesisResult,
@@ -27,6 +28,7 @@ export class SynthesisWorkflow {
     private readonly settingsService: SettingsService,
     private readonly logger: LoggerService,
     private readonly llmService: LlmService,
+    private readonly toolRegistry: ToolRegistry,
   ) {}
 
   async execute(input: SynthesisInput): Promise<SynthesisResult> {
@@ -50,7 +52,36 @@ export class SynthesisWorkflow {
         ? memory.messages.map((m) => ({ role: m.role, content: m.content }))
         : undefined;
 
-    // 2. Classify query
+    // 2. Try calculator tool for math expressions
+    const calculatorResult = await this.toolRegistry.invoke('calculator', {
+      query,
+      correlationId,
+    });
+
+    if (calculatorResult.error === undefined && calculatorResult.output !== null) {
+      const latencyMs = Date.now() - startTime;
+
+      this.logger.info('Synthesis workflow: calculator result', {
+        service: 'synthesis-workflow',
+        eventType: 'workflow.step',
+        correlationId,
+        step: 'calculator',
+        result: calculatorResult.output,
+      });
+
+      return {
+        content: String(calculatorResult.output),
+        sources: [],
+        classification: 'DIRECT',
+        latencyMs,
+        tokens: { input: 0, output: 0 },
+        model: '',
+        provider: '',
+        correlationId,
+      };
+    }
+
+    // 3. Classify query
     const decisionState = await this.decisionAgent.invoke(query, correlationId);
     const classification: QueryClassification = decisionState.classification ?? 'RAG';
 
@@ -62,10 +93,15 @@ export class SynthesisWorkflow {
       classification,
     });
 
-    // 3. Retrieve if RAG
+    // 4. Retrieve if RAG via tool registry
     let chunks: RetrievedChunk[] = [];
     if (classification === 'RAG') {
-      chunks = await this.retrievalService.retrieve({ query });
+      const retrievalResult = await this.toolRegistry.invoke('retrieval', {
+        query,
+        correlationId,
+      });
+
+      chunks = Array.isArray(retrievalResult.output) ? retrievalResult.output : [];
 
       this.logger.info('Synthesis workflow retrieved', {
         service: 'synthesis-workflow',
@@ -76,7 +112,7 @@ export class SynthesisWorkflow {
       });
     }
 
-    // 4. Zero chunks guard
+    // 5. Zero chunks guard
     if (classification === 'RAG' && chunks.length === 0) {
       const latencyMs = Date.now() - startTime;
 
@@ -101,13 +137,13 @@ export class SynthesisWorkflow {
       };
     }
 
-    // 5. Resolve provider / model
+    // 6. Resolve provider / model
     const settings = this.settingsService.getSettings();
     const providerName = options?.provider ?? settings.llmProvider;
     const modelName = options?.model ?? settings.llmModel;
     const chunkIds = chunks.map((c) => c.chunkId);
 
-    // 6. Check cache
+    // 7. Check cache
     if (options?.useCache !== false) {
       const cached = await this.cacheService.get({
         query,
@@ -138,7 +174,7 @@ export class SynthesisWorkflow {
       }
     }
 
-    // 7. Compose prompt
+    // 8. Compose prompt
     const promptName = classification === 'RAG' ? 'rag-synthesis' : 'direct-answer';
     const retrievedContext =
       classification === 'RAG'
@@ -151,7 +187,7 @@ export class SynthesisWorkflow {
       history,
     });
 
-    // 8. Generate
+    // 9. Generate
     const llmResponse = await this.llmService.generate({
       prompt,
       options: { model: modelName, temperature: 0.3 },
@@ -159,12 +195,12 @@ export class SynthesisWorkflow {
       correlationId,
     });
 
-    // 9. Validate
+    // 10. Validate
     if (!llmResponse.content || llmResponse.content.trim().length === 0) {
       throw new Error('LLM returned empty response after synthesis');
     }
 
-    // 10. Format sources
+    // 11. Format sources
     const sources = chunks.map((c) => ({
       chunkId: c.chunkId,
       documentId: c.documentId,
@@ -172,7 +208,7 @@ export class SynthesisWorkflow {
       score: c.score,
     }));
 
-    // 11. Cache
+    // 12. Cache
     const latencyMs = Date.now() - startTime;
     if (options?.useCache !== false) {
       await this.cacheService.set(

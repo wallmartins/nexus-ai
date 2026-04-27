@@ -351,7 +351,7 @@
       "epic": "EPIC-004",
       "story": "STORY-007",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-019", "TASK-012"],
       "definition_of_done": "`ToolRegistry` registers `RetrievalTool` (wraps vector search) and `CalculatorTool` (math evaluation). Tools invoked dynamically based on workflow state. Outputs merged back into LangGraph state. Unit tests cover tool invocation and error handling."
     },
