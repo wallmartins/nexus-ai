@@ -8,6 +8,7 @@ import { ChatModule } from './chat/chat.module';
 import { DatabaseModule } from './database/database.module';
 import { DocumentsModule } from './documents/documents.module';
 import { EmbeddingsModule } from './embeddings/embeddings.module';
+import { EvaluationModule } from './evaluation/evaluation.module';
 import { HealthModule } from './health/health.module';
 import { LlmModule } from './llm/llm.module';
 import { MemoryModule } from './memory/memory.module';
@@ -29,6 +30,7 @@ import { SettingsModule } from './settings/settings.module';
     DatabaseModule,
     DocumentsModule,
     EmbeddingsModule,
+    EvaluationModule,
     HealthModule,
     LlmModule,
     MemoryModule,

@@ -1,0 +1,182 @@
+{
+  "version": "1.0.0",
+  "name": "nexus-ai-evaluation-dataset",
+  "description": "Domain-relevant questions for evaluating RAG pipeline quality on company knowledge base scenarios",
+  "questions": [
+    {
+      "id": "q001",
+      "question": "What is the company's remote work policy?",
+      "expectedAnswer": "Employees may work remotely up to 3 days per week with manager approval. Core collaboration hours are 10am–3pm EST.",
+      "referenceChunks": ["employee-handbook-ch-3", "remote-work-policy-v2"],
+      "category": "hr-policy"
+    },
+    {
+      "id": "q002",
+      "question": "How do I request time off?",
+      "expectedAnswer": "Submit a request through the HR portal at least 5 business days in advance. Manager approval is required.",
+      "referenceChunks": ["employee-handbook-ch-3", "pto-procedure-2025"],
+      "category": "hr-policy"
+    },
+    {
+      "id": "q003",
+      "question": "What health insurance plans are available?",
+      "expectedAnswer": "Three tiers are offered: Basic (HMO), Standard (PPO), and Premium (PPO with dental/vision). Enrollment is during onboarding or open season.",
+      "referenceChunks": ["benefits-guide-2025", "insurance-summary"],
+      "category": "benefits"
+    },
+    {
+      "id": "q004",
+      "question": "What is the 401k match percentage?",
+      "expectedAnswer": "The company matches 100% of contributions up to 4% of salary. Match vests immediately.",
+      "referenceChunks": ["benefits-guide-2025", "retirement-plan-doc"],
+      "category": "benefits"
+    },
+    {
+      "id": "q005",
+      "question": "How many weeks of paid parental leave are provided?",
+      "expectedAnswer": "12 weeks of fully paid parental leave for primary caregivers and 4 weeks for secondary caregivers.",
+      "referenceChunks": ["benefits-guide-2025", "parental-leave-policy"],
+      "category": "benefits"
+    },
+    {
+      "id": "q006",
+      "question": "What is the code review process?",
+      "expectedAnswer": "All code requires at least one approving review from a team member before merging. Security-sensitive changes require two approvals.",
+      "referenceChunks": ["engineering-handbook-ch-4", "code-review-guidelines"],
+      "category": "engineering"
+    },
+    {
+      "id": "q007",
+      "question": "Which branch naming convention should I use?",
+      "expectedAnswer": "Use feature/TICKET-123-short-description for features, bugfix/TICKET-123-description for bugs, and hotfix/description for production fixes.",
+      "referenceChunks": ["engineering-handbook-ch-4", "git-conventions"],
+      "category": "engineering"
+    },
+    {
+      "id": "q008",
+      "question": "What is the deployment schedule?",
+      "expectedAnswer": "Production deployments occur on Tuesdays and Thursdays at 2pm EST. Emergency hotfixes may be deployed outside this window with VP approval.",
+      "referenceChunks": ["engineering-handbook-ch-7", "deployment-runbook"],
+      "category": "engineering"
+    },
+    {
+      "id": "q009",
+      "question": "How do I report a security incident?",
+      "expectedAnswer": "Email security@company.com immediately. Include timestamp, affected systems, and observed behavior. Do not discuss in public channels.",
+      "referenceChunks": ["security-policy-v3", "incident-response-plan"],
+      "category": "security"
+    },
+    {
+      "id": "q010",
+      "question": "What are the password requirements?",
+      "expectedAnswer": "Minimum 14 characters with at least one uppercase, one lowercase, one number, and one special character. Must be changed every 90 days.",
+      "referenceChunks": ["security-policy-v3", "password-policy"],
+      "category": "security"
+    },
+    {
+      "id": "q011",
+      "question": "Is multi-factor authentication required?",
+      "expectedAnswer": "Yes, MFA is mandatory for all company systems including email, VPN, and cloud infrastructure.",
+      "referenceChunks": ["security-policy-v3", "mfa-requirements"],
+      "category": "security"
+    },
+    {
+      "id": "q012",
+      "question": "What is the acceptable use policy for company devices?",
+      "expectedAnswer": "Company devices are for business use only. Personal use is permitted for incidental activities. No installation of unauthorized software.",
+      "referenceChunks": ["security-policy-v3", "acceptable-use-policy"],
+      "category": "security"
+    },
+    {
+      "id": "q013",
+      "question": "How do I access the staging environment?",
+      "expectedAnswer": "Request access via the DevOps portal. Staging credentials are rotated weekly and distributed through 1Password.",
+      "referenceChunks": ["engineering-handbook-ch-7", "environment-access-guide"],
+      "category": "engineering"
+    },
+    {
+      "id": "q014",
+      "question": "What is the escalation procedure for P0 incidents?",
+      "expectedAnswer": "Page the on-call engineer via PagerDuty. If no response in 5 minutes, escalate to engineering manager, then VP of Engineering.",
+      "referenceChunks": ["incident-response-plan", "escalation-matrix"],
+      "category": "operations"
+    },
+    {
+      "id": "q015",
+      "question": "How often are penetration tests performed?",
+      "expectedAnswer": "External penetration tests are conducted annually. Internal vulnerability scans run monthly. Results are shared with the security team.",
+      "referenceChunks": ["security-policy-v3", "compliance-schedule"],
+      "category": "security"
+    },
+    {
+      "id": "q016",
+      "question": "What is the travel reimbursement policy?",
+      "expectedAnswer": "Coach airfare, standard hotel rooms, and reasonable meals are reimbursable. Expenses over $500 require pre-approval. Submit receipts within 30 days.",
+      "referenceChunks": ["employee-handbook-ch-5", "travel-policy"],
+      "category": "hr-policy"
+    },
+    {
+      "id": "q017",
+      "question": "How do I order new hardware?",
+      "expectedAnswer": "Submit a request through the IT portal. Standard equipment ships within 5 business days. Custom requests require manager approval.",
+      "referenceChunks": ["employee-handbook-ch-2", "it-procurement-guide"],
+      "category": "hr-policy"
+    },
+    {
+      "id": "q018",
+      "question": "What programming languages are used in the backend?",
+      "expectedAnswer": "The backend is primarily written in TypeScript using NestJS. Python is used for data science and ML workloads.",
+      "referenceChunks": ["engineering-handbook-ch-1", "tech-stack-overview"],
+      "category": "engineering"
+    },
+    {
+      "id": "q019",
+      "question": "What is the SLA for customer support?",
+      "expectedAnswer": "Enterprise customers receive responses within 2 hours. Standard customers within 24 hours. Critical issues are addressed within 1 hour.",
+      "referenceChunks": ["customer-support-handbook", "sla-agreements"],
+      "category": "operations"
+    },
+    {
+      "id": "q020",
+      "question": "How do I update the public API documentation?",
+      "expectedAnswer": "API docs are auto-generated from OpenAPI specs. Update the NestJS DTOs and decorators, then run npm run docs:generate. Changes deploy on merge to main.",
+      "referenceChunks": ["engineering-handbook-ch-6", "api-docs-guide"],
+      "category": "engineering"
+    },
+    {
+      "id": "q021",
+      "question": "What is the data retention policy?",
+      "expectedAnswer": "Customer data is retained for 7 years after account closure. Logs are retained for 2 years. Backups are kept for 90 days.",
+      "referenceChunks": ["privacy-policy-v2", "data-retention-schedule"],
+      "category": "compliance"
+    },
+    {
+      "id": "q022",
+      "question": "How do I handle a GDPR data deletion request?",
+      "expectedAnswer": "Forward the request to privacy@company.com within 24 hours. The legal team will verify identity and initiate deletion within 30 days.",
+      "referenceChunks": ["privacy-policy-v2", "gdpr-procedure"],
+      "category": "compliance"
+    },
+    {
+      "id": "q023",
+      "question": "What are the core company values?",
+      "expectedAnswer": "Transparency, Customer Obsession, Continuous Learning, and Inclusive Collaboration.",
+      "referenceChunks": ["company-culture-guide", "values-statement"],
+      "category": "culture"
+    },
+    {
+      "id": "q024",
+      "question": "How is performance evaluated?",
+      "expectedAnswer": "Quarterly 360-degree reviews with self-assessment, peer feedback, and manager evaluation. Goals are set using OKRs.",
+      "referenceChunks": ["employee-handbook-ch-8", "performance-review-guide"],
+      "category": "hr-policy"
+    },
+    {
+      "id": "q025",
+      "question": "What is the onboarding process for new engineers?",
+      "expectedAnswer": "Week 1: environment setup and codebase walkthrough. Week 2: first ticket with mentor pairing. Week 3-4: independent contributions with code reviews.",
+      "referenceChunks": ["employee-handbook-ch-1", "onboarding-checklist"],
+      "category": "hr-policy"
+    }
+  ]
+}
