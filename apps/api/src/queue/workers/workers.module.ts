@@ -9,5 +9,6 @@ import { SettingsModule } from '../../settings/settings.module';
 @Module({
   imports: [DocumentsModule, EmbeddingsModule, SettingsModule],
   providers: [IngestionWorker, EmbeddingWorker, JobRecordService],
+  exports: [JobRecordService],
 })
 export class WorkersModule {}
