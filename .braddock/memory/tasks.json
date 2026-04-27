@@ -521,7 +521,7 @@
       "epic": "EPIC-009",
       "story": "STORY-015",
       "owner": "frontend-senior",
-      "status": "done",
+      "status": "review",
       "dependencies": ["TASK-003", "TASK-002"],
       "definition_of_done": "`/settings` page allows selecting LLM provider and model, embedding model, chunk size/overlap, retrieval top-k, MMR toggle, session memory depth, and cache TTL. Changes saved via API and active immediately. Form validation and accessible labels present."
     },

@@ -71,3 +71,31 @@ export async function getSessionMessages(
     `${API_BASE}/chat/sessions/${sessionId}/messages`,
   );
 }
+
+export type AppSettings = {
+  llmProvider: 'ollama' | 'openai' | 'anthropic';
+  llmModel: string;
+  embeddingModel: string;
+  chunkSize: number;
+  chunkOverlap: number;
+  retrievalTopK: number;
+  useMMR: boolean;
+  sessionMemoryDepth: number;
+  cacheTtlSeconds: number;
+  maxInputLength: number;
+};
+
+export type UpdateSettingsDto = Partial<AppSettings>;
+
+export async function getSettings(): Promise<AppSettings> {
+  return fetchJson<AppSettings>(`${API_BASE}/settings`);
+}
+
+export async function updateSettings(
+  dto: UpdateSettingsDto,
+): Promise<AppSettings> {
+  return fetchJson<AppSettings>(`${API_BASE}/settings`, {
+    method: 'PATCH',
+    body: JSON.stringify(dto),
+  });
+}
