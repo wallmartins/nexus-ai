@@ -371,7 +371,7 @@
       "epic": "EPIC-005",
       "story": "STORY-009",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "doing",
       "dependencies": ["TASK-005", "TASK-022"],
       "definition_of_done": "Cache keys generated from deterministic hash of query text + provider + model + ordered top-k chunk IDs. Redis stores cached responses. TTL configurable (default 1h). Cache hit skips LLM call and returns cached answer with cache indicator."
     },
