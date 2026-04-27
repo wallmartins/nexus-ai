@@ -491,7 +491,7 @@
       "epic": "EPIC-004",
       "story": "STORY-008",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-020", "TASK-022", "TASK-023"],
       "definition_of_done": "`POST /api/v1/chat` accepts message, optional sessionId, and options. Orchestrates decision agent, retrieval, synthesis, memory, and cache. Returns answer with sources, latencyMs, tokens, and correlationId. Handles errors with structured responses. Integration tests pass."
     },
