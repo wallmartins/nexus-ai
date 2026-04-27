@@ -431,7 +431,7 @@
       "epic": "EPIC-007",
       "story": "STORY-012",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-028", "TASK-020", "TASK-031"],
       "definition_of_done": "On-demand evaluation run triggered via API. Runs each question through configured models asynchronously. Computes relevance, consistency, and grounding scores. Records per-question latency and tokens. Uses `eval-` correlation ID prefix."
     },
@@ -441,7 +441,7 @@
       "epic": "EPIC-007",
       "story": "STORY-012",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-029"],
       "definition_of_done": "Endpoints exist to list runs, get run details, and get per-question results. Supports filtering by model. Returns aggregated metrics and full result sets matching spec shapes."
     },

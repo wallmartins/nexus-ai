@@ -141,6 +141,57 @@ export class EvaluationService {
     await this.finalizeRun(runId);
   }
 
+  async listRuns(params: {
+    status?: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<{ runs: unknown[]; total: number; limit: number; offset: number }> {
+    const { status, limit = 20, offset = 0 } = params;
+
+    const where: Prisma.EvaluationRunWhereInput = {};
+    if (status) where.status = status;
+
+    const [runs, total] = await Promise.all([
+      this.prisma.evaluationRun.findMany({
+        where,
+        orderBy: { startedAt: 'desc' },
+        take: limit,
+        skip: offset,
+      }),
+      this.prisma.evaluationRun.count({ where }),
+    ]);
+
+    return { runs, total, limit, offset };
+  }
+
+  async getRunById(runId: string): Promise<unknown | null> {
+    return this.prisma.evaluationRun.findUnique({
+      where: { id: runId },
+    });
+  }
+
+  async getRunResults(params: {
+    runId: string;
+    limit?: number;
+    offset?: number;
+  }): Promise<{ results: unknown[]; total: number; limit: number; offset: number }> {
+    const { runId, limit = 50, offset = 0 } = params;
+
+    const where: Prisma.EvaluationResultWhereInput = { runId };
+
+    const [results, total] = await Promise.all([
+      this.prisma.evaluationResult.findMany({
+        where,
+        orderBy: { createdAt: 'asc' },
+        take: limit,
+        skip: offset,
+      }),
+      this.prisma.evaluationResult.count({ where }),
+    ]);
+
+    return { results, total, limit, offset };
+  }
+
   private async finalizeRun(runId: string): Promise<void> {
     const results = await this.prisma.evaluationResult.findMany({
       where: { runId },
