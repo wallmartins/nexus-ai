@@ -481,7 +481,7 @@
       "epic": "EPIC-008",
       "story": "STORY-013",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-031"],
       "definition_of_done": "Endpoint returns job status (pending, active, completed, failed) by queue or job ID. SSE endpoint streams real-time status updates for ingestion and evaluation jobs. Fallback to short polling documented."
     },
