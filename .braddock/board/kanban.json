@@ -4,7 +4,6 @@
     "todo": [
       "TASK-018",
       "TASK-021",
-      "TASK-026",
       "TASK-027",
       "TASK-028",
       "TASK-029",
@@ -45,7 +44,8 @@
       "TASK-037",
       "TASK-038",
       "TASK-034",
-      "TASK-036"
+      "TASK-036",
+      "TASK-026"
     ]
   }
 }

@@ -1,7 +1,14 @@
 import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
-import { MetricsService, TimeWindow, AggregatedMetrics } from './metrics.service';
+import {
+  MetricsService,
+  TimeWindow,
+  Granularity,
+  MetricsResponse,
+  AggregatedMetrics,
+} from './metrics.service';
 
 const VALID_WINDOWS: TimeWindow[] = ['1h', '6h', '24h', '7d', '30d'];
+const VALID_GRANULARITIES: Granularity[] = ['hour', 'day'];
 
 @Controller('api/v1/observability/metrics')
 export class MetricsController {
@@ -10,14 +17,64 @@ export class MetricsController {
   @Get()
   async getMetrics(
     @Query('window') window?: string,
-  ): Promise<AggregatedMetrics> {
-    const w = (window ?? '24h') as TimeWindow;
-    if (!VALID_WINDOWS.includes(w)) {
+    @Query('from') from?: string,
+    @Query('to') to?: string,
+    @Query('granularity') granularity?: string,
+  ): Promise<MetricsResponse | (AggregatedMetrics & { window: string })> {
+    if (window) {
+      const w = window as TimeWindow;
+      if (!VALID_WINDOWS.includes(w)) {
+        throw new BadRequestException({
+          code: 'INVALID_TIME_WINDOW',
+          message: `Window must be one of: ${VALID_WINDOWS.join(', ')}`,
+        });
+      }
+      return this.metricsService.aggregate(w);
+    }
+
+    const fromDate = from ? new Date(from) : undefined;
+    const toDate = to ? new Date(to) : undefined;
+
+    if (!fromDate || !toDate) {
       throw new BadRequestException({
-        code: 'INVALID_TIME_WINDOW',
-        message: `Window must be one of: ${VALID_WINDOWS.join(', ')}`,
+        code: 'MISSING_DATE_RANGE',
+        message:
+          'Provide either a window parameter or both from and to date parameters',
       });
     }
-    return this.metricsService.aggregate(w);
+
+    if (isNaN(fromDate.getTime()) || isNaN(toDate.getTime())) {
+      throw new BadRequestException({
+        code: 'INVALID_DATE_FORMAT',
+        message: 'from and to must be valid ISO 8601 date strings',
+      });
+    }
+
+    if (fromDate > toDate) {
+      throw new BadRequestException({
+        code: 'INVALID_DATE_RANGE',
+        message: 'from date must be before or equal to to date',
+      });
+    }
+
+    if (granularity) {
+      const g = granularity as Granularity;
+      if (!VALID_GRANULARITIES.includes(g)) {
+        throw new BadRequestException({
+          code: 'INVALID_GRANULARITY',
+          message: `Granularity must be one of: ${VALID_GRANULARITIES.join(', ')}`,
+        });
+      }
+      return this.metricsService.aggregateTimeSeries(fromDate, toDate, g);
+    }
+
+    const summary = await this.metricsService.aggregateRange(fromDate, toDate);
+    return {
+      period: {
+        from: fromDate.toISOString(),
+        to: toDate.toISOString(),
+      },
+      summary,
+    };
   }
 }

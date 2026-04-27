@@ -401,7 +401,7 @@
       "epic": "EPIC-006",
       "story": "STORY-011",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "done",
       "dependencies": ["TASK-025"],
       "definition_of_done": "Aggregates total requests, average/p95 latency, total tokens, and error rate over selectable time windows. Data sourced from LogEntry and Message tables. Results accurate and performant for 10k+ records."
     },

@@ -15,6 +15,8 @@ export class ObservabilityController {
     @Query('correlationId') correlationId?: string,
     @Query('start') start?: string,
     @Query('end') end?: string,
+    @Query('from') from?: string,
+    @Query('to') to?: string,
     @Query('level') level?: string,
     @Query('eventType') eventType?: string,
     @Query('limit') limit?: string,
@@ -28,8 +30,11 @@ export class ObservabilityController {
       offset: offset ? parseInt(offset, 10) : 0,
     };
 
-    if (start) filters.start = new Date(start);
-    if (end) filters.end = new Date(end);
+    const fromDate = from ?? start;
+    const toDate = to ?? end;
+
+    if (fromDate) filters.start = new Date(fromDate);
+    if (toDate) filters.end = new Date(toDate);
 
     return this.logPersistence.queryLogs(filters);
   }
