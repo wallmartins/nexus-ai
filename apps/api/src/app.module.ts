@@ -4,6 +4,7 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validateEnv } from './config/env.schema';
 import { AgentModule } from './agent/agent.module';
+import { ChatModule } from './chat/chat.module';
 import { DatabaseModule } from './database/database.module';
 import { DocumentsModule } from './documents/documents.module';
 import { EmbeddingsModule } from './embeddings/embeddings.module';
@@ -24,6 +25,7 @@ import { SettingsModule } from './settings/settings.module';
     }),
     ObservabilityModule,
     AgentModule,
+    ChatModule,
     DatabaseModule,
     DocumentsModule,
     EmbeddingsModule,
