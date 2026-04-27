@@ -261,7 +261,7 @@
       "epic": "EPIC-002",
       "story": "STORY-004",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-008", "TASK-011"],
       "definition_of_done": "`RetrievalService` executes top-k similarity search against pgvector. Optional MMR diversification reduces redundancy. Returns chunks with relevance scores. p95 latency < 200ms for up to 10,000 chunks. Unit tests verify retrieval accuracy."
     },
@@ -271,7 +271,7 @@
       "epic": "EPIC-002",
       "story": "STORY-004",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-009", "TASK-011"],
       "definition_of_done": "`DELETE /api/v1/documents/:id` removes the document and cascades deletion to chunks and embeddings. Returns 204. Integration test confirms data is fully removed."
     },
@@ -291,7 +291,7 @@
       "epic": "EPIC-003",
       "story": "STORY-005",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-014"],
       "definition_of_done": "`OpenAiProvider` implements `ILLMProvider`. Calls chat completions API with JSON mode support where applicable. API key read exclusively from env. Returns parsed response with input/output token counts."
     },
@@ -301,7 +301,7 @@
       "epic": "EPIC-003",
       "story": "STORY-005",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "doing",
       "dependencies": ["TASK-014"],
       "definition_of_done": "`AnthropicProvider` implements `ILLMProvider`. Calls Messages API. API key read exclusively from env. Returns parsed response with token counts. Integration test verifies end-to-end call."
     },
@@ -391,7 +391,7 @@
       "epic": "EPIC-006",
       "story": "STORY-010",
       "owner": "backend-senior",
-      "status": "review",
+      "status": "done",
       "dependencies": ["TASK-024", "TASK-008"],
       "definition_of_done": "Log entries written to `LogEntry` table with correlation ID, level, service, event type, and JSON payload. API supports querying by correlation ID and time range. Index on correlationId and timestamp columns."
     },
