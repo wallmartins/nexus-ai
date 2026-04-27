@@ -291,7 +291,7 @@
       "epic": "EPIC-003",
       "story": "STORY-005",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-014"],
       "definition_of_done": "`OpenAiProvider` implements `ILLMProvider`. Calls chat completions API with JSON mode support where applicable. API key read exclusively from env. Returns parsed response with input/output token counts."
     },

@@ -1,7 +1,7 @@
 # Status
 
 ## Current state
-TASK-013 (Document deletion API) in review. PR #19 opened.
+TASK-015 (OpenAI provider implementation) in review. PR #20 opened.
 
 ## Last update
 - Vision document read and validated.
@@ -28,7 +28,8 @@ TASK-013 (Document deletion API) in review. PR #19 opened.
 - **TASK-022 completed**: Session memory service. `MemoryService` stores last N messages per session in Redis with configurable depth and TTL. Supports adding messages, retrieving context, clearing sessions, and extending TTL. 9 unit tests pass. PR #16 merged.
 - **TASK-025 completed**: Request logs persistence. `LogPersistenceService` writes structured log entries to PostgreSQL with correlation ID indexing. `ObservabilityController` exposes log querying by correlation ID and time range. 16 unit tests pass. PR merged.
 - **TASK-012 completed**: Vector retrieval service with top-k and MMR. `RetrievalService` executes pgvector similarity search with optional Maximal Marginal Relevance diversification. `EmbeddingsService` extended with `embedQuery()` for query embedding generation. `RagModule` registered in `AppModule`. 93 total tests pass. PR #18 merged.
-- **TASK-013 in review**: Document deletion API. `DELETE /api/v1/documents/:id` validates document existence before deletion, returns 204 on success or 404 when not found. Prisma cascade deletes associated chunks and embeddings. Controller and service specs added. 106 total tests pass. PR #19 opened.
+- **TASK-013 completed**: Document deletion API. `DELETE /api/v1/documents/:id` validates document existence before deletion, returns 204 on success or 404 when not found. Prisma cascade deletes associated chunks and embeddings. Controller and service specs added. 106 total tests pass. PR #19 merged.
+- **TASK-015 in review**: OpenAI provider implementation. `OpenAiProvider` implements `ILLMProvider`, calls OpenAI chat completions API with JSON mode support. API key read from `OPENAI_API_KEY` env. Returns parsed response with input/output token counts and latency. 115 total tests pass. PR #20 opened.
 
 ## Suggested next step
-Review/merge PR for TASK-013, then run `/implement-task` for the next eligible task.
+Review/merge PR for TASK-015, then run `/implement-task` for the next eligible task.
