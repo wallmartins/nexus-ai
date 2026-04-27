@@ -13,10 +13,13 @@ describe('EvaluationService', () => {
       create: jest.fn(),
       update: jest.fn(),
       findMany: jest.fn(),
+      findUnique: jest.fn(),
+      count: jest.fn(),
     },
     evaluationResult: {
       create: jest.fn(),
       findMany: jest.fn(),
+      count: jest.fn(),
     },
   };
 
@@ -242,6 +245,90 @@ describe('EvaluationService', () => {
           data: expect.objectContaining({ status: 'completed' }),
         }),
       );
+    });
+  });
+
+  describe('listRuns', () => {
+    it('returns paginated runs ordered by startedAt desc', async () => {
+      const runs = [
+        { id: 'run-2', status: 'completed' },
+        { id: 'run-1', status: 'running' },
+      ];
+      mockPrisma.evaluationRun.findMany.mockResolvedValueOnce(runs);
+      mockPrisma.evaluationRun.count.mockResolvedValueOnce(2);
+
+      const result = await service.listRuns({ limit: 10, offset: 0 });
+
+      expect(mockPrisma.evaluationRun.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          orderBy: { startedAt: 'desc' },
+          take: 10,
+          skip: 0,
+        }),
+      );
+      expect(result.runs).toEqual(runs);
+      expect(result.total).toBe(2);
+      expect(result.limit).toBe(10);
+      expect(result.offset).toBe(0);
+    });
+
+    it('filters by status when provided', async () => {
+      mockPrisma.evaluationRun.findMany.mockResolvedValueOnce([]);
+      mockPrisma.evaluationRun.count.mockResolvedValueOnce(0);
+
+      await service.listRuns({ status: 'completed' });
+
+      expect(mockPrisma.evaluationRun.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { status: 'completed' },
+        }),
+      );
+    });
+  });
+
+  describe('getRunById', () => {
+    it('returns a run when found', async () => {
+      const run = { id: 'run-123', status: 'completed' };
+      mockPrisma.evaluationRun.findUnique.mockResolvedValueOnce(run);
+
+      const result = await service.getRunById('run-123');
+
+      expect(mockPrisma.evaluationRun.findUnique).toHaveBeenCalledWith({
+        where: { id: 'run-123' },
+      });
+      expect(result).toEqual(run);
+    });
+
+    it('returns null when not found', async () => {
+      mockPrisma.evaluationRun.findUnique.mockResolvedValueOnce(null);
+
+      const result = await service.getRunById('missing');
+
+      expect(result).toBeNull();
+    });
+  });
+
+  describe('getRunResults', () => {
+    it('returns paginated results ordered by createdAt asc', async () => {
+      const results = [
+        { id: 'res-1', questionId: 'q001' },
+        { id: 'res-2', questionId: 'q002' },
+      ];
+      mockPrisma.evaluationResult.findMany.mockResolvedValueOnce(results);
+      mockPrisma.evaluationResult.count.mockResolvedValueOnce(2);
+
+      const result = await service.getRunResults({ runId: 'run-123', limit: 10, offset: 0 });
+
+      expect(mockPrisma.evaluationResult.findMany).toHaveBeenCalledWith(
+        expect.objectContaining({
+          where: { runId: 'run-123' },
+          orderBy: { createdAt: 'asc' },
+          take: 10,
+          skip: 0,
+        }),
+      );
+      expect(result.results).toEqual(results);
+      expect(result.total).toBe(2);
     });
   });
 });

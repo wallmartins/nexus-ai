@@ -1,8 +1,12 @@
 import {
   Controller,
+  Get,
   Post,
   Body,
+  Param,
+  Query,
   BadRequestException,
+  NotFoundException,
 } from '@nestjs/common';
 import { EvaluationService, EvaluationModelConfig } from './evaluation.service';
 import { QueueService } from '../queue/queue.service';
@@ -52,5 +56,54 @@ export class EvaluationController {
     });
 
     return { runId, status, queuedAt };
+  }
+
+  @Get()
+  async listRuns(
+    @Query('status') status?: string,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ): Promise<unknown> {
+    return this.evaluationService.listRuns({
+      status,
+      limit: limit ? parseInt(limit, 10) : undefined,
+      offset: offset ? parseInt(offset, 10) : undefined,
+    });
+  }
+
+  @Get(':id')
+  async getRun(@Param('id') id: string): Promise<unknown> {
+    const run = await this.evaluationService.getRunById(id);
+
+    if (!run) {
+      throw new NotFoundException({
+        code: 'RUN_NOT_FOUND',
+        message: `Evaluation run with id '${id}' not found`,
+      });
+    }
+
+    return run;
+  }
+
+  @Get(':id/results')
+  async getRunResults(
+    @Param('id') id: string,
+    @Query('limit') limit?: string,
+    @Query('offset') offset?: string,
+  ): Promise<unknown> {
+    const run = await this.evaluationService.getRunById(id);
+
+    if (!run) {
+      throw new NotFoundException({
+        code: 'RUN_NOT_FOUND',
+        message: `Evaluation run with id '${id}' not found`,
+      });
+    }
+
+    return this.evaluationService.getRunResults({
+      runId: id,
+      limit: limit ? parseInt(limit, 10) : undefined,
+      offset: offset ? parseInt(offset, 10) : undefined,
+    });
   }
 }
