@@ -53,4 +53,13 @@ export class JobRecordService {
       data: { status: 'failed', failedReason, attempts },
     });
   }
+
+  async findFailed(offset = 0, limit = 50) {
+    return this.prisma.jobRecord.findMany({
+      where: { status: 'failed' },
+      orderBy: { updatedAt: 'desc' },
+      skip: offset,
+      take: limit,
+    });
+  }
 }
