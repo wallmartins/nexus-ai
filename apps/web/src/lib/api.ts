@@ -139,3 +139,68 @@ export async function deleteDocument(id: string): Promise<void> {
     throw new Error(body.message || `HTTP ${res.status}`);
   }
 }
+
+export type MetricsResponse = {
+  period: { from: string; to: string };
+  granularity?: string;
+  summary: {
+    totalRequests: number;
+    avgLatencyMs: number;
+    p95LatencyMs: number;
+    totalTokens: { input: number; output: number };
+    errorRate: number;
+  };
+  buckets?: Array<{
+    timestamp: string;
+    totalRequests: number;
+    avgLatencyMs: number;
+    p95LatencyMs: number;
+    totalTokens: { input: number; output: number };
+    errorRate: number;
+  }>;
+};
+
+export async function getMetrics(window: string): Promise<MetricsResponse> {
+  return fetchJson<MetricsResponse>(
+    `${API_BASE}/observability/metrics?window=${encodeURIComponent(window)}`,
+  );
+}
+
+export type LogEntry = {
+  id: string;
+  correlationId: string;
+  level: 'info' | 'warn' | 'error' | 'debug';
+  service: string;
+  eventType: string;
+  payload: Record<string, unknown>;
+  timestamp: string;
+};
+
+export type LogsResponse = {
+  entries: LogEntry[];
+  total: number;
+  limit: number;
+  offset: number;
+};
+
+export async function getLogs(params?: {
+  correlationId?: string;
+  level?: string;
+  from?: string;
+  to?: string;
+  limit?: number;
+  offset?: number;
+}): Promise<LogsResponse> {
+  const search = new URLSearchParams();
+  if (params?.correlationId) search.set('correlationId', params.correlationId);
+  if (params?.level) search.set('level', params.level);
+  if (params?.from) search.set('from', params.from);
+  if (params?.to) search.set('to', params.to);
+  if (params?.limit) search.set('limit', String(params.limit));
+  if (params?.offset) search.set('offset', String(params.offset));
+
+  const qs = search.toString();
+  return fetchJson<LogsResponse>(
+    `${API_BASE}/observability/logs${qs ? `?${qs}` : ''}`,
+  );
+}
