@@ -17,6 +17,8 @@
     "db:studio": "prisma studio"
   },
   "dependencies": {
+    "@langchain/core": "^1.1.41",
+    "@langchain/langgraph": "^1.2.9",
     "@nestjs/common": "^11.1.19",
     "@nestjs/config": "^4.0.2",
     "@nestjs/core": "^11.1.19",

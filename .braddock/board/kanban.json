@@ -3,7 +3,6 @@
     "backlog": [],
     "todo": [
       "TASK-018",
-      "TASK-019",
       "TASK-020",
       "TASK-021",
       "TASK-026",
@@ -22,14 +21,7 @@
       "TASK-040"
     ],
     "doing": [],
-    "review": [
-      "TASK-017",
-      "TASK-019",
-      "TASK-023"
-    ],
-    "review": [
-      "TASK-016"
-    ],
+    "review": ["TASK-016"],
     "done": [
       "TASK-001",
       "TASK-002",
@@ -49,7 +41,8 @@
       "TASK-012",
       "TASK-013",
       "TASK-015",
-      "TASK-025"
+      "TASK-025",
+      "TASK-016"
     ]
   }
 }
