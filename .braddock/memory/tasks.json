@@ -531,7 +531,7 @@
       "epic": "EPIC-001",
       "story": "STORY-002",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-002", "TASK-035"],
       "definition_of_done": "`@nestjs/throttler` installed and configured. Rate limits applied to `POST /api/v1/chat` (100/min per IP) and `POST /api/v1/documents` (20/min per IP). Returns 429 with `Retry-After` header. Configurable via env vars. Tests verify limit enforcement."
     },

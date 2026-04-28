@@ -2,7 +2,8 @@
 
 ## Current state
 
-**MVP Delivery Review Complete.** All 40 tasks implemented, tested, and merged. PR #41 (TASK-021) merged.
+**MVP Delivery Review Complete.** All 40 tasks implemented, tested, and merged. PR #41 (TASK-021) merged.  
+**TASK-041 in review:** Rate limiting implemented and ready for PR.
 
 ---
 
@@ -93,7 +94,7 @@
 ## Gaps Found
 
 ### Critical (Fix before production)
-1. **Rate Limiting (NFR-SEC-006)** — No `@nestjs/throttler` or equivalent on upload/chat endpoints. Exposes system to abuse.
+1. ~~**Rate Limiting (NFR-SEC-006)** — No `@nestjs/throttler` or equivalent on upload/chat endpoints. Exposes system to abuse.~~ **Addressed in TASK-041.**
 2. **pgvector Vector Index (NFR-SCA-001)** — No IVFFlat or HNSW index on `embeddings.vector`. Retrieval will degrade linearly beyond a few thousand chunks. Spec requires support up to 10k chunks with indexing.
 
 ### High
@@ -122,7 +123,7 @@
 | Team bandwidth stretched | Managed — strict MVP scope adhered | 40/40 tasks complete |
 | Evaluation subjectivity | Managed — automated heuristics + partial results preserved | Yes |
 | Prompt drift | Managed — versioned code assets | Yes |
-| Rate limiting absence | **Active** — security exposure before production | Add `@nestjs/throttler` |
+| Rate limiting absence | **Resolved** — `@nestjs/throttler` installed with per-endpoint limits | TASK-041 in review |
 | Redis SPOF | **Active** — single instance for memory, cache, queues | Add graceful degradation |
 
 ---
@@ -141,7 +142,7 @@
 
 1. Merge PR #41 for TASK-021 (pending manual review — code already validated above).
 2. Post-MVP backlog (in order of priority):
-   - Add `@nestjs/throttler` rate limiting (critical security)
+   - ~~Add `@nestjs/throttler` rate limiting (critical security)~~ — TASK-041 implemented, in review
    - Add `CREATE INDEX ON embeddings USING hnsw (vector vector_cosine_ops)` migration (critical performance)
    - Add `cached` field to `SynthesisResult` / `ChatMessageResponse` and UI cache indicator
    - Implement Playwright E2E tests for critical journeys
@@ -229,6 +230,29 @@ The identified gaps are real but do not block the MVP's primary value propositio
 
 ---
 
+## TASK-041 — Rate Limiting with `@nestjs/throttler` (In Review)
+
+### What Was Implemented
+
+- Installed `@nestjs/throttler` v6.5.0 and `supertest` for HTTP-level testing.
+- Added `throttler.config.ts` that reads `RATE_LIMIT_CHAT_TTL`, `RATE_LIMIT_CHAT_LIMIT`, `RATE_LIMIT_UPLOAD_TTL`, `RATE_LIMIT_UPLOAD_LIMIT` from environment variables with safe defaults.
+- Updated `env.schema.ts` to validate all four rate-limit env vars (defaults: chat 100/min, upload 20/min).
+- Registered `ThrottlerModule.forRoot()` in `AppModule` with a permissive global default (10_000/min) and bound `RateLimitGuard` as `APP_GUARD`.
+- Created `RateLimitGuard` extending `ThrottlerGuard`; overrides `throwThrottlingException` to set `Retry-After` header in seconds before propagating the 429 error.
+- Applied `@Throttle()` to `ChatController.sendMessage` (100/min) and `DocumentsController.upload` (20/min).
+- Applied `@SkipThrottle()` to `HealthController` so health checks are never blocked.
+- Added integration tests in `rate-limit.guard.spec.ts` using a test controller and `supertest`:
+  - Verifies chat-style endpoint allows requests up to limit then returns 429 with `Retry-After`.
+  - Verifies upload-style endpoint allows 1 request then returns 429.
+  - Verifies skipped endpoint (health) remains unlimited across many requests.
+
+### Verification
+- **337 API tests pass** (+5 new tests, no regressions).
+- **TypeScript strict mode** compiles cleanly.
+- **NestJS build** succeeds.
+
+---
+
 ## TASK-051 — Pixel-Perfect UI Improvements (In Review)
 
 ### What Was Implemented
@@ -288,4 +312,4 @@ Used Playwright to open `nexus-rag.html` reference design, captured screenshots 
 
 ## Suggested next step
 
-TASK-051 is complete. Continue with post-MVP backlog. Priority: rate limiting → vector index → E2E tests → cache indicator → Swagger → Redis graceful degradation.
+TASK-041 is complete and in review. Next priority: merge TASK-041 PR, then continue with vector index (TASK-042) → E2E tests (TASK-043) → cache indicator (TASK-044) → Swagger (TASK-045) → Redis graceful degradation (TASK-046).

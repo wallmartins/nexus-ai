@@ -1,8 +1,11 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule } from '@nestjs/config';
+import { APP_GUARD } from '@nestjs/core';
+import { ThrottlerModule } from '@nestjs/throttler';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { validateEnv } from './config/env.schema';
+import { throttlerConfig } from './config/throttler.config';
 import { AgentModule } from './agent/agent.module';
 import { ChatModule } from './chat/chat.module';
 import { DatabaseModule } from './database/database.module';
@@ -17,6 +20,7 @@ import { QueueModule } from './queue/queue.module';
 import { RagModule } from './rag/rag.module';
 import { RedisModule } from './redis/redis.module';
 import { SettingsModule } from './settings/settings.module';
+import { RateLimitGuard } from './common/guards/rate-limit.guard';
 
 @Module({
   imports: [
@@ -24,6 +28,13 @@ import { SettingsModule } from './settings/settings.module';
       isGlobal: true,
       validate: validateEnv,
     }),
+    ThrottlerModule.forRoot([
+      {
+        name: 'default',
+        ttl: throttlerConfig.default.ttl,
+        limit: throttlerConfig.default.limit,
+      },
+    ]),
     ObservabilityModule,
     AgentModule,
     ChatModule,
@@ -40,6 +51,12 @@ import { SettingsModule } from './settings/settings.module';
     SettingsModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [
+    AppService,
+    {
+      provide: APP_GUARD,
+      useClass: RateLimitGuard,
+    },
+  ],
 })
 export class AppModule {}
