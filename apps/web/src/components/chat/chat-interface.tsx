@@ -1,6 +1,8 @@
 'use client';
 
 import { useState, useCallback, useRef, useEffect } from 'react';
+import { Plus, Search, Quote, Eye, Zap, CheckSquare } from 'lucide-react';
+import { cn } from '@/lib/utils';
 import { MessageList } from './message-list';
 import { ChatInput } from './chat-input';
 import { SourcePanel } from './source-panel';
@@ -19,24 +21,47 @@ export type ChatMessage =
       correlationId: string;
     };
 
+type Conversation = {
+  id: string;
+  title: string;
+  turnCount: number;
+  provider: string;
+  dateGroup: 'TODAY' | 'YESTERDAY';
+};
+
+const conversations: Conversation[] = [];
+
+const quickActions = [
+  { label: 'Cite every answer', Icon: Quote, color: 'text-brand-purple-light', bg: 'bg-brand-purple/15' },
+  { label: 'Show retrieval sources', Icon: Eye, color: 'text-blue-400', bg: 'bg-blue-400/15' },
+  { label: 'Explain last failure', Icon: Zap, color: 'text-yellow-400', bg: 'bg-yellow-400/15' },
+  { label: 'Generate eval cases', Icon: CheckSquare, color: 'text-orange-400', bg: 'bg-orange-400/15' },
+];
+
 export function ChatInterface() {
   const [messages, setMessages] = useState<ChatMessage[]>([]);
   const [sessionId, setSessionId] = useState<string | undefined>(undefined);
   const [isLoading, setIsLoading] = useState(false);
-  const [sourcesOpen, setSourcesOpen] = useState(false);
   const [activeSources, setActiveSources] = useState<ChatSource[]>([]);
+  const [activeConversationId, setActiveConversationId] = useState<string | null>(null);
   const messagesEndRef = useRef<HTMLDivElement>(null);
   const abortRef = useRef(false);
 
-  // Scroll to bottom when messages change
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+  }, [messages]);
+
+  // Auto-show sources from latest assistant message
+  useEffect(() => {
+    const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant');
+    if (lastAssistant && lastAssistant.sources.length > 0) {
+      setActiveSources(lastAssistant.sources);
+    }
   }, [messages]);
 
   const handleSend = useCallback(
     async (text: string) => {
       if (!text.trim() || isLoading) return;
-
       abortRef.current = false;
 
       const userMessage: ChatMessage = {
@@ -93,15 +118,81 @@ export function ChatInterface() {
   const handleCitationClick = useCallback(
     (sources: ChatSource[]) => {
       setActiveSources(sources);
-      setSourcesOpen(true);
     },
     [],
   );
 
+  const lastAssistant = [...messages].reverse().find((m) => m.role === 'assistant');
+  const routeInfo = {
+    route: 'RAG',
+    topK: 5,
+    mmr: true,
+    correlationId: lastAssistant?.correlationId ?? '',
+  };
+
   return (
     <div className="flex h-[calc(100vh-64px)] overflow-hidden">
-      {/* Main chat thread */}
-      <div className="flex flex-1 flex-col">
+      {/* Left sidebar */}
+      <div className="hidden w-[240px] shrink-0 flex-col border-r border-border-subtle bg-bg-canvas lg:flex">
+        <div className="p-4">
+          <button
+            type="button"
+            className="flex w-full items-center justify-center gap-2 rounded-pill bg-brand-lime px-4 py-2.5 text-sm font-medium text-bg-canvas transition-colors hover:bg-brand-lime-hover"
+          >
+            <Plus size={16} />
+            New conversation
+          </button>
+        </div>
+        <div className="px-4 pb-2">
+          <div className="flex items-center gap-2 rounded-lg bg-surface-1 px-3 py-2 text-sm text-text-muted">
+            <Search size={14} />
+            <span>Search sessions...</span>
+          </div>
+        </div>
+        <div className="flex-1 overflow-y-auto px-2">
+          {conversations.length === 0 ? (
+            <div className="px-3 py-8 text-center">
+              <p className="text-xs text-text-muted">No conversations yet</p>
+              <p className="mt-1 text-[10px] text-text-muted">Start a new chat to see history here</p>
+            </div>
+          ) : (
+            (['TODAY', 'YESTERDAY'] as const).map((group) => {
+              const groupConversations = conversations.filter((c) => c.dateGroup === group);
+              if (groupConversations.length === 0) return null;
+              return (
+                <div key={group} className="py-2">
+                  <div className="px-3 py-1.5 text-[10px] font-semibold uppercase tracking-wider text-text-muted">
+                    {group}
+                  </div>
+                  {groupConversations.map((conv) => (
+                    <button
+                      key={conv.id}
+                      type="button"
+                      onClick={() => setActiveConversationId(conv.id)}
+                      className={cn(
+                        'w-full rounded-lg px-3 py-2 text-left transition-colors',
+                        activeConversationId === conv.id
+                          ? 'bg-surface-1'
+                          : 'hover:bg-surface-1/50'
+                      )}
+                    >
+                      <div className="text-sm font-medium text-text-primary">
+                        {conv.title}
+                      </div>
+                      <div className="text-xs text-text-muted">
+                        {conv.turnCount} turns · {conv.provider}
+                      </div>
+                    </button>
+                  ))}
+                </div>
+              );
+            })
+          )}
+        </div>
+      </div>
+
+      {/* Main chat */}
+      <div className="flex flex-1 flex-col min-w-0">
         <div className="flex-1 overflow-y-auto px-4 py-6 lg:px-8">
           {messages.length === 0 && (
             <div className="flex h-full flex-col items-center justify-center gap-5">
@@ -132,15 +223,33 @@ export function ChatInterface() {
           <div ref={messagesEndRef} />
         </div>
 
-        <ChatInput onSend={handleSend} isLoading={isLoading} />
+        {/* Quick actions */}
+        {messages.length > 0 && (
+          <div className="px-4 pb-3 lg:px-8">
+            <div className="mx-auto flex max-w-3xl flex-wrap gap-2">
+              {quickActions.map((action) => (
+                <button
+                  key={action.label}
+                  type="button"
+                  className="flex items-center gap-2.5 rounded-xl bg-surface-1 px-3.5 py-2.5 text-sm text-text-secondary transition-colors hover:bg-surface-2"
+                >
+                  <span className={cn('flex h-7 w-7 items-center justify-center rounded-full', action.bg)}>
+                    <action.Icon size={14} className={action.color} />
+                  </span>
+                  {action.label}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        <ChatInput onSend={handleSend} isLoading={isLoading} routeInfo={routeInfo} />
       </div>
 
-      {/* Sources panel */}
-      <SourcePanel
-        open={sourcesOpen}
-        onClose={() => setSourcesOpen(false)}
-        sources={activeSources}
-      />
+      {/* Right sidebar */}
+      {activeSources.length > 0 && (
+        <SourcePanel sources={activeSources} />
+      )}
     </div>
   );
 }

@@ -1,6 +1,7 @@
 'use client';
 
-import { useState, useEffect, useCallback } from 'react';
+import { useState, useCallback } from 'react';
+import { Copy, RefreshCw, MoreHorizontal, Shield, Clock, Cpu } from 'lucide-react';
 import { cn } from '@/lib/utils';
 import type { ChatMessage } from './chat-interface';
 import type { ChatSource } from '@/lib/api';
@@ -21,40 +22,12 @@ function CitationButton({
     <button
       type="button"
       onClick={onClick}
-      className="mx-0.5 inline-flex h-5 min-w-[20px] items-center justify-center rounded bg-brand-purple/15 px-1 text-xs font-medium text-brand-purple-light transition-colors hover:bg-brand-purple/25 focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-lime focus-visible:outline-offset-2"
+      className="mx-0.5 inline-flex h-4 min-w-[16px] items-center justify-center rounded text-[10px] font-medium text-brand-lime transition-colors hover:text-brand-lime-hover focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-lime focus-visible:outline-offset-2"
       aria-label={`View source ${index}`}
     >
-      {index}
+      [{index}]
     </button>
   );
-}
-
-function TypewriterText({
-  text,
-  speed = 8,
-}: {
-  text: string;
-  speed?: number;
-}) {
-  const [displayed, setDisplayed] = useState('');
-  const [done, setDone] = useState(false);
-
-  useEffect(() => {
-    setDisplayed('');
-    setDone(false);
-    let i = 0;
-    const interval = setInterval(() => {
-      i += 1;
-      setDisplayed(text.slice(0, i));
-      if (i >= text.length) {
-        clearInterval(interval);
-        setDone(true);
-      }
-    }, speed);
-    return () => clearInterval(interval);
-  }, [text, speed]);
-
-  return <span>{displayed}</span>;
 }
 
 function parseContentWithCitations(
@@ -90,11 +63,11 @@ function parseContentWithCitations(
 
 export function MessageBubble({ message, onCitationClick }: MessageBubbleProps) {
   const isUser = message.role === 'user';
+  const [copied, setCopied] = useState(false);
 
   const handleCitationClick = useCallback(
     (index: number) => {
       if (message.role !== 'assistant') return;
-      // Find the source at the given 1-based index
       const source = message.sources[index - 1];
       if (source) {
         onCitationClick([source]);
@@ -103,11 +76,32 @@ export function MessageBubble({ message, onCitationClick }: MessageBubbleProps) 
     [message, onCitationClick],
   );
 
-  const handleShowAllSources = useCallback(() => {
-    if (message.role === 'assistant' && message.sources.length > 0) {
-      onCitationClick(message.sources);
+  const handleCopy = useCallback(async () => {
+    try {
+      await navigator.clipboard.writeText(message.content);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 2000);
+    } catch {
+      // ignore
     }
-  }, [message, onCitationClick]);
+  }, [message.content]);
+
+  const groundedScore =
+    message.role === 'assistant' && message.sources.length > 0
+      ? Math.max(...message.sources.map((s) => s.score)).toFixed(2)
+      : null;
+
+  const latencyText =
+    message.role === 'assistant' && message.latencyMs > 0
+      ? message.latencyMs >= 1000
+        ? `${(message.latencyMs / 1000).toFixed(1)}s`
+        : `${message.latencyMs}ms`
+      : null;
+
+  const totalTokens =
+    message.role === 'assistant'
+      ? message.tokens.input + message.tokens.output
+      : 0;
 
   return (
     <div
@@ -116,62 +110,88 @@ export function MessageBubble({ message, onCitationClick }: MessageBubbleProps) 
         isUser ? 'flex-row-reverse' : 'flex-row',
       )}
     >
-      {/* Avatar */}
-      <div className="flex shrink-0 flex-col items-center">
-        {isUser ? (
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-lime text-xs font-semibold text-bg-canvas">
-            U
+      {/* Avatar - only for assistant */}
+      {!isUser && (
+        <div className="flex shrink-0 flex-col items-center pt-1">
+          <div className="flex h-10 w-10 items-center justify-center rounded-full bg-brand-purple/10 shadow-glow-purple">
+            <div className="h-7 w-7 rounded-full bg-gradient-to-br from-brand-purple to-brand-purple-light" />
           </div>
-        ) : (
-          <div className="flex h-8 w-8 items-center justify-center rounded-full bg-brand-purple/10">
-            <div className="h-5 w-5 rounded-full bg-gradient-to-br from-brand-purple to-brand-purple-light" />
-          </div>
-        )}
-      </div>
+        </div>
+      )}
 
       {/* Bubble */}
       <div className={cn('flex max-w-[85%] flex-col gap-1', isUser ? 'items-end' : 'items-start')}>
-        <div
-          className={cn(
-            'px-4 py-3 text-sm leading-relaxed',
-            isUser
-              ? 'rounded-[20px] rounded-tr-sm bg-brand-lime text-bg-canvas'
-              : 'rounded-[20px] rounded-tl-sm bg-surface-1 text-text-primary',
-          )}
-        >
-          {isUser ? (
-            message.content
-          ) : (
-            <div className="whitespace-pre-wrap">
-              {parseContentWithCitations(message.content, handleCitationClick)}
-            </div>
-          )}
-        </div>
-
-        {/* Metrics */}
-        {!isUser && message.role === 'assistant' && (
-          <div className="flex items-center gap-2 px-1">
-            {message.sources.length > 0 && (
-              <button
-                type="button"
-                onClick={handleShowAllSources}
-                className="text-xs text-text-muted transition-colors hover:text-brand-purple-light focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-lime focus-visible:outline-offset-2"
-              >
-                {message.sources.length} source
-                {message.sources.length > 1 ? 's' : ''}
-              </button>
-            )}
-            {message.latencyMs > 0 && (
-              <span className="text-xs text-text-muted">
-                {message.latencyMs}ms
-              </span>
-            )}
-            {message.tokens.input > 0 && (
-              <span className="text-xs text-text-muted">
-                {message.tokens.input + message.tokens.output} tokens
-              </span>
-            )}
+        {/* Agent label */}
+        {!isUser && (
+          <div className="mb-1 text-xs font-medium text-text-muted">
+            Nexus Agent · RAG route
           </div>
+        )}
+
+        {isUser ? (
+          <div className="rounded-[20px] rounded-tr-sm bg-brand-lime px-5 py-3 text-sm font-medium text-bg-canvas">
+            {message.content}
+          </div>
+        ) : (
+          <>
+            <div className="rounded-2xl rounded-tl-sm bg-surface-1 px-5 py-4 text-sm leading-relaxed text-text-primary">
+              <div className="whitespace-pre-wrap">
+                {parseContentWithCitations(message.content, handleCitationClick)}
+              </div>
+            </div>
+
+            {/* Metrics bar */}
+            <div className="mt-1 flex w-full items-center justify-between px-1">
+              <div className="flex items-center gap-4">
+                {groundedScore && (
+                  <span className="inline-flex items-center gap-1.5 text-xs font-medium text-brand-lime">
+                    <Shield size={12} />
+                    Grounded · {groundedScore}
+                  </span>
+                )}
+                {latencyText && (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-text-muted">
+                    <Clock size={12} />
+                    {latencyText}
+                  </span>
+                )}
+                {totalTokens > 0 && (
+                  <span className="inline-flex items-center gap-1.5 text-xs text-text-muted">
+                    <Cpu size={12} />
+                    {totalTokens} tok
+                  </span>
+                )}
+              </div>
+
+              <div className="flex items-center gap-0.5">
+                <button
+                  type="button"
+                  onClick={handleCopy}
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-surface-2 hover:text-text-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-lime focus-visible:outline-offset-2"
+                  aria-label={copied ? 'Copied' : 'Copy message'}
+                  title={copied ? 'Copied' : 'Copy message'}
+                >
+                  <Copy size={14} />
+                </button>
+                <button
+                  type="button"
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-surface-2 hover:text-text-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-lime focus-visible:outline-offset-2"
+                  aria-label="Regenerate response"
+                  title="Regenerate response"
+                >
+                  <RefreshCw size={14} />
+                </button>
+                <button
+                  type="button"
+                  className="flex h-8 w-8 items-center justify-center rounded-full text-text-muted transition-colors hover:bg-surface-2 hover:text-text-secondary focus-visible:outline focus-visible:outline-2 focus-visible:outline-brand-lime focus-visible:outline-offset-2"
+                  aria-label="More options"
+                  title="More options"
+                >
+                  <MoreHorizontal size={14} />
+                </button>
+              </div>
+            </div>
+          </>
         )}
       </div>
     </div>
