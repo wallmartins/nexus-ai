@@ -3,7 +3,8 @@
 ## Current state
 
 **MVP Delivery Review Complete.** All 40 tasks implemented, tested, and merged. PR #41 (TASK-021) merged.  
-**TASK-041 in review:** Rate limiting implemented and ready for PR.
+**TASK-041 in review:** Rate limiting implemented and ready for PR.  
+**TASK-042 in review:** pgvector HNSW index implemented and ready for PR.
 
 ---
 
@@ -95,7 +96,7 @@
 
 ### Critical (Fix before production)
 1. ~~**Rate Limiting (NFR-SEC-006)** — No `@nestjs/throttler` or equivalent on upload/chat endpoints. Exposes system to abuse.~~ **Addressed in TASK-041.**
-2. **pgvector Vector Index (NFR-SCA-001)** — No IVFFlat or HNSW index on `embeddings.vector`. Retrieval will degrade linearly beyond a few thousand chunks. Spec requires support up to 10k chunks with indexing.
+2. ~~**pgvector Vector Index (NFR-SCA-001)** — No IVFFlat or HNSW index on `embeddings.vector`. Retrieval will degrade linearly beyond a few thousand chunks. Spec requires support up to 10k chunks with indexing.~~ **Addressed in TASK-042.**
 
 ### High
 3. **E2E Tests (NFR-MAI-002)** — No Playwright/Cypress end-to-end tests for critical journeys (chat with RAG, document upload, evaluation trigger). `playwright` is in `devDependencies` but no test files exist.
@@ -119,7 +120,7 @@
 |------|------------|-------------------|
 | Local LLM quality insufficient | Managed — 3 providers available, cloud selectable via settings | Hybrid strategy delivered |
 | Agent layer complexity | Managed — graphs kept simple (2-4 nodes max) | Yes, classify→route only |
-| pgvector performance degradation | **Active** — no vector index; risk increases with chunk count | Add HNSW index post-MVP |
+| pgvector performance degradation | **Resolved** — HNSW index on `embeddings.vector` created conditionally | TASK-042 in review |
 | Team bandwidth stretched | Managed — strict MVP scope adhered | 40/40 tasks complete |
 | Evaluation subjectivity | Managed — automated heuristics + partial results preserved | Yes |
 | Prompt drift | Managed — versioned code assets | Yes |
@@ -143,7 +144,7 @@
 1. Merge PR #41 for TASK-021 (pending manual review — code already validated above).
 2. Post-MVP backlog (in order of priority):
    - ~~Add `@nestjs/throttler` rate limiting (critical security)~~ — TASK-041 implemented, in review
-   - Add `CREATE INDEX ON embeddings USING hnsw (vector vector_cosine_ops)` migration (critical performance)
+   - ~~Add `CREATE INDEX ON embeddings USING hnsw (vector vector_cosine_ops)` migration (critical performance)~~ — TASK-042 implemented, in review
    - Add `cached` field to `SynthesisResult` / `ChatMessageResponse` and UI cache indicator
    - Implement Playwright E2E tests for critical journeys
    - Add `@nestjs/swagger` for auto-generated OpenAPI docs
@@ -253,6 +254,27 @@ The identified gaps are real but do not block the MVP's primary value propositio
 
 ---
 
+## TASK-042 — pgvector HNSW Vector Index (In Review)
+
+### What Was Implemented
+
+- Created Prisma migration `20260428110000_add_hnsw_index` with conditional HNSW index creation SQL.
+- Migration uses a PL/pgSQL `DO` block that checks for the `hnsw` access method (available in pgvector >= 0.5.0) before creating the index.
+- SQL: `CREATE INDEX IF NOT EXISTS "embeddings_vector_hnsw_idx" ON "embeddings" USING hnsw ("vector" vector_cosine_ops);`
+- This ensures the index is only created when the database supports HNSW, avoiding failures on older pgvector versions.
+- The existing retrieval query in `RetrievalService` already uses the `<=>` cosine distance operator, which is compatible with `vector_cosine_ops` and will leverage the HNSW index automatically.
+- Added `verifyHnswIndex()` method to `RetrievalService` that queries `pg_indexes` to confirm the index exists.
+- Updated `HealthService` to include an `hnswIndex` check in the health response. The overall health status is `unhealthy` if the HNSW index is missing, making index absence observable.
+- Added `health.service.spec.ts` with tests for healthy/unhealthy states including HNSW index presence.
+- Extended `retrieval.service.spec.ts` with tests for `verifyHnswIndex()` covering both present and missing index scenarios.
+
+### Verification
+- **343 API tests pass** (+6 new tests, no regressions).
+- **TypeScript strict mode** compiles cleanly.
+- **NestJS build** succeeds.
+
+---
+
 ## TASK-051 — Pixel-Perfect UI Improvements (In Review)
 
 ### What Was Implemented
@@ -312,4 +334,4 @@ Used Playwright to open `nexus-rag.html` reference design, captured screenshots 
 
 ## Suggested next step
 
-TASK-041 is complete and in review. Next priority: merge TASK-041 PR, then continue with vector index (TASK-042) → E2E tests (TASK-043) → cache indicator (TASK-044) → Swagger (TASK-045) → Redis graceful degradation (TASK-046).
+TASK-041 and TASK-042 are complete and in review. Next priority: merge both PRs, then continue with E2E tests (TASK-043) → cache indicator (TASK-044) → Swagger (TASK-045) → Redis graceful degradation (TASK-046).

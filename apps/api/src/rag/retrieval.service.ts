@@ -83,6 +83,17 @@ export class RetrievalService {
     return this.applyMMR(candidates, topK, mmrLambda);
   }
 
+  async verifyHnswIndex(): Promise<{ exists: boolean; name: string }> {
+    const result = await this.prisma.$queryRaw<
+      Array<{ indexname: string }>
+    >`SELECT indexname FROM pg_indexes WHERE tablename = 'embeddings' AND indexname = 'embeddings_vector_hnsw_idx'`;
+
+    return {
+      exists: Array.isArray(result) && result.length > 0,
+      name: 'embeddings_vector_hnsw_idx',
+    };
+  }
+
   private async runSimilaritySearch(
     queryVector: number[],
     limit: number,

@@ -322,4 +322,24 @@ describe('RetrievalService', () => {
       expect(mockEmbedQuery).toHaveBeenCalledWith('test', 'text-embedding-3-small');
     });
   });
+
+  describe('verifyHnswIndex', () => {
+    it('returns exists=true when the HNSW index is present', async () => {
+      mockQueryRaw.mockResolvedValueOnce([{ indexname: 'embeddings_vector_hnsw_idx' }]);
+
+      const result = await service.verifyHnswIndex();
+
+      expect(result.exists).toBe(true);
+      expect(result.name).toBe('embeddings_vector_hnsw_idx');
+    });
+
+    it('returns exists=false when the HNSW index is missing', async () => {
+      mockQueryRaw.mockResolvedValueOnce([]);
+
+      const result = await service.verifyHnswIndex();
+
+      expect(result.exists).toBe(false);
+      expect(result.name).toBe('embeddings_vector_hnsw_idx');
+    });
+  });
 });
