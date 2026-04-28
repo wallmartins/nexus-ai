@@ -541,7 +541,7 @@
       "epic": "EPIC-002",
       "story": "STORY-004",
       "owner": "backend-senior",
-      "status": "todo",
+      "status": "review",
       "dependencies": ["TASK-008", "TASK-012"],
       "definition_of_done": "Prisma migration creates HNSW index on `embeddings.vector` for cosine similarity. Index is conditional on pgvector >= 0.5.0. Query planner uses index for top-k retrieval. Benchmark shows p95 < 200ms at 10k chunks."
     },

@@ -9,6 +9,7 @@ export interface HealthStatus {
     database: { status: 'up' | 'down'; latencyMs: number };
     redis: { status: 'up' | 'down'; latencyMs: number };
     pgvector: { status: 'up' | 'down'; latencyMs: number };
+    hnswIndex: { status: 'up' | 'down'; latencyMs: number };
   };
 }
 
@@ -22,16 +23,18 @@ export class HealthService {
   async check(): Promise<HealthStatus> {
     const timestamp = new Date().toISOString();
 
-    const [dbResult, redisResult, pgvectorResult] = await Promise.all([
+    const [dbResult, redisResult, pgvectorResult, hnswResult] = await Promise.all([
       this.checkDatabase(),
       this.checkRedis(),
       this.checkPgvector(),
+      this.checkHnswIndex(),
     ]);
 
     const allHealthy =
       dbResult.status === 'up' &&
       redisResult.status === 'up' &&
-      pgvectorResult.status === 'up';
+      pgvectorResult.status === 'up' &&
+      hnswResult.status === 'up';
 
     return {
       status: allHealthy ? 'healthy' : 'unhealthy',
@@ -40,6 +43,7 @@ export class HealthService {
         database: dbResult,
         redis: redisResult,
         pgvector: pgvectorResult,
+        hnswIndex: hnswResult,
       },
     };
   }
@@ -72,6 +76,20 @@ export class HealthService {
       `;
       const hasExtension = Array.isArray(result) && result.length > 0;
       return { status: hasExtension ? 'up' : 'down', latencyMs: Date.now() - start };
+    } catch {
+      return { status: 'down', latencyMs: Date.now() - start };
+    }
+  }
+
+  private async checkHnswIndex(): Promise<{ status: 'up' | 'down'; latencyMs: number }> {
+    const start = Date.now();
+    try {
+      const result = await this.prisma.$queryRaw`
+        SELECT 1 FROM pg_indexes
+        WHERE tablename = 'embeddings' AND indexname = 'embeddings_vector_hnsw_idx'
+      `;
+      const hasIndex = Array.isArray(result) && result.length > 0;
+      return { status: hasIndex ? 'up' : 'down', latencyMs: Date.now() - start };
     } catch {
       return { status: 'down', latencyMs: Date.now() - start };
     }
