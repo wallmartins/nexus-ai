@@ -4,7 +4,6 @@
     "todo": [
       "TASK-043",
       "TASK-044",
-      "TASK-045",
       "TASK-046",
       "TASK-047",
       "TASK-048",
@@ -13,8 +12,7 @@
     ],
     "doing": [],
     "review": [
-      "TASK-041",
-      "TASK-042"
+      "TASK-045"
     ],
     "done": [
       "TASK-051",
@@ -52,7 +50,9 @@
       "TASK-039",
       "TASK-040",
       "TASK-018",
-      "TASK-021"
+      "TASK-021",
+      "TASK-041",
+      "TASK-042"
     ]
   }
 }

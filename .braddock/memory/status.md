@@ -4,7 +4,8 @@
 
 **MVP Delivery Review Complete.** All 40 tasks implemented, tested, and merged. PR #41 (TASK-021) merged.  
 **TASK-041 in review:** Rate limiting implemented and ready for PR.  
-**TASK-042 in review:** pgvector HNSW index implemented and ready for PR.
+**TASK-042 in review:** pgvector HNSW index implemented and ready for PR.  
+**TASK-045 in review:** Swagger/OpenAPI docs implemented and ready for PR.
 
 ---
 
@@ -101,7 +102,7 @@
 ### High
 3. **E2E Tests (NFR-MAI-002)** — No Playwright/Cypress end-to-end tests for critical journeys (chat with RAG, document upload, evaluation trigger). `playwright` is in `devDependencies` but no test files exist.
 4. **Cache Indicator in UI (FR-MEM-004 acceptance)** — Cache hits are served correctly but `ChatMessageResponse` lacks a `cached: true` flag; UI does not display a cache indicator. Violates acceptance criterion: "UI displays a cache indicator."
-5. **Swagger/OpenAPI (NFR-MAI-004)** — No `@nestjs/swagger` integration. Auto-generated API docs not available.
+5. ~~**Swagger/OpenAPI (NFR-MAI-004)** — No `@nestjs/swagger` integration. Auto-generated API docs not available.~~ **Addressed in TASK-045.**
 
 ### Medium
 6. **Redis Graceful Degradation (NFR-REL-004)** — Not explicitly implemented. If Redis is unavailable, session memory, response cache, and BullMQ all fail. Chat would not continue without memory.
@@ -147,7 +148,7 @@
    - ~~Add `CREATE INDEX ON embeddings USING hnsw (vector vector_cosine_ops)` migration (critical performance)~~ — TASK-042 implemented, in review
    - Add `cached` field to `SynthesisResult` / `ChatMessageResponse` and UI cache indicator
    - Implement Playwright E2E tests for critical journeys
-   - Add `@nestjs/swagger` for auto-generated OpenAPI docs
+   - ~~Add `@nestjs/swagger` for auto-generated OpenAPI docs~~ — TASK-045 implemented, in review
    - Implement Redis graceful degradation (chat without memory/cache)
    - Add chat comparison mode (split-pane for two models)
    - Add Dockerfile for backend deployment
@@ -275,6 +276,40 @@ The identified gaps are real but do not block the MVP's primary value propositio
 
 ---
 
+## TASK-045 — Swagger/OpenAPI Auto-Generated Docs (In Review)
+
+### What Was Implemented
+
+- Installed `@nestjs/swagger` and `swagger-ui-express` in `apps/api`.
+- Configured Swagger document builder in `main.ts`:
+  - Title: "Nexus AI API"
+  - Description: "REST API for the Nexus AI RAG system"
+  - Version: "0.1.0"
+  - Tags: Documents, Chat, Queues, Observability, Evaluations, Settings, Health
+- Swagger UI served at `/api/docs` with OpenAPI JSON available at `/api/docs-json`.
+- Created DTO classes with `@ApiProperty` decorators for all major request/response shapes:
+  - `chat.dto.ts`: `ChatMessageRequestDto`, `ChatMessageResponseDto`, `ChatMessageSourceDto`
+  - `documents.dto.ts`: `DocumentUploadResponseDto`, `DocumentListItemDto`
+  - `evaluation.dto.ts`: `EvaluationTriggerRequestDto`, `EvaluationTriggerResponseDto`
+  - `settings.dto.ts`: `SettingsResponseDto`, `UpdateSettingsRequestDto`
+  - `queue.dto.ts`: `QueueOverviewDto`, `JobInfoDto`
+  - `health.dto.ts`: `HealthStatusDto`, `ServiceHealthDto`
+  - `observability.dto.ts`: `LogEntryDto`, `LogQueryResultDto`, `MetricsResponseDto`
+- Added Swagger decorators to all controllers:
+  - `@ApiTags()` on every controller class
+  - `@ApiOperation()` on every route handler
+  - `@ApiResponse()` for success and error responses
+  - `@ApiBody()`, `@ApiQuery()`, `@ApiParam()`, `@ApiConsumes()` where applicable
+  - `@ApiTooManyRequestsResponse()` on rate-limited endpoints
+- Auth-free for MVP (no security decorators added).
+
+### Verification
+- **346 API tests pass** (+3 new tests, no regressions).
+- **TypeScript strict mode** compiles cleanly.
+- **NestJS build** succeeds.
+
+---
+
 ## TASK-051 — Pixel-Perfect UI Improvements (In Review)
 
 ### What Was Implemented
@@ -334,4 +369,4 @@ Used Playwright to open `nexus-rag.html` reference design, captured screenshots 
 
 ## Suggested next step
 
-TASK-041 and TASK-042 are complete and in review. Next priority: merge both PRs, then continue with E2E tests (TASK-043) → cache indicator (TASK-044) → Swagger (TASK-045) → Redis graceful degradation (TASK-046).
+TASK-041, TASK-042, and TASK-045 are complete and in review. Next priority: merge all PRs, then continue with E2E tests (TASK-043) → cache indicator (TASK-044) → Redis graceful degradation (TASK-046).

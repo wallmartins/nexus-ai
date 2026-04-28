@@ -8,10 +8,20 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiBody,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { EvaluationService, EvaluationModelConfig } from './evaluation.service';
 import { QueueService } from '../queue/queue.service';
 import { EvaluationTriggerRequest, EvaluationTriggerResponse } from './evaluation.types';
+import { EvaluationTriggerRequestDto, EvaluationTriggerResponseDto } from './evaluation.dto';
 
+@ApiTags('Evaluations')
 @Controller('api/v1/evaluations')
 export class EvaluationController {
   constructor(
@@ -20,6 +30,10 @@ export class EvaluationController {
   ) {}
 
   @Post()
+  @ApiOperation({ summary: 'Trigger a new evaluation run' })
+  @ApiBody({ type: EvaluationTriggerRequestDto })
+  @ApiResponse({ status: 201, description: 'Evaluation run queued', type: EvaluationTriggerResponseDto })
+  @ApiResponse({ status: 400, description: 'Invalid request body' })
   async triggerEvaluation(
     @Body() body: EvaluationTriggerRequest,
   ): Promise<EvaluationTriggerResponse> {
@@ -59,6 +73,11 @@ export class EvaluationController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'List evaluation runs' })
+  @ApiQuery({ name: 'status', required: false, description: 'Filter by status' })
+  @ApiQuery({ name: 'limit', required: false, description: 'Pagination limit', example: '50' })
+  @ApiQuery({ name: 'offset', required: false, description: 'Pagination offset', example: '0' })
+  @ApiResponse({ status: 200, description: 'List of evaluation runs' })
   async listRuns(
     @Query('status') status?: string,
     @Query('limit') limit?: string,
@@ -72,6 +91,10 @@ export class EvaluationController {
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get evaluation run details' })
+  @ApiParam({ name: 'id', description: 'Run UUID' })
+  @ApiResponse({ status: 200, description: 'Run details' })
+  @ApiResponse({ status: 404, description: 'Run not found' })
   async getRun(@Param('id') id: string): Promise<unknown> {
     const run = await this.evaluationService.getRunById(id);
 
@@ -86,6 +109,12 @@ export class EvaluationController {
   }
 
   @Get(':id/results')
+  @ApiOperation({ summary: 'Get per-question results for a run' })
+  @ApiParam({ name: 'id', description: 'Run UUID' })
+  @ApiQuery({ name: 'limit', required: false, description: 'Pagination limit' })
+  @ApiQuery({ name: 'offset', required: false, description: 'Pagination offset' })
+  @ApiResponse({ status: 200, description: 'Run results' })
+  @ApiResponse({ status: 404, description: 'Run not found' })
   async getRunResults(
     @Param('id') id: string,
     @Query('limit') limit?: string,

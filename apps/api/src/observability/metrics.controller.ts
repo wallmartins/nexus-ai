@@ -1,20 +1,35 @@
 import { Controller, Get, Query, BadRequestException } from '@nestjs/common';
 import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiQuery,
+} from '@nestjs/swagger';
+import {
   MetricsService,
   TimeWindow,
   Granularity,
   MetricsResponse,
   AggregatedMetrics,
 } from './metrics.service';
+import { MetricsResponseDto } from './observability.dto';
 
 const VALID_WINDOWS: TimeWindow[] = ['1h', '6h', '24h', '7d', '30d'];
 const VALID_GRANULARITIES: Granularity[] = ['hour', 'day'];
 
+@ApiTags('Observability')
 @Controller('api/v1/observability/metrics')
 export class MetricsController {
   constructor(private readonly metricsService: MetricsService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get aggregated metrics' })
+  @ApiQuery({ name: 'window', required: false, description: 'Preset time window', enum: ['1h', '6h', '24h', '7d', '30d'] })
+  @ApiQuery({ name: 'from', required: false, description: 'Custom range start (ISO 8601)' })
+  @ApiQuery({ name: 'to', required: false, description: 'Custom range end (ISO 8601)' })
+  @ApiQuery({ name: 'granularity', required: false, description: 'Time series granularity', enum: ['hour', 'day'] })
+  @ApiResponse({ status: 200, description: 'Aggregated metrics', type: MetricsResponseDto })
+  @ApiResponse({ status: 400, description: 'Invalid parameters' })
   async getMetrics(
     @Query('window') window?: string,
     @Query('from') from?: string,
