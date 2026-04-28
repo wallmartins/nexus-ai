@@ -7,24 +7,42 @@ import {
   BadRequestException,
   NotFoundException,
 } from '@nestjs/common';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiParam,
+  ApiQuery,
+} from '@nestjs/swagger';
 import { Observable, interval, concatMap } from 'rxjs';
 import { JobStatusService, JobInfo, QueueOverview } from './job-status.service';
 import { QUEUE_NAMES, QueueName } from './queue.config';
+import { QueueOverviewDto, JobInfoDto } from './queue.dto';
 
 function isValidQueue(name: string): name is QueueName {
   return Object.values(QUEUE_NAMES).includes(name as QueueName);
 }
 
+@ApiTags('Queues')
 @Controller('queues')
 export class JobStatusController {
   constructor(private readonly jobStatusService: JobStatusService) {}
 
   @Get()
+  @ApiOperation({ summary: 'Get queue overview counts' })
+  @ApiResponse({ status: 200, description: 'Queue statistics', type: [QueueOverviewDto] })
   async getQueueOverview(): Promise<QueueOverview[]> {
     return this.jobStatusService.getQueueOverview();
   }
 
   @Get(':queueName/jobs')
+  @ApiOperation({ summary: 'List jobs in a queue' })
+  @ApiParam({ name: 'queueName', description: `Queue name: ${Object.values(QUEUE_NAMES).join(', ')}` })
+  @ApiQuery({ name: 'status', required: false, description: 'Filter by status' })
+  @ApiQuery({ name: 'limit', required: false, description: 'Pagination limit' })
+  @ApiQuery({ name: 'offset', required: false, description: 'Pagination offset' })
+  @ApiResponse({ status: 200, description: 'List of jobs', type: [JobInfoDto] })
+  @ApiResponse({ status: 400, description: 'Invalid queue name' })
   async getJobs(
     @Param('queueName') queueName: string,
     @Query('status') status?: string,
@@ -52,6 +70,12 @@ export class JobStatusController {
   }
 
   @Get(':queueName/jobs/:jobId')
+  @ApiOperation({ summary: 'Get a specific job' })
+  @ApiParam({ name: 'queueName', description: 'Queue name' })
+  @ApiParam({ name: 'jobId', description: 'Job ID' })
+  @ApiResponse({ status: 200, description: 'Job details', type: JobInfoDto })
+  @ApiResponse({ status: 400, description: 'Invalid queue name' })
+  @ApiResponse({ status: 404, description: 'Job not found' })
   async getJob(
     @Param('queueName') queueName: string,
     @Param('jobId') jobId: string,
@@ -74,6 +98,10 @@ export class JobStatusController {
   }
 
   @Get('dead-letter')
+  @ApiOperation({ summary: 'Get dead-letter jobs' })
+  @ApiQuery({ name: 'limit', required: false, description: 'Pagination limit' })
+  @ApiQuery({ name: 'offset', required: false, description: 'Pagination offset' })
+  @ApiResponse({ status: 200, description: 'List of dead-letter jobs', type: [JobInfoDto] })
   async getDeadLetterJobs(
     @Query('limit') limit?: string,
     @Query('offset') offset?: string,
@@ -85,6 +113,7 @@ export class JobStatusController {
   }
 
   @Sse('stream')
+  @ApiOperation({ summary: 'Stream real-time queue status (SSE)' })
   streamQueueStatus(): Observable<{ data: unknown }> {
     return interval(3000).pipe(
       concatMap(async () => {

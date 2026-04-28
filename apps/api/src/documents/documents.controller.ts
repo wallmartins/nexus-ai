@@ -13,6 +13,14 @@ import {
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
 import { Throttle } from '@nestjs/throttler';
+import {
+  ApiTags,
+  ApiOperation,
+  ApiResponse,
+  ApiConsumes,
+  ApiParam,
+  ApiTooManyRequestsResponse,
+} from '@nestjs/swagger';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
@@ -20,6 +28,7 @@ import { DocumentsService } from './documents.service';
 import { FileSizeValidationPipe } from '../common/pipes/file-size-validation.pipe';
 import { MimeTypeValidationPipe } from '../common/pipes/mime-type-validation.pipe';
 import { throttlerConfig } from '../config/throttler.config';
+import { DocumentUploadResponseDto, DocumentListItemDto } from './documents.dto';
 
 const ALLOWED_MIME_TYPES = [
   'application/pdf',
@@ -27,11 +36,17 @@ const ALLOWED_MIME_TYPES = [
   'text/markdown',
 ];
 
+@ApiTags('Documents')
 @Controller('documents')
 export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
 
   @Post()
+  @ApiOperation({ summary: 'Upload a document' })
+  @ApiConsumes('multipart/form-data')
+  @ApiResponse({ status: 201, description: 'Document uploaded successfully', type: DocumentUploadResponseDto })
+  @ApiResponse({ status: 400, description: 'Invalid file type or size' })
+  @ApiTooManyRequestsResponse({ description: 'Rate limit exceeded' })
   @Throttle({
     default: {
       limit: throttlerConfig.upload.limit,
@@ -71,11 +86,17 @@ export class DocumentsController {
   }
 
   @Get()
+  @ApiOperation({ summary: 'List all documents' })
+  @ApiResponse({ status: 200, description: 'List of documents', type: [DocumentListItemDto] })
   async findAll() {
     return this.documentsService.findAll();
   }
 
   @Get(':id')
+  @ApiOperation({ summary: 'Get a document by ID' })
+  @ApiParam({ name: 'id', description: 'Document UUID' })
+  @ApiResponse({ status: 200, description: 'Document details' })
+  @ApiResponse({ status: 400, description: 'Document not found' })
   async findOne(@Param('id') id: string) {
     const document = await this.documentsService.findById(id);
     if (!document) {
@@ -85,6 +106,10 @@ export class DocumentsController {
   }
 
   @Delete(':id')
+  @ApiOperation({ summary: 'Delete a document' })
+  @ApiParam({ name: 'id', description: 'Document UUID' })
+  @ApiResponse({ status: 204, description: 'Document deleted' })
+  @ApiResponse({ status: 404, description: 'Document not found' })
   @HttpCode(HttpStatus.NO_CONTENT)
   async remove(@Param('id') id: string) {
     const document = await this.documentsService.findById(id);
