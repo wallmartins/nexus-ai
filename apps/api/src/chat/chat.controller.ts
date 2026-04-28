@@ -6,14 +6,22 @@ import {
   Body,
   BadRequestException,
 } from '@nestjs/common';
+import { Throttle } from '@nestjs/throttler';
 import { ChatService } from './chat.service';
 import { ChatMessageRequest, ChatMessageResponse } from './chat.types';
+import { throttlerConfig } from '../config/throttler.config';
 
 @Controller('chat')
 export class ChatController {
   constructor(private readonly chatService: ChatService) {}
 
   @Post()
+  @Throttle({
+    default: {
+      limit: throttlerConfig.chat.limit,
+      ttl: throttlerConfig.chat.ttl,
+    },
+  })
   async sendMessage(
     @Body() request: ChatMessageRequest,
   ): Promise<ChatMessageResponse> {

@@ -19,6 +19,26 @@ const envSchema = z.object({
   OPENAI_API_KEY: z.string().optional(),
   ANTHROPIC_API_KEY: z.string().optional(),
   CORS_ORIGIN: z.string().optional().default('http://localhost:3000'),
+  RATE_LIMIT_CHAT_TTL: z
+    .string()
+    .optional()
+    .default('60')
+    .transform((val) => parseInt(val, 10)),
+  RATE_LIMIT_CHAT_LIMIT: z
+    .string()
+    .optional()
+    .default('100')
+    .transform((val) => parseInt(val, 10)),
+  RATE_LIMIT_UPLOAD_TTL: z
+    .string()
+    .optional()
+    .default('60')
+    .transform((val) => parseInt(val, 10)),
+  RATE_LIMIT_UPLOAD_LIMIT: z
+    .string()
+    .optional()
+    .default('20')
+    .transform((val) => parseInt(val, 10)),
 });
 
 export type EnvConfig = z.infer<typeof envSchema>;

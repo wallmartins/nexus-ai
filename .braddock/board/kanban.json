@@ -2,7 +2,6 @@
   "columns": {
     "backlog": [],
     "todo": [
-      "TASK-041",
       "TASK-042",
       "TASK-043",
       "TASK-044",
@@ -14,7 +13,9 @@
       "TASK-050"
     ],
     "doing": [],
-    "review": [],
+    "review": [
+      "TASK-041"
+    ],
     "done": [
       "TASK-051",
       "TASK-001",

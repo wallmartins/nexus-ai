@@ -12,12 +12,14 @@ import {
   NotFoundException,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { Throttle } from '@nestjs/throttler';
 import { diskStorage } from 'multer';
 import { extname } from 'path';
 import { v4 as uuidv4 } from 'uuid';
 import { DocumentsService } from './documents.service';
 import { FileSizeValidationPipe } from '../common/pipes/file-size-validation.pipe';
 import { MimeTypeValidationPipe } from '../common/pipes/mime-type-validation.pipe';
+import { throttlerConfig } from '../config/throttler.config';
 
 const ALLOWED_MIME_TYPES = [
   'application/pdf',
@@ -30,6 +32,12 @@ export class DocumentsController {
   constructor(private readonly documentsService: DocumentsService) {}
 
   @Post()
+  @Throttle({
+    default: {
+      limit: throttlerConfig.upload.limit,
+      ttl: throttlerConfig.upload.ttl,
+    },
+  })
   @UseInterceptors(
     FileInterceptor('file', {
       storage: diskStorage({
